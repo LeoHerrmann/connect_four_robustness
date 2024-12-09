@@ -1,0 +1,82 @@
+\documentclass[a4paper, 12pt]{scrartcl}
+\usepackage{comment}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\usepackage{csquotes}
+\pagestyle{fancy}
+\usepackage[hidelinks]{hyperref}
+\usepackage[center]{caption}
+\usepackage[onehalfspacing]{setspace}
+\usepackage[backend=bibtex, style=authoryear-ibid]{biblatex}
+\usepackage{pgfplots}
+\usepackage{listings}
+%\usepackage[%
+%    style=authoryear,
+%    giveninits=true,
+%    natbib=true,
+%    maxbibnames=99,
+%    uniquename=init
+%]{biblatex}
+
+\DeclareNameAlias{sortname}{family-given}
+\renewcommand*{\multinamedelim}{\addcomma\space}
+\renewcommand*{\finalnamedelim}{\addcomma\space}
+\renewcommand*{\nameyeardelim}{\addcomma\space}
+\setlength{\bibitemsep}{\baselineskip}
+\addbibresource{lit.bib}
+
+\begin{document}
+    \renewcommand{\figurename}{Abb.}
+	\fancyhf{}
+	\include{titlepage}
+	\newpage
+	
+	\section{Kurzfassung}
+	\input{Sektionen/kurzfassung}
+	
+	\tableofcontents
+	\newpage
+
+    \listoffigures
+    \newpage
+
+    \section*{Eigenständigkeitserklärung}
+	\input{erklaerung}
+	\newpage
+ 
+	\setcounter{page}{1}
+	\fancyfoot[C]{\thepage}
+	
+	\section{Einleitung}
+	\input{Sektionen/einleitung}
+	
+	\section{Grundlagen}
+    \input{Sektionen/grundlagen}
+	\subsection{Automatisierung von Spielen}
+	\input{Sektionen/automatisierung-von-spielen}
+	\subsection{Vier Gewinnt}
+    \input{Sektionen/vier-gewinnt}
+
+    \section{Konzept}
+    \input{Sektionen/konzept}
+    
+    \section{Realisierung}
+    \input{Sektionen/realisierung}
+    
+    \section{Ergebnisdiskussion}
+    \input{Sektionen/ergebnisdiskussion}
+    
+    \section{Zusammenfassung und Ausblick}
+    \input{Sektionen/zusammenfassung-und-ausblick}
+ 
+	\section{Literaturverzeichnis}
+	\nocite{*}
+    \renewcommand{\refname}{}
+	\printbibliography
+ 
+	\newpage
+	
+\end{document}
