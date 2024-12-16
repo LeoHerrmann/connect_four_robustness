@@ -1,8 +1,10 @@
+% Allgemeine Literatur
+
 @book{Ferguson.January2019,
- author = {Ferguson, Kevin and Pumperla, Max},
- year = {January 2019},
- title = {Deep Learning and the Game of Go},
- publisher = {{Manning Publications}}
+	author = {Ferguson, Kevin and Pumperla, Max},
+	year = {January 2019},
+	title = {Deep Learning and the Game of Go},
+	publisher = {{Manning Publications}}
 }
 
 @book{Heineman.October2008,
@@ -11,3 +13,138 @@
 	title = {Algorithms in a Nutshell},
 	publisher = {{O'Reilly Media, Inc.}}
 }
+
+@book{Bewersdorff.2018,
+	author       = {Jörg Bewersdorff},
+	title        = {Glück, Logik und Bluff: Mathematik im Spiel - Methoden, Ergebnisse und Grenzen},
+	edition      = {7},
+	publisher    = {{Springer Spektrum Wiesbaden}},
+	year         = {2018},
+	doi          = {10.1007/978-3-658-21765-5},
+	isbn         = {978-3-658-21764-8},
+	date         = {2018-05-08}
+}
+
+% Erste Lösungen für Vier Gewinnt
+
+@article{Allis.1988,
+	title={A Knowledge-Based Approach of Connect-Four},
+	author={Allis, Victor},
+	journal={J. Int. Comput. Games Assoc.},
+	year={1988},
+	volume={11},
+	pages={165},
+	url={https://api.semanticscholar.org/CorpusID:24540039}
+}
+
+@book{Allen.2010,
+	author = {Allen, James Dow},
+	year = {2010},
+	title = {The complete book of Connect 4: history, strategy, puzzles},
+	publisher = {{New York, NY : Puzzle Wright Press}}
+}
+
+@misc{Tromp,
+	author = "Tromp, John",
+	title = "John's Connect Four Playground",
+	year = "",
+	howpublished = "\url{https://en.wikipedia.org/w/index.php?title=Wine&oldid=1262619132}",
+	note = "[Letzer Zugriff am 13. December-2024]"
+}
+
+% Neuere Lösungen für Vier Gewinnt
+
+@techreport{Alderton.2019,
+	author      = {Alderton, E. and Wopat, E. and Koffman, J.},
+	title       = {Reinforcement Learning for Connect Four},
+	institution = {Stanford University, Stanford, {California 94305, USA}},
+	year        = {2019}
+}
+
+@techreport{Thill.2012,
+	author      = {Thill, Markus and Koch, Patrick and Konen, Wolfgang},
+	title       = {Reinforcement Learning with N-tuples on the Game Connect-4},
+	institution = {Department of Computer Science, Cologne University of Applied Sciences, 51643 {Gummersbach, Germany}},
+	year        = {2012}
+}
+
+@misc{Wäldchen.2022,
+	title={Training Characteristic Functions with Reinforcement Learning: XAI-methods play Connect Four}, 
+	author={Wäldchen, Stephan and Huber, Felix  and Pokutta, Sebastian},
+	year={2022},
+	eprint={2202.11797},
+	archivePrefix={arXiv},
+	primaryClass={cs.LG},
+	url={https://arxiv.org/abs/2202.11797}, 
+}
+
+@misc{Taylor.2024,
+	title={An Evolutionary Framework for Connect-4 as Test-Bed for Comparison of Advanced Minimax, Q-Learning and MCTS}, 
+	author={Taylor, Henry and Stella, Leonardo},
+	year={2024},
+	eprint={2405.16595},
+	archivePrefix={arXiv},
+	primaryClass={cs.AI},
+	url={https://arxiv.org/abs/2405.16595}, 
+}
+
+@article{Sheoran.2022,
+	author  = {Sheoran, Kavita and Dhand, Geetika and Dabaszs, Mayank and Dahiya,  Nishthavan and Pushparaj, Pratish},
+	title   = {Solving Connect 4 Using Optimized Minimax and Monte Carlo Tree Search},
+	journal = {Advances and Applications in Mathematical Sciences},
+	year    = {2022},
+	volume  = {21},
+	number  = {6},
+	pages   = {3303--3313}
+}
+
+@inproceedings{Qiu.2022,
+	
+	author={Qiu, Yiran and Wang, Zihong and Xu, Duo},
+	
+	booktitle={MEMAT 2022; 2nd International Conference on Mechanical Engineering, Intelligent Manufacturing and Automation Technology}, 
+	
+	title={Comparison of Four AI Algorithms in Connect Four}, 
+	
+	year={2022},
+	
+	volume={},
+	
+	number={},
+	
+	pages={1-5},
+	
+	keywords={},
+	
+	doi={}}
+
+
+% Robustheit
+
+@article{IEEE.1990,
+	author={},
+	journal={IEEE Std 610.12-1990}, 
+	title={IEEE Standard Glossary of Software Engineering Terminology}, 
+	year={1990},
+	volume={},
+	number={},
+	pages={1-84},
+	keywords={Terminology;Software engineering;Standards;glossary;terminology;dictionary;Software engineering;Definitions},
+	doi={10.1109/IEEESTD.1990.101064}
+}
+
+@article{Moos.2022,
+	AUTHOR = {Moos, Janosch and Hansel, Kay and Abdulsamad, Hany and Stark, Svenja and Clever, Debora and Peters, Jan},
+	TITLE = {Robust Reinforcement Learning: A Review of Foundations and Recent Advances},
+	JOURNAL = {Machine Learning and Knowledge Extraction},
+	VOLUME = {4},
+	YEAR = {2022},
+	NUMBER = {1},
+	PAGES = {276--315},
+	URL = {https://www.mdpi.com/2504-4990/4/1/13},
+	ISSN = {2504-4990},
+	ABSTRACT = {Reinforcement learning (RL) has become a highly successful framework for learning in Markov decision processes (MDP). Due to the adoption of RL in realistic and complex environments, solution robustness becomes an increasingly important aspect of RL deployment. Nevertheless, current RL algorithms struggle with robustness to uncertainty, disturbances, or structural changes in the environment. We survey the literature on robust approaches to reinforcement learning and categorize these methods in four different ways: (i) Transition robust designs account for uncertainties in the system dynamics by manipulating the transition probabilities between states; (ii) Disturbance robust designs leverage external forces to model uncertainty in the system behavior; (iii) Action robust designs redirect transitions of the system by corrupting an agent’s output; (iv) Observation robust designs exploit or distort the perceived system state of the policy. Each of these robust designs alters a different aspect of the MDP. Additionally, we address the connection of robustness to the risk-based and entropy-regularized RL formulations. The resulting survey covers all fundamental concepts underlying the approaches to robust reinforcement learning and their recent advances.},
+	DOI = {10.3390/make4010013}
+}
+
+
