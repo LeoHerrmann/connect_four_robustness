@@ -1,7 +1,17 @@
+Bei Vier Gewinnt handelt es sich um ein kombinatorisches Nullsummenspiel für zwei Spieler. Kombinatorische Spiele weisen \glqq perfekte Information \grqq{} auf. Das bedeutet, dass alle Spieler zu jeder Zeit den gesamten Zustand des Spiels kennen. Bei kombinatorischen Spielen sind außerdem keine Zufallselemente enthalten. Die einzige Herausforderung beim Spielen kombinatorischer Spiele besteht darin, unter einer Vielzahl von Entscheidungsoptionen diejenige auszuwählen, die den besten weiteren Spielverlauf verspricht(\cite{Bewersdorff.2018}, S. 96-100)(\cite{Ferguson.January2019}, Kapitel 4.1).
+
+Nullsummenspiel bedeutet, dass der Gewinn eines Spielers zwangsläufig einen Verlust des anderen Spielers verursacht. Die beiden Spieler haben also entgegengesetzte Interessen.
+Zwei-Personen-Nullsummenspiele sind insofern interessant für die Untersuchung von …, weil 
+- Zwei Personen über Mehr Personen -> Wechselwirkungen
+- Zwei PErsonen über Eine PErson
+- Null
+
+Das Spiel besteht aus einem 7 x 6 Spielfeld. Beide Spieler dürfen abwechselnd einen Spielstein in eine Spalte hinwerfen, der in dieser Spalte bis zur untersten freien Position fällt. Es gewinnt der Spieler, der als erstes vier Spielsteine in einer horizontalen, vertikalen oder diagonalen Reihe nebeneinander stehen hat\cite{MiltonBradleyCompany.1990}.
+
 Vier Gewinnt und verschiedene Lösungsverfahren sind bereits ausgiebig untersucht. Das Spiel wurde 1988 von James Dow Allen und Victor Allis unabhängig voneinander mit wissensbasierten Methoden schwach gelöst. Dabei wurde gezeigt, dass der Spieler, der den ersten Zug macht, immer gewinnen kann\cite{Allen.2010}\cite{Allis.1988}.
 
 Inzwischen wurde das Spiel auch durch einen Brute-Force Ansatz stark gelöst. Bei der Lösung durch John Trump kam Alpha-Beta-Pruning zum Einsatz, wobei alle 4.531.985.219.092 legalen Zustände des Spiels untersucht und auf ihre Gewinnchancen bewertet wurden\cite{Tromp}.
 
-Lösungen, die alle Möglichkeiten durchrechnen, sind für den Einsatz in der Praxis aufgrund des hohen Rechenaufwands bei komplexeren Anwendungen selten praktikabel. Aus diesem Grund wird bevorzugt auf gute Heuristiken zurückgegriffen, die den Rechenaufwand minimieren, aber dennoch gute Ergebnisse liefern\cite{Heineman.October2008}.
+Lösungen, die alle Möglichkeiten durchrechnen, sind für den Einsatz in der Praxis aufgrund des hohen Rechenaufwands bei komplexeren Anwendungen selten praktikabel. Aus diesem Grund wird bevorzugt auf gute Heuristiken zurückgegriffen, die den Rechenaufwand minimieren, aber dennoch gute Ergebnisse liefern(\cite{Heineman.October2008}, Kapitel 7.6).
 
 Verschiedene allgemeine algorithmische und RL-basierte Ansätze wurden am Beispiel von Vier Gewinnt auf ihre Leistung untersucht. Es wurde gezeigt, dass sich sowohl algorithmische als auch RL-Ansätze bei Vier Gewinnt eignen\cite{Alderton.2019}\cite{Thill.2012}\cite{Wäldchen.2022}\cite{Taylor.2024}\cite{Sheoran.2022}\cite{Qiu.2022}.
