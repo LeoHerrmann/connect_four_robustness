@@ -1,17 +1,29 @@
+Vier Gewinnt ist ein Brettspiel, das aus einem 7 x 6 Spielfeld besteht. Die beiden Spieler werfen abwechselnd einen Spielstein in eine Spalte hinein, der in dieser Spalte bis zur untersten freien Position fällt. Es gewinnt der Spieler, der als erstes vier Spielsteine in einer horizontalen, vertikalen oder diagonalen Reihe nebeneinander stehen hat\cite{MiltonBradleyCompany.1990}.
+
 Bei Vier Gewinnt handelt es sich um ein kombinatorisches Nullsummenspiel für zwei Spieler. Kombinatorische Spiele weisen \glqq perfekte Information \grqq{} auf. Das bedeutet, dass alle Spieler zu jeder Zeit den gesamten Zustand des Spiels kennen. Bei kombinatorischen Spielen sind außerdem keine Zufallselemente enthalten. Die einzige Herausforderung beim Spielen kombinatorischer Spiele besteht darin, unter einer Vielzahl von Entscheidungsoptionen diejenige auszuwählen, die den besten weiteren Spielverlauf verspricht(\cite{Bewersdorff.2018}, S. 96-100)(\cite{Ferguson.January2019}, Kapitel 4.1).
 
-Nullsummenspiel bedeutet, dass der Gewinn eines Spielers zwangsläufig einen Verlust des anderen Spielers verursacht. Die beiden Spieler haben also entgegengesetzte Interessen.
-Zwei-Personen-Nullsummenspiele sind insofern interessant für die Untersuchung von …, weil 
-- Zwei Personen über Mehr Personen -> Wechselwirkungen
-- Zwei PErsonen über Eine PErson
-- Null
+Bei Zwei-Spieler-Nullsummenspielen, verursacht der Gewinn eines Spielers zwangsläufig einen Verlust des anderen Spielers. Die beiden Spieler haben also entgegengesetzte Interessen(\cite{Bewersdorff.2018}, S.100)(\cite{Allis.1994}, S. 100). Das bedeutet, dass sich der Erfolg von verschiedenen Lösungsansätzen durch die durchschnittliche Gewinnrate im Spiel gegeneinander bewerten lässt. Bei Nullsummenspielen mit mehr als zwei Personen, kann es passieren, dass wenn ein Spieler (bewusst oder versehentlich) nicht optimal spielt, ein zweiter Spieler davon profitiert, während ein dritter Spieler dadurch benachteiligt wird. Solche Wechselwirkungen sind bei Zwei-Personen-Nullsummenspielen ausgeschlossen(\cite{Bewersdorff.2018}, S. 113 ff.). Das macht die Messergebnisse im Hauptteil besser vergleichbar.
 
-Das Spiel besteht aus einem 7 x 6 Spielfeld. Beide Spieler dürfen abwechselnd einen Spielstein in eine Spalte hinwerfen, der in dieser Spalte bis zur untersten freien Position fällt. Es gewinnt der Spieler, der als erstes vier Spielsteine in einer horizontalen, vertikalen oder diagonalen Reihe nebeneinander stehen hat\cite{MiltonBradleyCompany.1990}.
+Nach Victor Allis lässt sich die Komplexität eines Spiels von strategie-basierten Zwei-Spieler-Nullsummenspielen durch ihre Zustandsraumkomplexität und Spielbaumkomplexität beschreiben. Die Zustandsraumkomplexität entspricht der Anzahl der verschiedenen möglichen Spielfeldkonfigurationen ab dem Start. Für ein Spiel kann dieser Wert oder zumindest dessen obere Schranke bestimmt werden, indem zunächst alle Konfigurationen des Spielfelds gezählt, dann Einschränkungen wie Regeln und Symmetrie berücksichtigt werden, und die Anzahl der illegalen und redundanten Zustände von der Anzahl aller möglichen Konfigurationen abgezogen wird.
 
-Vier Gewinnt und verschiedene Lösungsverfahren sind bereits ausgiebig untersucht. Das Spiel wurde 1988 von James Dow Allen und Victor Allis unabhängig voneinander mit wissensbasierten Methoden schwach gelöst. Dabei wurde gezeigt, dass der Spieler, der den ersten Zug macht, immer gewinnen kann\cite{Allen.2010}\cite{Allis.1988}.
+% todo: Erklärung des Spielbaums
 
-Inzwischen wurde das Spiel auch durch einen Brute-Force Ansatz stark gelöst. Bei der Lösung durch John Trump kam Alpha-Beta-Pruning zum Einsatz, wobei alle 4.531.985.219.092 legalen Zustände des Spiels untersucht und auf ihre Gewinnchancen bewertet wurden\cite{Tromp}.
+Die Spielbaumkomplexität beschreibt die Anzahl der Blattknoten des Lösungsbaums. Der Lösungsbaum beschreibt die Teilmenge des Spielbaums, der benötigt wird, um die Gewinnaussichten bei optimaler Spielweise beider Spieler zu berechnen. Die Spielbaumkomplexität lässt sich durch die durchschnittliche Spiellänge und der Anzahl der Entscheidungsmöglichkeiten pro Zug (entweder konstant oder abhängig vom Spielfortschritt) approximieren.
 
-Lösungen, die alle Möglichkeiten durchrechnen, sind für den Einsatz in der Praxis aufgrund des hohen Rechenaufwands bei komplexeren Anwendungen selten praktikabel. Aus diesem Grund wird bevorzugt auf gute Heuristiken zurückgegriffen, die den Rechenaufwand minimieren, aber dennoch gute Ergebnisse liefern(\cite{Heineman.October2008}, Kapitel 7.6).
+Die Spielbaumkomplexität ist maßgeblich für die praktische Berechenbarkeit einer starken Lösung. Für Tic Tac Toe wurde durch Allis eine obere Grenze für die Spielbaumkomplexität von 362880 ermittelt und eine starke Lösung lässt sich innerhalb von Sekundenbruchteilen berechnen (?). Für Schach wird die Spielbaumkomplexität auf $10^{31}$ geschätzt und die Aussichten auf eine starke Lösung liegen noch in weiter Ferne(\cite{Schaeffer.2007}).
+
+% todo: Quelle für schnelle Lösbarkeit von vier Gewinnt
+
+Für Vier Gewinnt wurde eine durchschnittliche Spiellänge von 36 Zügen und eine durchschnittliche Anzahl von Entscheidungsmöglichkeiten (freie Spalten) von 4 ermittelt. Damit wurde die Spielbaumkomplexität auf $4^{36} \approx 10^{21}$ geschätzt.
+
+Verschiedene Lösungsverfahren von Vier Gewinnt sind bereits ausgiebig untersucht. Das Spiel wurde 1988 von James Dow Allen und Victor Allis unabhängig voneinander mit wissensbasierten Methoden schwach gelöst, was bedeutet, dass für die Anfangsposition eine optimale Strategie ermittelt wurde. Im Fall von Vier Gewinnt kann der Spieler, der den ersten Zug macht, bei optimaler Spielweise immer gewinnen.\cite{Allen.2010}\cite{Allis.1988}.
+
+1993 wurde das Spiel durch Tromp auch durch einen Brute-Force Ansatz stark gelöst. Bei der Lösung durch John Trump kam Alpha-Beta-Pruning zum Einsatz, um für alle 4.531.985.219.092 legalen Zustände des Spiels den optimalen Zug zu berechnen\cite{Tromp}. Das hat 40.000 CPU Stunden gedauert. 
+
+% todo: Bessere Quelle für Tromp
+
+Lösungen, die alle Möglichkeiten durchrechnen, sind für den Einsatz in der Praxis aufgrund des hohen Rechenaufwands bei komplexeren Anwendungen auch heute noch selten praktikabel. Aus diesem Grund wird bevorzugt auf gute Heuristiken zurückgegriffen, die den Rechenaufwand minimieren, aber dennoch gute Ergebnisse liefern(\cite{Heineman.October2008}, Kapitel 7.6).
+
+% todo: Erklärung grober Lösungsmöglichkeiten
 
 Verschiedene allgemeine algorithmische und RL-basierte Ansätze wurden am Beispiel von Vier Gewinnt auf ihre Leistung untersucht. Es wurde gezeigt, dass sich sowohl algorithmische als auch RL-Ansätze bei Vier Gewinnt eignen\cite{Alderton.2019}\cite{Thill.2012}\cite{Wäldchen.2022}\cite{Taylor.2024}\cite{Sheoran.2022}\cite{Qiu.2022}.
