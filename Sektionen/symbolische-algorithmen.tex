@@ -2,7 +2,7 @@
 
 \subsubsection{Minimax}
 
-Minimax ist ein Algorithmus, der ausgehend von einem Knoten im Spielbaum die darauf folgenden Knoten bewertet und den Knoten mit der besten Bewertung zurückgibt. Bei der Bewertung wird davon ausgegangen, dass der Gegner ebenfalls den Zug wählt, der für sich am günstigsten ist. Das führt dazu, dass wenn die Bewertung anhand der Gewinnchancen erfolgt, auch tatsächlich die Gewinnchancen maximiert werden.
+Minimax ist ein Algorithmus, der ausgehend von einem Knoten im Spielbaum die darauf folgenden Knoten bewertet und den Knoten mit der besten Bewertung zurückgibt. Bei der Bewertung wird davon ausgegangen, dass der Gegner ebenfalls den Zug wählt, der für ihn am günstigsten ist. Das führt dazu, dass wenn die Bewertung anhand der Gewinnchancen erfolgt, auch tatsächlich die Gewinnchancen maximiert werden.
 
 Um die Gewinnchancen zu ermitteln, müssen jedoch alle Knoten des Spielbaums untersucht werden. Die Laufzeit des Algorithmus steigt linear zur Anzahl der zu untersuchenden Knoten und damit bei konstanter Anzahl von Möglichkeiten pro Zug exponentiell zur Suchtiefe. Den gesamten Spielbaum zu durchsuchen, ist daher nur für wenig komplexe Spiele praktikabel. Für komplexere Spiele muss die Suchtiefe begrenzt und auf Heuristiken zurückgegriffen werden, damit die Bewertung in akzeptabler Zeit erfolgen kann(\cite{Ferguson.January2019}, Kapitel 4)(\cite{Heineman.October2008}, Kapitel 7.6).
 
