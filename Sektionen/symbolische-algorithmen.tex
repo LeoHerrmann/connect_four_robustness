@@ -1,10 +1,10 @@
-% Hier geht es um Algorithmen, die Bäume durchsuchen, also erstmal.
-
 \subsubsection{Minimax}
 
-Minimax ist ein Algorithmus, der ausgehend von einem Knoten im Spielbaum die darauf folgenden Knoten bewertet und den Knoten mit der besten Bewertung zurückgibt. Bei der Bewertung wird davon ausgegangen, dass der Gegner ebenfalls den Zug wählt, der für ihn am günstigsten ist. Das führt dazu, dass wenn die Bewertung anhand der Gewinnchancen erfolgt, auch tatsächlich die Gewinnchancen maximiert werden.
+Minimax ist ein Algorithmus, der aus Sicht eines Spielers ausgehend von einem Knoten im Spielbaum die darauf folgenden Knoten bewertet und den Knoten mit der besten Bewertung zurückgibt. Bei der Bewertung wird davon ausgegangen, dass der Gegner ebenfalls den Zug wählt, der für ihn am günstigsten ist.
 
-Um die Gewinnchancen zu ermitteln, müssen jedoch alle Knoten des Spielbaums untersucht werden. Die Laufzeit des Algorithmus steigt linear zur Anzahl der zu untersuchenden Knoten und damit bei konstanter Anzahl von Möglichkeiten pro Zug exponentiell zur Suchtiefe. Den gesamten Spielbaum zu durchsuchen, ist daher nur für wenig komplexe Spiele praktikabel. Für komplexere Spiele muss die Suchtiefe begrenzt und auf Heuristiken zurückgegriffen werden, damit die Bewertung in akzeptabler Zeit erfolgen kann(\cite{Ferguson.January2019}, Kapitel 4)(\cite{Heineman.October2008}, Kapitel 7.6).
+Zunächst werden die Blattknoten des Spielbaums bewertet. Je günstiger ein Spielfeldzustand für den zu untersuchenden Spieler ist, desto größer ist die Zahl, die diesem Zustand zugeordnet wird. In Abhängigkeit der zuvor bewerteten Knoten, werden nun deren Elternknoten bewertet. Ist im betrachteten Zustand der zu untersuchende Spieler am Zug, übernimmt dieser Zustand die Bewertung des Kindknotens mit der höchsten Bewertung. Umgekehrt ist es, wenn der Gegenspieler Spieler am Zug ist. Dann bekommt der zu untersuchte Knoten die Bewertung des Kindknotens mit der niedrigsten Bewertung. Dieser Vorgang wird wiederholt, bis die Wurzel erreicht ist. Zurückgegeben wird der Zug, der zu dem Kindknoten der Wurzel führt, dem die größte Bewertung zugeordnet wurde.
+
+Erfolgt die Bewertung anhand der Gewinnchancen, führt das dazu, dass die Wahl des Knotens mit der besten BEwertung auch die Gewinnchancen maximiert. Um die Gewinnchancen zu ermitteln, müssen jedoch alle Knoten des Spielbaums untersucht werden. Die Laufzeit des Algorithmus steigt linear zur Anzahl der zu untersuchenden Knoten und damit bei konstanter Anzahl von Möglichkeiten pro Zug exponentiell zur Suchtiefe. Den gesamten Spielbaum zu durchsuchen, ist daher nur für wenig komplexe Spiele praktikabel. Damit die Bewertung in akzeptabler Zeit erfolgen kann, muss für komplexere Spiele die Suchtiefe oder -breite begrenzt und auf Heuristiken zurückgegriffen werden, (\cite{Ferguson.January2019}, Kapitel 4)(\cite{Heineman.October2008}, Kapitel 7.6).
 
 \subsubsection{AlphaBeta}
 
