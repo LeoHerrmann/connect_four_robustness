@@ -29,47 +29,38 @@ Heuristische Bewertungsfunktionen sind in der Hinsicht problematisch, als dass s
 
 \subsubsection{Monte Carlo Tree Search}
 
+Bei MCTS handelt es sich um einen heuristischen Algorithmus, der dazu dient, um in Bäumen, die aus sequentiellen Entscheidungen bestehen, und häufig als MDPs oder POMPDs modelliert werden, einen möglichst vielversprechenden Pfad auszuwählen. Dazu werden wiederholt zufällig verschiedene Entscheidungen simuliert und deren potentieller Erfolg statistisch ausgewertet.
 
-Bei MCTS handelt es sich um einen heuristischen Algorithmus, der dazu dient, um in Bäumen, die aus sequentiellen Entscheidungen bestehen, und häufig als MDPs oder POMPDs modelliert werden, einen möglichst vielversprechenden Pfad aufzuwählen. Dazu werden wiederholt zufällig verschiedene Entscheidungen simuliert und deren potentieller Erfolg statistisch ausgewertet (IEEE, und andere, vll. besser Primärquelle?).
+Der Vorteil gegenüber des Alpha-Beta-Prunings besteht darin, dass es bei MCTS nicht notwendig ist, innere Knoten, also Nicht-Blattknoten, zu bewerten (AIAMA, GOG, IEEE). Lediglich die Endzustände müssen bewertet werden können. Dies lässt sich im Gegensatz zur Bewertung von inneren Knoten relativ einfach umsetzen. Bei Spielen bedeutet das die Auswertung des Endergebnisses, also die Punktzahl oder den Gewinner (\cite{Russell.2020}, S. 161; \cite{Ferguson.January2019}, Kapitel 4.5, \cite{Browne.2012}).
 
-Der Vorteil gegenüber des Alpha-Beta-Prunings besteht darin, dass es bei MCTS nicht notwendig ist, innere Knoten, also Nicht-Blattknoten, zu bewerten (AIAMA, GOG, IEEE). Lediglich die Endzustände müssen bewertet werden können. Dies lässt sich im Gegensatz zur Bewertung von inneren Knoten relativ einfach umsetzen. Bei Spielen bedeutet das die Auswertung des Endergebnisses, also die Punktzahl oder den Gewinner.
+MCTS ist eine weit verbreitete Lösung für kombinatorische Spiele und hat sich insbesondere beim Spiel Go als erfolgreich bewiesen, das einen besonders breiten und tiefen Spielbaum aufweist, woran frühere Verfahren daran gescheitert sind. Der Algorithmus wird auch abseits von Spielen in verschiedenen Variationen eingesetzt, so zum Beispiel in der Optimierung von Lieferketten und Zeitplanung von Prozessen (\cite{Russell.2020}, S. 161; \cite{Browne.2012}).
 
-MCTS ist eine weit verbreitete Lösung für kombinatorische Spiele und hat sich insbesondere beim Spiel Go als erfolgreich bewiesen, das einen besonders breiten und tiefen Spielbaum aufweist, woran frühere Verfahren daran gescheitert sind (IEEE). Der Algorithmus wird auch abseits von Spielen in verschiedenen Variationen eingesetzt, so zum Beispiel in der Optimierung von Lieferketten und Zeitplanung von Prozessen. (IEEE)
+% Funktionsweise
 
------
-
-Mit MCTS werden Entscheidungsmöglichkeiten statistisch ausgewertet, indem die vier Phasen Selection, Expansion, Simulation (auch Play-Out) und Backpropagation wiederholt durchlaufen werden. Dabei wird ein Baum verwaltet, der eine ähnliche Struktur wie der Spielbaum aufweist. Die Knoten beschreiben die Zustände der Umgebung und die Kanten Übergänge zwischen den Zuständen. Zu jedem Knoten im MCTS-Baum wird eine Statistik abgespeichert, die Informationen darüber enthält, wie oft der Knoten selbst oder dessen Kindknoten die Simulation-Phase durchlaufen haben, und was die Ergebnisse der Simulationen waren. (AIAMA, GOG)
+Mit MCTS werden Entscheidungsmöglichkeiten statistisch ausgewertet, indem die vier Phasen Selection, Expansion, Simulation (auch Play-Out) und Backpropagation wiederholt durchlaufen werden. Dabei wird ein Baum verwaltet, der eine ähnliche Struktur wie der Spielbaum aufweist. Die Knoten beschreiben die Zustände der Umgebung und die Kanten Übergänge zwischen den Zuständen. Zu jedem Knoten im MCTS-Baum wird eine Statistik abgespeichert, die Informationen darüber enthält, wie oft der Knoten selbst oder dessen Kindknoten die Simulation-Phase durchlaufen haben, und was die Ergebnisse der Simulationen waren (\cite{Russell.2020}, S. 161 ff.; \cite{Ferguson.January2019}, Kapitel 4.5).
 
 Zu Beginn besteht der MCTS-Baum lediglich aus dem Ursprungsknoten.
 
-In der Phase Selection wird zunächst der Ursprungsknoten aus dem MCTS-Baum betrachtet und es werden basierend auf den bisher gesammelten Statistiken so lange Folgeknoten gewählt, bis ein Blattknoten erreicht wird, der in den folgenden Phasen untersucht werden soll. Dabei besteht jeweils die Möglichkeit, einen Knoten zu wählen, der vielversprechend erscheinent, um genauere Informationen darüber zu erhalten (Exploitation), oder einen Knoten zu wählen, der noch nicht so oft untersucht wurde, um ggf. neue Bereiche im Spielbaum zu erkunden, die bessere Chancen versprechen (Exploration). Es gibt verschiedene Auswahlstrategien, wobei UCT (Upper Confidence Bound applied for Trees) die am weitesten verbreitete ist. Sie bewertet die Kinder eines Knotens n mit der Formel UCB1 und wählt den mit dem höchsten Wert.
+In der Phase \textbf{Selection} wird zunächst der Ursprungsknoten aus dem MCTS-Baum betrachtet und es werden basierend auf den bisher gesammelten Statistiken so lange Folgeknoten gewählt, bis ein Blattknoten erreicht wird, der in den folgenden Phasen untersucht werden soll. Dabei besteht jeweils die Möglichkeit, einen Knoten zu wählen, der vielversprechend erscheinent, um genauere Informationen darüber zu erhalten (Exploitation), oder einen Knoten zu wählen, der noch nicht so oft untersucht wurde, um ggf. neue Bereiche im Spielbaum zu erkunden, die bessere Chancen versprechen (Exploration). Es gibt verschiedene Auswahlstrategien, wobei UCT (Upper Confidence Bound applied for Trees) die am weitesten verbreitete ist. Sie bewertet die Kinder eines Knotens $n$ mit der Formel UCB1 und wählt den Knoten mit der höchsten Bewertung (\cite{Russell.2020}, S. 163). Die Formel lautet wie folgt:
 
---- UCB1 = U(n) / N(n) + c * sqrt(log(N(Parent(n))) / N(n))
---- U(n): Der summierte Wert der Ergebnisse der bisher durchgeführten Simulationen ab Knoten n. In Vier Gewinnt entspricht das der Anzahl, wie oft der zu untersuchende Spieler in den bisher durchgeführten Simulationen gewonnen hat.
---- N(n): Anzahl der Simulation, die bisher ab Knoten n durchgeführt wurden
---- Damit stellt der Teil links vom plus den Exploitation-Teil dar. Er wächst mit den Erfolgsaussichten des untersuchten Knotens.
---- Parent(n): Anzahl wie oft Parent von n simuliert wurde
---- N(n): Anzahl der Simulations, die vom betrachteten Node gestartet ist
---- rechts vom Plus: Exploration. Größer, je weniger oft ein Knoten untersuht wurde
---- c: Konstante, die die Exploitation- und Exploration-Teile der Formel ausbalanciert. Als Standard wird hier die Wurzel von 2 empfohlen.
---- (Formel aus AIAMA)
+\begin{equation*}
+	UCB1 = \frac{U(n)}{N(n)} + c * \sqrt{\frac{log(N(Parent(n)))}{N(n)}}
+\end{equation*}
 
-- Bei der Expansion wird vom zuvor ausgewählten Knoten ein zufälliger Zug ausgeführt und der neue Zustand wird als Kindknoten hinzugefügt (GOG)
+Dabei ist $U(n)$ der summierte Wert der Ergebnisse der bisher durchgeführten Simulationen ab Knoten $n$. In Vier Gewinnt entspricht das der Anzahl, wie oft der zu untersuchende Spieler in den bisher durchgeführten Simulationen gewonnen hat. $N(n)$ entspricht der Anzahl der Simulationen, die bisher ab Knoten $n$ durchgeführt wurden. Damit stellt der Teil links vom plus den Exploitation-Teil dar. Er wächst mit den Erfolgsaussichten des untersuchten Knotens.
+$N(Parent(n))$ ist Anzahl wie oft Elternknoten von $n$ simuliert wurde, $N(n)$ hingegen die Anzahl wie oft der zu betrachtete Knoten selbst simuliert wurde. Der Teil hinter dem Plus wird größer, je seltener ein Knoten simuliert wurde und fördert damit die Exploration von bisher selten untersuchten Knoten.
+Bei $c$ handelt es sich um einen Parameter, über den die Exploitation- und Exploration-Teile der Formel ausbalanciert werden können. Als Richtwert wird hier $\sqrt{2}$ empfohlen (\cite{Russell.2020}, S. 163).
 
-- In der Simulation-Phase werden vom zuvor hinzugefügten Knoten so oft zufällige Entscheidungen hintereinander simuliert, bis ein Endzustand erreicht wurde. Es ist dabei zu beachten, dass dabei die getroffenen Entscheidungen nicht in den MCTS-Baum aufgenommen werden.
+Im Zuge der \textbf{Expansion} wird vom zuvor ausgewählten Knoten ein zufälliger Zug ausgeführt und der neue Zustand wird als Kindknoten hinzugefügt.
 
-- Als letztes erfolgt die Phase Backpropagation. Das Ergebnis der Simulation wird für den untersuchten Knoten im MCTS-Baum abgespeichert und die Statistik der Knoten, die vom Ursprungsknoten zum untersuchten Knoten geführt haben, wird aktualisiert.
+In der \textbf{Simulation}-Phase werden vom zuvor hinzugefügten Knoten so oft zufällige Entscheidungen hintereinander simuliert, bis ein Endzustand erreicht wurde. Es ist dabei zu beachten, dass dabei die getroffenen Entscheidungen nicht in den MCTS-Baum aufgenommen werden.
 
-- (Schönes Schaubild bei AIAMA)
+Als letztes erfolgt die Phase \textbf{Backpropagation}. Das Ergebnis der Simulation wird für den untersuchten Knoten im MCTS-Baum abgespeichert und die Statistik der Knoten, die vom Ursprungsknoten zum untersuchten Knoten geführt haben, wird aktualisiert.
 
-- Mit jeder Wiederholung der vier Phasen wird die Statistik über die Erfolgschancen der Entscheidungsmöglichkeiten akkurater. Nach einer bestimmten Anzahl von Wiederholungen wird basierend auf den gesammelten Statistiken eine Entscheidung getroffen. Da die Phasen Expansion und Simulation basierend auf Zufall erfolgen, ist MCTS nicht deterministisch.
+Mit jeder Wiederholung der vier Phasen wird die Statistik über die Erfolgschancen der Entscheidungsmöglichkeiten akkurater. Nach einer bestimmten Anzahl von Wiederholungen wird basierend auf den gesammelten Statistiken eine Entscheidung getroffen.
 
------
+Da die Phasen Expansion und Simulation basierend auf Zufall erfolgen, ist MCTS nicht deterministisch und liefert keine perfekten Vorhersagen. Außerdem besteht vor allem bei wenigen Iterationen besteht die Gefahr, dass wenn es wenige Züge gibt, die den Verlauf des Spiels wesentlich beeinflussen, diese Züge unentdeckt bleiben, und die Statistik inakkurat wird (\cite{Russell.2020}, S. 164).
 
-- MCTS Liefert bei begrenzten Rechenressourcen keine perfekten Vorhersagen, da basierend auf Statistik entschieden wird. Vor allem bei wenigen Iterationen besteht die Gefahr, dass wenn es wenige Züge gibt, die den Verlauf des Spiels wesentlich beeinflussen, diese Züge unentdeckt bleiben, und die Statistik inakkurat wird.
+Dadurch, dass Iterationen beliebig oft durchgeführt werden können, um die Vorhersagen zu verbessern, ist die Laufzeit von MCTS schwer mit der von den zuvor genannten Methoden vergleichbar. Untersuchungen zeigen, dass bei kleinen Problemen und der Verfügbarkeit von präzisen Heuristiken Alpha Beta mit begrenzter Suchtiefe schneller und besser arbeitet. MCTS schneidet im Verleich besser ab, je tiefer und stärker verzweigt die zu lösenden Entscheidungsbäume sind (\cite{Russell.2020}, S. 163 f.). Es wurde außerdem gezeigt, dass die Ergebnisse von MCTS unter Verwendung von UCT als Selection-Strategie bei unbegrenzten Ressourcen zu Minimax konvergiert \cite{Browne.2012}.
 
-- Dadurch, dass Iterationen beliebig oft durchgeführt werden können, um die Vorhersagen zu verbessern, ist die Laufzeit von MCTS schwer mit der von den zuvor genannten Methoden vergleichbar. Untersuchungen zeigen, dass bei kleinen Problemen und der Verfügbarkeit von präzisen Heuristiken Alpha Beta mit begrenzter Suchtiefe schneller und besser arbeitet. MCTS schneidet im Verleich besser ab, je tiefer und stärker verzweigt die zu lösenden Entscheidungsbäume sind. Es wurde außerdem gezeigt, dass die Ergebnisse von MCTS unter Verwendung von UCT als Selection-Strategie bei unbegrenzten Ressourcen zu Minimax konvergiert.
-
-Es existieren verschiedene Variationen und Verbesserungen für die Strategien in den Phasen Selection und Expansion, die unter bestimmten Umständen für bessere Vorhersagen sorgen. Dazu gehören auch welche, die Machine Learning einsetzen, um in der Selection-Phase fundiertere Entscheidungen zu treffen. Diese werden im Rahmen dieser Arbeit nicht betrachtet. MCTS soll hier klar von Machine Learning Verfahren abgegrenzt sein. Es wird davon ausgegangen, dass die Verbesserungen für die Untersuchung der Robustheit nicht relevant sind, und dass sich die Beobachtungen auch auf Varianten von MCTS übertragen lassen.
-
-
+Es existieren verschiedene Variationen und Verbesserungen für die Strategien in den Phasen Selection und Expansion, die unter bestimmten Umständen für bessere Vorhersagen sorgen. Dazu gehören auch welche, die Machine Learning einsetzen, um in der Selection-Phase fundiertere Entscheidungen zu treffen \cite{Browne.2012}. Diese werden im Rahmen dieser Arbeit nicht betrachtet. MCTS soll hier klar von Machine Learning Verfahren abgegrenzt sein. Es wird davon ausgegangen, dass die Verbesserungen für die Untersuchung der Robustheit nicht relevant sind, und dass sich die Beobachtungen auch auf Varianten von MCTS übertragen lassen.
