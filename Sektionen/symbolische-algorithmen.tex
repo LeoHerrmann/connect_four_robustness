@@ -29,7 +29,7 @@ Heuristische Bewertungsfunktionen sind in der Hinsicht problematisch, als dass s
 
 \subsubsection{Monte Carlo Tree Search}
 
-Bei MCTS handelt es sich um einen heuristischen Algorithmus, der dazu dient, um in Bäumen, die aus sequentiellen Entscheidungen bestehen, und häufig als MDPs oder POMPDs modelliert werden, einen möglichst vielversprechenden Pfad auszuwählen. Dazu werden wiederholt zufällig verschiedene Entscheidungen simuliert und deren potentieller Erfolg statistisch ausgewertet.
+Bei MCTS handelt es sich um einen heuristischen Algorithmus, der dazu dient, um in Bäumen, die aus sequentiellen Entscheidungen bestehen, einen möglichst vielversprechenden Pfad auszuwählen. MCTS kann als Lösung für MDPs betrachtet werden (\cite{Russell.2020}, S. 580). Dazu werden wiederholt zufällig verschiedene Entscheidungen simuliert und deren potentieller Erfolg statistisch ausgewertet.
 
 Der Vorteil gegenüber des Alpha-Beta-Prunings besteht darin, dass es bei MCTS nicht notwendig ist, innere Knoten, also Nicht-Blattknoten, zu bewerten (AIAMA, GOG, IEEE). Lediglich die Endzustände müssen bewertet werden können. Dies lässt sich im Gegensatz zur Bewertung von inneren Knoten relativ einfach umsetzen. Bei Spielen bedeutet das die Auswertung des Endergebnisses, also die Punktzahl oder den Gewinner (\cite{Russell.2020}, S. 161; \cite{Ferguson.January2019}, Kapitel 4.5, \cite{Browne.2012}).
 

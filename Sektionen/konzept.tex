@@ -4,7 +4,7 @@ Die Messungen werden unter verschiedenen Szenarien durchgeführt, in denen die S
 
 \begin{itemize}
 	\item Neutrale Umgebung als Grundlage für die folgenden Messungen.
-	\item Rauschen: Agents erhalten fehlerhafte Informationen über das Spielfeld.
+	\item Rauschen: Agents erhalten fehlerhafte Informationen über das Spielfeld. Es ist anzumerken, dass hierbei aus dem MDP ein Partially Observable MDP (POMDP) wird, also ein MDP dessen Umgebung nur teilweise oder fehlerhaft beobachtbar ist. Der betroffene Agent kann nicht mit Sicherheit gesagt werden, in welchem Zustand er sich gerade befindet. Zusätzlich zum MDP enthält das POMDP ein Observation Modell O(s, o), das die Wahrscheinlichkeit beschreibt, eine Beobachtung o im Zustand s zu machen. POMDPs sind wesentlich komplizierter gezielt zu lösen, in der realen Welt jedoch wesentlich häufiger anzutreffen. Es gibt Optimierungen von MCTS und bestimmte RL-Methoden, über die POMDPs gezielt gelöst werden können (\cite{Russell.2020}, S. 588 ff.). Da es in dieser Arbeit darum geht, zu untersuchen, inwiefern grundsätzliche Eigenschaften von symbolischen Algorithmen und Reinforcement Learning Robustheit beeinflussen, werden diese gezielten Lösungen zur Vereinfachung nicht betrachtet. Beide Agenten gehen davon aus, dass es sich bei dem verrauschten Bild um den tatsächlichen Zustand des Spiels handelt.
 	\item Stochastik: Mit einer bestimmten Wahrscheinlichkeit landet ein Spielstein nicht in der vorgesehenen Spalte sondern in einer benachbarten Spalte.
 	\item Stochastik: Mit einer bestimmten Wahrscheinlichkeit führt ein Spieler nicht den Zug aus, den er für am besten hält, sondern einen zufälligen Zug.
 	\item Stochastik: Mit einer bestimmten Wahrscheinlichkeit führt ein Spieler mehrere Züge hintereinander durch.
