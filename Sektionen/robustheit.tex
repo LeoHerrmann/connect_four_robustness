@@ -1,0 +1,15 @@
+\label{robustheit}
+
+Der Begriff Robustheit wird durch das IEEE Standard Glossary of Software Engineering Terminology definiert als \glqq Der Grad, zu dem ein System oder eine Komponente in der Lage ist, unter fehlerhaften Eingaben oder belastenden Umgebungsbedingungen korrekt zu funktionieren\grqq{}(\cite{IEEE.1990}, S. 64).
+
+In zwei unabhängigen Studien wurde der Begriff insofern konkret auf Reinforcement Learning übertragen, als dass es darum geht, wie gut RL-Verfahren funktionieren, wenn das Verhalten der Umgebung teilweise unbekannt ist. Das Ziel beim robusten Reinforcement Learning besteht darin, ein Regelwerk zu finden, das auch unter ungünstigen Bedingungen, möglichst gute Entscheidungen trifft. Es geht hervor, dass Robustheit in die Teile des modellierten MDPs aufgeteilt werden kann, das von den Unsicherheiten betroffen ist:
+
+\begin{itemize}
+	\item Unsicherheit bezüglich Aktionen: Es wird eine andere Aktion ausgeführt, als die für die sich der Agent entschieden hat.
+	\item Unsicherheit bezüglich Beobachtungen: Der Zustand, den der Agent beobachtet, entspricht nicht dem tatsächlichen Zustand der Umgebung.
+	\item Unsicherheit bezüglich Dynamik der Umgebung: Die Übergangswahrscheinlichkeiten zwischen den Zuständen sind anders als erwartet.
+\end{itemize}
+
+Es existiert eine Reihe von Herangehensweisen, um RL-Verfahren besonders robust zu machen, diese werden im Rahmen dieser Arbeit jedoch nicht weiter betrachtet\cite{Moos.2022}\cite{Ni.2021}.
+
+Da sich die verschiedenen Unterarten von Robustheit auf MDPs beziehen, können nicht nur RL-Verfahren dahingehend untersucht werden, sondern auch auf symbolische Algorithmen, die MDPs lösen.

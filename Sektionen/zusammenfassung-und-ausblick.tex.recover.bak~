@@ -1,0 +1,11 @@
+% todo: welche Verfahren?
+
+In dieser Arbeit wurde zunächst durch Literaturrecherche das Brettspiel Vier Gewinnt als zu lösendes Problem untersucht und eine Übersicht zu verschiedenen symbolischen Tree-Search-Algorithmen und RL-Verfahren zur Lösung von Vier Gewinnt geschaffen. Aus beiden Bereichen wurde jeweils ein Verfahren ausgewählt, das sich zur Lösung von Vier Gewinnt eignet.
+
+Die beiden Verfahren wurden unter Szenarien, die auf bestimmte Aspekte von Robustheit abzielen, exemplarisch untersucht.
+
+Dabei wurde gezeigt, dass unter der Bedingung … Verfahren 1 stärker ist, aber unter der Bedingung … Verfahren 2 robuster ist.
+
+Diese Aussagen lassen sich jedoch ohne Weiteres noch nicht auf alle symbolische Algorithmen bzw. RL-Verfahren verallgemeinern, da die Ergebnisse bisher nicht darauf zurückzuführen sind, dass es sich bei den Verfahren um symbolische Algorithmen bzw. RL-Verfahren handelt, sondern die Ergebnisse auch von der Wahl der spezifischen Verfahren abhängig sein können. Für allgemeingültigere Aussagen bedarf es Untersuchungen mit weiteren Verfahren (klassische Verfahren oder optimierte Verfahren bezüglich POMDP oder MARL. Oder optimiertes MCTS, oder Minimax und ALphabeta für weniger komplexe Probleme) unter anderen Szenarien und Umgebungen.
+
+\newpage
