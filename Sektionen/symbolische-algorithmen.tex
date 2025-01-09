@@ -1,3 +1,9 @@
+\label{symbolische-algorithmen}
+
+Bei symbolischen Algorithmen handelt es sich um Methoden zur Lösung von Problemen, indem Daten durch von Menschen interpretierbare Symbole repräsentiert werden und sie durch von Menschen explizit programmierte Regeln verarbeitet werden (\cite{Fergus.2022}, S. 4; \cite{Früh.2022}, S. 5 f., \cite{Garnelo.2019}).
+
+In diesem Kapitel werden drei symbolische Algorithmen vorgestellt, die verwendet werden können, um in Spielbäumen erfolgversprechende Entscheidungen zu treffen. Die Algorithmen Minimax und dessen Optimierung Alpha-Beta-Pruning vorgestellt, die auf die Lösung von Spielbäumen ausgerichtet sind (Ferguson Kapitel 4; Algorithms in a Nutshell, Kapitel 7.6 u. 7.8). Darauf folgt die Erklärung der Monte Carlo Tree Search, welche einen allgemeineren Ansatz darstellt (\cite{Russell.2020}, S. 580; \cite{Swiechowski.2021}).
+
 \subsubsection{Minimax}
 
 Minimax ist ein Algorithmus, der aus Sicht eines Spielers ausgehend von einem beliebigen Ursprungsknoten im Spielbaum die darauf folgenden Knoten bewertet und den Kindknoten des Ursprungsknotens mit der besten Bewertung zurückgibt. Bei der Bewertung wird davon ausgegangen, dass der Gegner ebenfalls den Zug wählt, der für ihn am günstigsten ist. Der zu untersuchende Spieler versucht, die Bewertung zu maximieren, während der Gegenspieler versucht, sie zu minimieren.
@@ -41,7 +47,7 @@ Mit MCTS werden Entscheidungsmöglichkeiten statistisch ausgewertet, indem die v
 
 Zu Beginn besteht der MCTS-Baum lediglich aus dem Ursprungsknoten.
 
-In der Phase \textbf{Selection} wird zunächst der Ursprungsknoten aus dem MCTS-Baum betrachtet und es werden basierend auf den bisher gesammelten Statistiken so lange Folgeknoten gewählt, bis ein Blattknoten erreicht wird, der in den folgenden Phasen untersucht werden soll. Dabei besteht jeweils die Möglichkeit, einen Knoten zu wählen, der vielversprechend erscheinent, um genauere Informationen darüber zu erhalten (Exploitation), oder einen Knoten zu wählen, der noch nicht so oft untersucht wurde, um ggf. neue Bereiche im Spielbaum zu erkunden, die bessere Chancen versprechen (Exploration). Es gibt verschiedene Auswahlstrategien, wobei UCT (Upper Confidence Bound applied for Trees) die am weitesten verbreitete ist. Sie bewertet die Kinder eines Knotens $n$ mit der Formel UCB1 und wählt den Knoten mit der höchsten Bewertung (\cite{Russell.2020}, S. 163). Die Formel lautet wie folgt:
+In der Phase \textbf{Selection} wird zunächst der Ursprungsknoten aus dem MCTS-Baum betrachtet und es werden basierend auf den bisher gesammelten Statistiken so lange Folgeknoten gewählt, bis ein Blattknoten erreicht wird, der in den folgenden Phasen untersucht werden soll. Dabei besteht jeweils die Möglichkeit, einen Knoten zu wählen, der vielversprechend erscheint, um genauere Informationen darüber zu erhalten (Exploitation), oder einen Knoten zu wählen, der noch nicht so oft untersucht wurde, um ggf. neue Bereiche im Spielbaum zu erkunden, die bessere Chancen versprechen (Exploration). Es gibt verschiedene Auswahlstrategien, wobei UCT (Upper Confidence Bound applied for Trees) die am weitesten verbreitete ist. Sie bewertet die Kinder eines Knotens $n$ mit der Formel UCB1 und wählt den Knoten mit der höchsten Bewertung (\cite{Russell.2020}, S. 163). Die Formel lautet wie folgt:
 
 \begin{equation*}
 	UCB1 = \frac{U(n)}{N(n)} + c * \sqrt{\frac{log(N(Parent(n)))}{N(n)}}
@@ -51,7 +57,7 @@ Dabei ist $U(n)$ der summierte Wert der Ergebnisse der bisher durchgeführten Si
 $N(Parent(n))$ ist Anzahl wie oft Elternknoten von $n$ simuliert wurde, $N(n)$ hingegen die Anzahl wie oft der zu betrachtete Knoten selbst simuliert wurde. Der Teil hinter dem Plus wird größer, je seltener ein Knoten simuliert wurde und fördert damit die Exploration von bisher selten untersuchten Knoten.
 Bei $c$ handelt es sich um einen Parameter, über den die Exploitation- und Exploration-Teile der Formel ausbalanciert werden können. Als Richtwert wird hier $\sqrt{2}$ empfohlen (\cite{Russell.2020}, S. 163).
 
-Im Zuge der \textbf{Expansion} wird vom zuvor ausgewählten Knoten ein zufälliger Zug ausgeführt und der neue Zustand wird als Kindknoten hinzugefügt.
+Im Zuge der \textbf{Expansion} wird vom zuvor ausgewählten Knoten ein zufälliger Zug ausgeführt und der neue Zustand wird als Kindknoten hinzugefügt. Je nach Spielfeldzustand handelt es sich beim neuen Zug um einen Zug des zu untersuchenden Spielers oder des Gegenspielers.
 
 In der \textbf{Simulation}-Phase werden vom zuvor hinzugefügten Knoten so oft zufällige Entscheidungen hintereinander simuliert, bis ein Endzustand erreicht wurde. Es ist dabei zu beachten, dass dabei die getroffenen Entscheidungen nicht in den MCTS-Baum aufgenommen werden.
 
