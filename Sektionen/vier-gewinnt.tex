@@ -6,7 +6,9 @@ Bei Vier Gewinnt handelt es sich um ein kombinatorisches Nullsummenspiel für zw
 
 Bei Zwei-Spieler-Nullsummenspielen verursacht der Gewinn eines Spielers zwangsläufig einen Verlust des anderen Spielers. Die beiden Spieler haben also entgegengesetzte Interessen (\cite{Bewersdorff.2018}, S. 100; \cite{Allis.1994}, S. 6). Das bedeutet, dass sich der Erfolg von verschiedenen Lösungsansätzen durch die durchschnittliche Gewinnrate im Spiel gegeneinander bewerten lässt. Bei Nullsummenspielen mit mehr als zwei Personen, kann es passieren, dass, wenn ein Spieler (bewusst oder versehentlich) nicht optimal spielt, ein zweiter Spieler davon profitiert, während ein dritter Spieler dadurch benachteiligt wird. Solche Wechselwirkungen sind bei Zwei-Personen-Nullsummenspielen ausgeschlossen (\cite{Bewersdorff.2018}, S. 113 ff.; \cite{Russell.2020}, S. 151 f.). Das macht die Messergebnisse im Hauptteil besser vergleichbar.
 
-Vier Gewinnt lässt sich außerdem für beide Spieler jeweils als Markov Decision Process (MDP) modellieren. Dabei handelt es sich um ein Entscheidungsproblem, bei dem es darum geht, unter verschiedenen Entscheidungsmöglichkeiten, die aufeinander folgen und voneinander abhängig sind, die Beste zu wählen. Es hat folgende Bestandteile:
+\subsubsection{Markov Decision Process}
+
+Vier Gewinnt lässt sich für beide Spieler jeweils als Markov Decision Process (MDP) modellieren. Dabei handelt es sich um ein Entscheidungsproblem, bei dem es darum geht, unter verschiedenen Entscheidungsmöglichkeiten, die aufeinander folgen und voneinander abhängig sind, die Beste zu wählen. Es hat folgende Bestandteile:
 
 \begin{itemize}
 	
@@ -19,6 +21,7 @@ Vier Gewinnt lässt sich außerdem für beide Spieler jeweils als Markov Decisio
 
 Das Ziel bei der Lösung eines MDPs besteht darin, eine Policy zu finden, die jedem den Zuständen jeweils eine Aktion zuordnet, und dabei zur höchsten erwartbaren Belohnung führt (\cite{Russell.2020}, S. 562 f.).
 
+\subsubsection{Komplexität}
 
 Nach Victor Allis lässt sich die Komplexität eines Spiels von strategiebasierten Zwei-Spieler-Nullsummenspielen durch ihre Zustandsraum- und Spielbaumkomplexität beschreiben. Die Zustandsraumkomplexität entspricht der Anzahl der verschiedenen möglichen Spielfeldkonfigurationen ab dem Start. Für ein Spiel kann dieser Wert oder zumindest dessen obere Schranke bestimmt werden, indem zunächst alle Konfigurationen des Spielfelds gezählt, dann Einschränkungen wie Regeln und Symmetrie berücksichtigt werden, und die Anzahl der illegalen und redundanten Zustände von der Anzahl aller möglichen Konfigurationen abgezogen wird (\cite{Allis.1994}, S. 158 f.).
 
@@ -27,6 +30,8 @@ Die Spielbaumkomplexität beschreibt die Anzahl der Blattknoten des Lösungsbaum
 Die Spielbaumkomplexität ist maßgeblich für die praktische Berechenbarkeit einer starken Lösung. Für Tic Tac Toe wurde durch Allis eine obere Grenze für die Spielbaumkomplexität von 362880 ermittelt und eine starke Lösung lässt sich innerhalb von Sekundenbruchteilen berechnen \cite{Paul.2009}. Für Schach wird die Spielbaumkomplexität auf $10^{31}$ geschätzt und die Aussichten auf eine starke Lösung liegen noch in weiter Ferne \cite{Schaeffer.2007}.
 
 Für Vier Gewinnt wurde eine durchschnittliche Spiellänge von 36 Zügen und eine durchschnittliche Anzahl von Entscheidungsmöglichkeiten (freie Spalten) von 4 ermittelt. Damit wurde die Spielbaumkomplexität auf $4^{36} \approx 10^{21}$ geschätzt (\cite{Allis.1994}, S. 163).
+
+\subsubsection{Lösungsverfahren}
 
 Verschiedene Lösungsverfahren von Vier Gewinnt sind bereits ausgiebig untersucht. Das Spiel wurde 1988 von James Dow Allen und Victor Allis unabhängig voneinander mit wissensbasierten Methoden schwach gelöst, was bedeutet, dass für die Anfangsposition eine optimale Strategie ermittelt wurde. Im Fall von Vier Gewinnt kann der Spieler, der den ersten Zug macht, bei optimaler Spielweise immer gewinnen \cite{Allen.2010}\cite{Allis.1988}.
 
