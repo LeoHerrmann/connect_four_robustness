@@ -26,7 +26,7 @@ Bei strategiebasierten Methoden wird das Regelwerk nicht aus einer Nutzenfunktio
 
 Im Fall von Vier Gewinnt sind beide Vorteile von strategiebasierten Verfahren nicht relevant, da Vier Gewinnt einen diskreten Aktionsraum besitzt, und zufälliges Handeln keinen strategischen Vorteil bringt.
 
-\subsubsection{Multi-Agent Reinforcement Learning}
+\paragraph{Single-Agent vs. Multi-Agent Reinforcement Learning}
 
 Vier Gewinnt kann als Problem des Gebiets Multi-Agent RL (MARL) betrachtet werden. MARL ist ein Teilgebiet des RL, in denen mehrere RL-Agenten in derselben Umgebung miteinander interagieren (\cite{Albrecht.2024}, S. 2). Die Agenten können in der Umgebung ein kompetitives oder kooperatives Verhältnis oder eine Mischung beider Verhältnisse zueinander haben (\cite{Albrecht.2024}, S. 9). In Zwei-Spieler Nullsummenspielen wie Vier Gewinnt arbeiten die Agenten rein kompetitiv. Ein entscheidender Unterschied von kompetitiven MARL-Problemen zu Single-Agent-RL-Problemen (SARL) besteht darin, dass in SARL-Problemen die Umgebung eines trainierenden Agents statisch ist, was bedeutet, dass sich die Übergangsfunktion des zugrundeliegenden MDPs nicht ändert. Beim Training in einer Multi-Agent-Umgebung lernen mehrere Agenten gleichzeitig, damit ändert sich die Übergangsfunktion und die Umgebung ist nicht statisch. Die Agents müssen sich im Trainingsprozess an die sich ändernde Umgebung anpassen können (\cite{Albrecht.2024}, S. 12).
 
@@ -80,10 +80,52 @@ Auf dieser Tatsache beruht das Gradientenverfahren. Nach dem Gradientenverfahren
 
 $\theta \leftarrow \theta {-} \gamma * \Delta_\theta L(\theta)$
 
-$\gamma$ bezeichnet hierbei die Lernrate. Wird sie zu klein gewählt, erfolgt die Annäherung an das Minimum sehr langsam. Wenn sie zu groß gewählt wird, kann es passieren, dass erst gar kein Minimum gefunden wird (\cite{Buduma.2022}, Kapitel 4). Daher existieren Verfahren, die die Lernrate dynamisch anpassen können, um den Optimierungsprozess zu beschleunigen (\cite{Albrecht.2024}, S. 174).
+$\gamma$ bezeichnet hierbei die Lernrate. Wird sie zu klein gewählt, erfolgt die Annäherung an das Minimum sehr langsam. Wenn sie zu groß gewählt wird, kann es passieren, dass erst gar kein Minimum gefunden wird (\cite{Ferguson.January2019}, Kapitel 10.3; \cite{Buduma.2022}, Kapitel 4). Daher existieren Verfahren, die die Lernrate dynamisch anpassen können, um den Optimierungsprozess zu beschleunigen (\cite{Albrecht.2024}, S. 174).
 
 Um den Gradienten der Verlustfunktion für einen bestimmten Satz von Parametern zu berechnen, wird bei neuronalen Netzwerken das Verfahren Backpropagation angewendet. Auf Grundlage des Verlustes von jedem einzelnen im Training verfügbaren Datenpunkt wird rekursiv von der Output-Schicht bis hin zur Input-Schicht bestimmt, wie die Parameter im Verhältnis zueinander geändert werden müssen, um den Verlust zu reduzieren. Der Gradient entspricht dem Durchschnitt dieser Änderungen (\cite{Russell.2020}, S. 766 f., \cite{Albrecht.2024}, S. 174f.).
 
 Das Standard-Gradientenverfahren berechnet den Verlust auf Grundlage aller beim Training verfügbaren Daten. Dies ist mit hohem Rechenaufwand verbunden. Aus diesem Grund existieren das stochastische Gradientenverfahren und das Mini-Batch-Gradientenverfahren, die den Verlust nicht basierend auf allen verfügbaren Daten, sondern nur auf Grundlage eines Datenpunktes bzw. einer Teilmenge der Daten berechnen (\cite{Albrecht.2024}, S. 172).
 
-Es ist anzumerken, dass über das Gradientenverfahren in den meisten Fällen nicht das globale Minimum der Verlustfunktion gefunden werden kann, sondern nur ein lokales Minimum. Dies reicht in den meisten Fällen jedoch aus, da die lokalen Minima von Verlustfunktionen gerade bei größeren KNNs größtenteils ähnlich niedrige Werte aufweisen, und die Wahrscheinlichkeit, ein lokales Minimum mit einem wesentlichen höheren Wert zu finden, sehr niedrig ist (\cite{Sutton.2018}, S. 200; \cite{Choromanska.2015}).
+Es ist anzumerken, dass über das Gradientenverfahren in den meisten Fällen nicht das globale Minimum der Verlustfunktion gefunden werden kann, sondern nur ein lokales Minimum. Dies reicht in den meisten Fällen jedoch aus, da die lokalen Minima von Verlustfunktionen gerade bei größeren KNNs größtenteils ähnlich niedrige Werte aufweisen, und die Wahrscheinlichkeit, ein lokales Minimum mit einem wesentlichen höheren Wert zu finden, sehr niedrig ist (\cite{Sutton.2018}, S. 200; \cite{Ferguson.January2019}, Kapitel 5.4.4; \cite{Choromanska.2015}).
+
+\subsubsection{Advantage Actor-Critic}
+
+Advanced Actor Critic (A2C) ist ein weit verbreitetes Verfahren, das sich nach den vorangegangenen Kapiteln zur Lösung von Vier Gewinnt eignet. Es ist ein Single-Agent-Verfahren, das modellfrei und off-policy arbeitet, und parametisierte Regelwerke einsetzt, um das optimale Verhalten zu approximieren (MARL, S. 203).
+
+- Außerdem ist es ein Actor-Critic-Verfahren
+- (…)
+- Für den Actor wird ein Policy Gradient Verfahren eingesetzt
+- Für den Critic ein wertebasiertes Verfahren
+
+\paragraph{Policy Gradient Verfahren}
+
+Policy Gradient Verfahren sind eine Unterart von strategiebasierten RL-Verfahren. Sie setzen voraus, dass das Regelwerk als parametisierte Funktion abgebildet ist, so wie es beispielsweise bei KNNs der Fall ist. Denn dann gilt das Policy Gradient Theorem, das Aussagen über den Gradienten der Leistungsfähigkeit eines parametisierten Regelwerks trifft (\cite{Sutton.2018}, S. 324; \cite{Albrecht.2024}, S. 195)
+
+Ein Beispiel für ein Policy Gradient Verfahren ist das REINFORCE-Verfahren, das die Grundlage des Actors bei A2C bildet (MARL, S. 203). Der Agent trifft dabei in der Trainingsumgebung Entscheidungen anhand des Regelwerks $\pi$, bis ein Endzustand erreicht wurde. Dabei speichert er die Historie der besuchten Zustände $S$, durchgeführten Aktionen $A$ und erhaltenen Belohnungen. Für jeden Schritt $t$ in der Historie werden die Parameter des Regelwerks im Rahmen des Gradientenverfahrens nach folgendem Ausdruck angepasst:
+
+$\theta \leftarrow \theta {+} \alpha \gamma ^{t} * G_t * \frac{\Delta \pi (A_t|S_t, \theta_t)}{\pi (A_t|S_t, \theta_t)}$
+
+Anders als in Abschnitt … wird hier allerdings nicht der Verlust reduziert, sondern es wird die Wahrscheinlichkeit erhöht, bei Zustand $S_t$ die Aktion $A_t$ auszuführen. Das geschieht proportional zur "Discounted Belohnung" $G_t$, sodass die Wahrscheinlichkeit für Züge mit größerer Belohnung stärker erhöht wird. Der Gradient $\Delta \pi (A_t|S_t, \theta_t)$ zeigt dabei an, in welche Richtung und in welchem Verhältnis die Parameter zueinander verschoben werden müssen, um die Wahrscheinlichkeit, den Zug $A_t$ bei Zustand $S_t$ auszuführen, zu maximieren. Der Gradient wird durch die Wahrscheinlichkeit $\pi (A_t|S_t, \theta_t)$, den Zug auszuführen, dividiert, um dem Effekt entgegenzuwirken, dass Züge mit einer höheren Wahrscheinlichkeit häufiger gewählt werden, und damit die Gewichte in Richtung der Züge mit höherer Wahrscheinlichkeit überproportional verschoben werden würden.
+
+$\gamma (0 <= \gamma <= 1)$ ist der Discount Faktor. Je kleiner, desto mehr beeinflussen frühere Züge die Parameter als spätere Züge.
+
+Die "Discounted Belohnung" errechnet sich dabei aus einer gewichteten Summe der in der Episode erhaltenen Belohnungen:
+- $G \leftarrow $
+- Hier ist wieder der Discount Faktor ins Spiel. Je größer der Discount Faktor, desto stärker werden Belohnungen gewichtet, die weiter in der Zukunft liegen. Je kleiner, desto "kurzsichtiger" ist der Agent (RL, S. 55)
+
+Die Wahrscheinlichkeit, den Zug auszuführen, ergibt sich über das Regelwerk selbst. Der Gradient davon wird über den Backpropagation-Algorithmus ausgerechnet (RL, S. 326 f.).
+
+Die Idee, dass die Erhöhung der Wahrscheinlichkeit der Züge, auch die Leistungsfähigkeit des Regelwerks erhöhen wird, ist aus dem Policy Gradient Theorem hergeleitet (RL, S. 326 f.).
+
+REINFORCE weist häufig langsamees und instabiles Training auf. Das liegt daran, dass die Parameter auf Grundlage von in einer Episode gesammelten Erfahrungen angepasst werden, und die darin getroffenen Entscheidungen auf Grundlage einer Wahrscheinlichkeitsverteilung getroffen werden und damit eine hohe Varianz aufweisen (MARL, S. 200). Um der hohen Varianz entgegenzuwirken, wird bei A2C ein wertebasierter Critic eingesetzt.
+
+% todo: Dictounted Belohnung ersetzen, Formel für Discounted Belohnung, Gucken dass alles stimmt, Gamma bei Abschnitt Gradienten Verfahren errseetzen
+
+
+\paragraph{Das wertebasierte Verfahren}
+- (…)
+
+\paragraph{Die Zusammensetzung}
+- (…)
+- (warum das besser ist als REINFORCE, falls noch nötig)
+- (PPO als Optimierung nennen)
