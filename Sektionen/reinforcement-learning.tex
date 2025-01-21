@@ -1,4 +1,4 @@
-RL ist ein Teilgebiet von Machine Learning. Beim Machine Learning geht es darum, Vorhersagen oder Entscheidungen zu treffen, indem ein Lösungsmodell eingesetzt wird, das automatisiert durch Beispieldaten generiert (trainiert) wurde. Im Gegensatz zu symbolischen Algorithmen muss das Verhalten des Lösungsmodells nicht explizit durch Menschen definiert werden. Machine Learning eignet sich daher für Probleme, für die es besonders schwierig ist, explizite Lösungsstrategien zu definieren (\cite{Humm.2020}, S. 12). Das Ziel beim RL besteht darin, für eine Umgebung, in der sich aufeinanderfolgende Entscheidungen gegenseitig beeinflussen, ein Regelwerk zu generieren, das den möglichen Zuständen der Umgebung die erfolgsversprechendsten Entscheidungen zuordnet. Beim RL wird das Lösungsmodell trainiert, indem es mit der Umgebung interagiert, und die Rückmeldung der Umgebung verarbeitet, um sein Regelwerk zu verbessern. Durch RL zu lösende Probleme werden häufig durch MDPs modelliert (\cite{Russell.2020}, S. 789 f.; \cite{Sutton.2018}, S. 1 f.). Reinforcement Learning ist nicht nur zur Lösung von Spielen verbreitet, sondern findet auch in Bereichen der Robotik Anwendung, bis hin zur Personalisierung von Inhalten auf Webseiten (\cite{Russell.2020}, S. 850; \cite{Sutton.2018}, S. 450).
+RL ist ein Teilgebiet von Machine Learning. Beim Machine Learning geht es darum, Vorhersagen oder Entscheidungen zu treffen, indem ein Lösungsmodell eingesetzt wird, das automatisiert durch Beispieldaten generiert (trainiert) wurde. Im Gegensatz zu symbolischen Algorithmen muss das Verhalten des Lösungsmodells nicht explizit durch Menschen definiert werden. Machine Learning eignet sich daher für Probleme, für die es besonders schwierig ist, explizite Lösungsstrategien zu definieren (\cite{Humm.2020}, S. 12). Das Ziel beim RL besteht darin, für eine Umgebung, in der sich aufeinanderfolgende Entscheidungen gegenseitig beeinflussen, ein Regelwerk zu generieren, das den möglichen Zuständen der Umgebung die erfolgsversprechendsten Entscheidungen zuordnet. Beim RL wird das Lösungsmodell trainiert, indem es mit der Umgebung interagiert, und die Rückmeldung der Umgebung verarbeitet, um sein Regelwerk zu verbessern. Durch RL zu lösende Probleme werden häufig durch MDPs modelliert (\cite{Russell.2020}, S. 789 f.; \cite{Sutton.2018}, S. 1 f.). Reinforcement Learning ist nicht nur zur Lösung von Spielen verbreitet, sondern findet auch in Bereichen der Robotik Anwendung bis hin zur Personalisierung von Inhalten auf Webseiten (\cite{Russell.2020}, S. 850; \cite{Sutton.2018}, S. 450).
 
 \subsubsection{Taxonomie}
 
@@ -92,24 +92,17 @@ Es ist anzumerken, dass über das Gradientenverfahren in den meisten Fällen nic
 
 \subsubsection{Advantage Actor-Critic}
 
-Advanced Actor Critic (A2C) ist ein weit verbreitetes Verfahren, das sich nach den vorangegangenen Kapiteln zur Lösung von Vier Gewinnt eignet. Es ist ein Single-Agent-Verfahren, das modellfrei und off-policy arbeitet, und parametrisierte Regelwerke einsetzt, um das optimale Verhalten zu approximieren (\cite{Albrecht.2024}, S. 203).
+Advanced Actor Critic (A2C) ist ein weit verbreitetes Verfahren, das sich nach den vorangegangenen Kapiteln zur Lösung von Vier Gewinnt eignet. Es ist ein Single-Agent-Verfahren, das modellfrei und off-policy arbeitet, und parametisierte Funktionen (wie z.B. KNNs) einsetzt, um das optimale Verhalten zu approximieren. Darüber hinaus handelt es sich um ein Actor-Critic-Verfahren, welche strategiebasierte Ansätze in der Actor-Komponente mit wertebasierten Ansätzen in der Critic-Komponente kombinieren (\cite{Albrecht.2024}, S. 202 ff.).
 
-% todo
+\paragraph{Strategiebaierte Actor-Komponente}
 
-- Außerdem ist es ein Actor-Critic-Verfahren
-- (was ist das, warum gibt es das?)
-- Für den Actor wird ein Policy Gradient Verfahren eingesetzt
-- Für den Critic ein wertebasiertes Verfahren
+Bei Actor-Critic-Verfahren kommen in der Actor-Komponente stets Policy-Gradient-Verfahren zum Einsatz. Policy Gradient Verfahren sind eine Unterart von strategiebasierten RL-Verfahren. Sie setzen voraus, dass das Regelwerk als parametrisierte Funktion abgebildet ist, so wie es beispielsweise bei KNNs der Fall ist. Denn dann gilt das Policy Gradient Theorem, das Aussagen über den Gradienten der Leistungsfähigkeit eines parametrisierten Regelwerks trifft (\cite{Sutton.2018}, S. 324; \cite{Albrecht.2024}, S. 195)
 
-\paragraph{Policy Gradient Verfahren}
+Das Policy-Gradient-Verfahren, das die Grundlage des Actors in A2C bildet, ist das REINFORCE-Verfahren (\cite{Albrecht.2024}, S. 203). Der Agent startet dabei an einem Startzustand der Trainingsumgebung und trifft dabei solange Entscheidungen anhand des Regelwerks $\pi$, bis ein Endzustand erreicht wurde. Damit ist eine Episode abgeschlossen. Dabei speichert er die Historie der in der Episode besuchten Zustände $S$, durchgeführten Aktionen $A$ und erhaltenen Belohnungen $R$. Für jeden Schritt $t$ in der Historie werden die Parameter $\phi$ des Regelwerks $pi$ im Rahmen des Gradientenverfahrens nach folgendem Ausdruck angepasst:
 
-Policy Gradient Verfahren sind eine Unterart von strategiebasierten RL-Verfahren. Sie setzen voraus, dass das Regelwerk als parametrisierte Funktion abgebildet ist, so wie es beispielsweise bei KNNs der Fall ist. Denn dann gilt das Policy Gradient Theorem, das Aussagen über den Gradienten der Leistungsfähigkeit eines parametrisierten Regelwerks trifft (\cite{Sutton.2018}, S. 324; \cite{Albrecht.2024}, S. 195)
+\[ \phi \leftarrow \phi {+} \alpha \gamma ^{t} * G_t * \frac{\Delta \pi (A_t|S_t, \phi)}{\pi (A_t|S_t, \phi)} \]
 
-Ein Beispiel für ein Policy Gradient Verfahren ist das REINFORCE-Verfahren, das die Grundlage des Actors bei A2C bildet (\cite{Albrecht.2024}, S. 203). Der Agent trifft dabei in der Trainingsumgebung Entscheidungen anhand des Regelwerks $\pi$, bis ein Endzustand erreicht wurde. Dabei speichert er die Historie der besuchten Zustände $S$, durchgeführten Aktionen $A$ und erhaltenen Belohnungen $R$. Für jeden Schritt $t$ in der Historie werden die Parameter $\theta$ des Regelwerks im Rahmen des Gradientenverfahrens nach folgendem Ausdruck angepasst:
-
-\[ \theta \leftarrow \theta {+} \alpha \gamma ^{t} * G_t * \frac{\Delta \pi (A_t|S_t, \theta_t)}{\pi (A_t|S_t, \theta_t)} \]
-
-Anders als in Abschnitt \ref{kuenstliche-neuronale-netzwerke} wird hier allerdings nicht der Verlust reduziert, sondern es wird die Wahrscheinlichkeit erhöht, bei Zustand $S_t$ die Aktion $A_t$ auszuführen. Das geschieht proportional zur diskontierten Belohnung $G_t$, sodass die Wahrscheinlichkeit für Züge mit größerer Belohnung stärker erhöht wird. Der Gradient $\Delta \pi (A_t|S_t, \theta_t)$ zeigt dabei an, in welche Richtung und in welchem Verhältnis die Parameter zueinander verschoben werden müssen, um die Wahrscheinlichkeit, den Zug $A_t$ bei Zustand $S_t$ auszuführen, zu maximieren. Der Gradient wird durch die Wahrscheinlichkeit $\pi (A_t|S_t, \theta_t)$, den Zug auszuführen, dividiert, um dem Effekt entgegenzuwirken, dass Züge mit einer höheren Wahrscheinlichkeit häufiger gewählt werden, und damit die Gewichte in Richtung der Züge mit höherer Wahrscheinlichkeit überproportional verschoben werden würden.
+Anders als in Abschnitt \ref{kuenstliche-neuronale-netzwerke} wird hier allerdings nicht der Verlust reduziert, sondern es wird die Wahrscheinlichkeit erhöht, bei Zustand $S_t$ die Aktion $A_t$ auszuführen. Das geschieht proportional zur diskontierten Belohnung $G_t$, sodass die Wahrscheinlichkeit für Züge mit größerer Belohnung stärker erhöht wird. Der Gradient $\Delta \pi (A_t|S_t, \phi_t)$ zeigt dabei an, in welche Richtung und in welchem Verhältnis die Parameter zueinander verschoben werden müssen, um die Wahrscheinlichkeit, den Zug $A_t$ bei Zustand $S_t$ auszuführen, zu maximieren. Der Gradient wird durch die Wahrscheinlichkeit $\pi (A_t|S_t, \phi_t)$, den Zug auszuführen, dividiert, um dem Effekt entgegenzuwirken, dass Züge mit einer höheren Wahrscheinlichkeit häufiger gewählt werden, und damit die Gewichte in Richtung der Züge mit höherer Wahrscheinlichkeit überproportional verschoben werden würden.
 
 $\gamma$ ist der Diskontierungsfaktor, für den gilt $0 <= \gamma <= 1$. Je kleiner, desto mehr beeinflussen frühere Züge die Parameter als spätere Züge.
 
@@ -117,19 +110,36 @@ Die diskontierten Belohnung $G_t$ errechnet sich dabei aus einer gewichteten Sum
 
 \[ G_t \leftarrow \sum_{k=t+1}^{T} \gamma ^{k-t-1} * R_k \]
 
-Hier kommt erneut der Diskontierungsfaktor $\gamma$ zum Einsatz. Je größer der Diskontierungsfaktor, desto stärker werden Belohnungen gewichtet, die weiter in der Zukunft liegen. Je kleiner, desto "kurzsichtiger" ist der Agent (\cite{Sutton.2018}, S. 55).
+Hier kommt erneut der Diskontierungsfaktor $\gamma$ zum Einsatz. Je größer der Diskontierungsfaktor, desto stärker werden Belohnungen gewichtet, die weiter in der Zukunft liegen. Je kleiner, desto \glqq kurzsichtiger\grqq{} ist der Agent (\cite{Sutton.2018}, S. 55).
 
 Die Wahrscheinlichkeit, im Zustand $S_t$ den Zug $A_t$ auszuführen, ergibt sich über das Regelwerk selbst. Der Gradient davon wird über den Backpropagation-Algorithmus ausgerechnet (\cite{Sutton.2018}, S. 326 f.).
 
 Die Idee, dass die Erhöhung der Wahrscheinlichkeit der Züge, auch die Leistungsfähigkeit des Regelwerks erhöhen wird, ist aus dem Policy Gradient Theorem hergeleitet (\cite{Sutton.2018}, S. 326 f.).
 
-REINFORCE weist häufig langsames und instabiles Training auf. Das liegt daran, dass die Parameter auf Grundlage von Entscheidungen angepasst werden, die einer Wahrscheinlichkeitsverteilung unterliegen und damit eine hohe Varianz aufweisen (MARL, S. 200). Um dieser hohen Varianz entgegenzuwirken, wird bei A2C ein wertebasierter Critic eingesetzt.
+REINFORCE weist häufig langsames und instabiles Training auf. Das liegt daran, dass die Parameter auf Grundlage von den Entscheidungen einer gesamten Episode angepasst werden, die einer Wahrscheinlichkeitsverteilung unterliegen und damit eine hohe Varianz aufweisen (MARL, S. 200). Um dieser hohen Varianz entgegenzuwirken, wird bei A2C ein wertebasierter Critic eingesetzt.
 
+\paragraph{Wertebasierte Critic-Komponente}
 
-\paragraph{Das wertebasierte Verfahren}
-- (…)
+Bei der Critic-Komponente handelt es sich um eine parametrisierte Funktion $V(s, \theta)$, die unter Berücksichtigung der Parameter $\theta$ Schätzungen über den Wert eines gegebenen Zustands $s$ liefert (MARL, S. 202 ff.)
 
-\paragraph{Die Zusammensetzung}
-- (…)
-- (warum das besser ist als REINFORCE, falls noch nötig)
-- (PPO als Optimierung nennen)
+Bei A2C wird während des Trainings nach jeder durchgeführten Aktion ein Advantage-Wert berechnet. Dabei handelt es sich um die Differenz zwischen dem geschätzten Wert des Zustands, in dem sich der Agent befunden hat, bevor er die Aktion durchgeführt hat, und einem neuen Schätzwert, der sich aus der Summe der durch die Aktion erhaltene Belohnung und dem Schätzwert des über die Aktion erreichten neuen Zustands zusammensetzt:
+
+\[ Adv(s_t, a_t) = r_t + \gamma V(s_{t+1}, \theta) - V(s_t, \theta) \]
+
+Ein positiver Advantage-Wert bedeutet, dass der durch die Aktion erreichte neue Zustand höherwertiger ist als durch die Wertefunktion angenommen. Ein negativer Advantage-Wert bedeutet, dass er weniger wert ist.
+
+Dementsprechend werden die Parameter der Wertefunktion unter Verwendung des Gradientenverfahrens aktualisiert. Der Verlust wird hierbei als Quadrat des Advantage-Wertes definiert (MARL, S. 205):
+
+\[ L(\theta) = (r_t + \gamma V(s_{t+1}, \theta) - V(s_t, \theta))^2 \]
+
+Es ist anzumerken, dass hierbei Endzustände einer gesonderten Betrachtung bedürfen (vgl. MARL, S. 205). Aus Gründen der Übersichtlichkeit wird in dieser Arbeit darauf verzichtet.
+
+\paragraph{Actor- und Critic-Komponenten im Zusammenspiel}
+
+Das Zusammenspiel zwischen Actor- und Critic-Komponente gestaltet sich bei A2C so, dass die Parameter der auf REINFORCE basierten Actor-Komponente nicht am Ende einer Episode proportional zur in der Episode erhaltenen Belohnung aktualisiert werden, sondern stattdessen werden die Parameter bei jedem Schritt im Training proportional zum über die Critic-Komponente berechneten Advantage-Wert aktualisiert (MARL, S. 205):
+
+\[ \theta \leftarrow \theta + \alpha Adv(s_t, a_t) \frac{\Delta \pi (A_t|S_t, \theta_t)}{\pi (A_t|S_t, \theta_t)} \]
+
+Dadurch, dass die Parameter der Funktionen in Abhängigkeit von den Erfahrungen aus einem Trainingsschritt und nicht einer gesamten Episode aktualisiert werden, weisen die Parameteraktualisierungen weniger Varianz auf. Kombiniert mit der dadurch häufigeren Anzahl an Parameteraktualisierungen führt dies in vielen Fällen zu effizienterem Training (MARL, S. 202).
+
+Es existiert eine optimierte Variante von A2C, die sich Proximal Policy Optimization (PPO) nennt. Sie enthält unter anderem Mechanismen, die große Sprünge in den Veränderungen des Regelwerks verhindert, was zu einem noch effizienterem Trainingsverhalten führt (MARL, S. 206 ff.). Aufgrund der einfacheren Funktionsweise von A2C wird im Rahmen der Arbeit auf die Vorzüge von PPO verzichtet.
