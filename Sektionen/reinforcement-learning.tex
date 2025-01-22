@@ -62,9 +62,7 @@ Die Gewichte und Biase der Neuronen sind zunächst zufällig initialisiert und w
 
 Der Aufbau eines KNNs lässt sich unter anderem über die Anzahl der versteckten Schichten, der darin enthaltenen Neuronen, der Art, wie sie miteinander verbunden sind, und den eingesetzten Aktivierungsfunktionen variieren (\cite{Russell.2020}, S. 759).
 
-Durch größere Netzwerke können komplexere Probleme gelöst werden, bei zu großen Netzwerken besteht jedoch die Gefahr des Overfitting, was bedeutet, dass das Netzwerk schlecht mit Eingaben umgehen kann, die es im Training nicht gesehen hat (\cite{Albrecht.2024}, S. 166; \cite{Sutton.2018}, S. 225).
-
-Es wurde außerdem gezeigt, dass KNNs bei gleicher Anzahl von Gewichten und Biases bessere Ergebnisse erzielen, wenn sie tiefer statt breiter sind, also mehr haben anstatt mehr Neuronen pro Schicht haben (\cite{Russell.2020}, S. 769).
+Durch größere Netzwerke können komplexere Probleme gelöst werden, bei zu großen Netzwerken besteht jedoch die Gefahr des Overfitting, was bedeutet, dass das Netzwerk schlecht mit Eingaben umgehen kann, die es im Training nicht gesehen hat (\cite{Albrecht.2024}, S. 166; \cite{Sutton.2018}, S. 225). Es wurde außerdem gezeigt, dass KNNs bei gleicher Anzahl von Gewichten und Biases bessere Ergebnisse erzielen, wenn sie tiefer statt breiter sind, also mehr haben anstatt mehr Neuronen pro Schicht haben (\cite{Russell.2020}, S. 769).
 
 Als Aktivierungsfunktion sind derzeit Rectified Linear Unit (ReLU) und Variationen davon verbreitet. ReLU gibt für Eingabewerte < 0 0 und ansonsten den Eingabewert zurück (\cite{Albrecht.2024}, S. 167 f.; \cite{Russell.2020}, S. 759).
 
@@ -82,7 +80,7 @@ Auf dieser Tatsache beruht das Gradientenverfahren. Nach dem Gradientenverfahren
 
 \[ \theta \leftarrow \theta {-} \alpha * \Delta_\theta L(\theta) \]
 
-$\alpha$ bezeichnet hierbei die Lernrate. Wird sie zu klein gewählt, erfolgt die Annäherung an das Minimum sehr langsam. Wenn sie zu groß gewählt wird, kann es passieren, dass erst gar kein Minimum gefunden wird (\cite{Ferguson.January2019}, Kapitel 10.3; \cite{Buduma.2022}, Kapitel 4). Daher existieren Verfahren, die die Lernrate dynamisch anpassen können, um den Optimierungsprozess zu beschleunigen (\cite{Albrecht.2024}, S. 174).
+$\alpha$ bezeichnet hierbei die Lernrate. Wird sie zu klein gewählt, erfolgt die Annäherung an das Minimum sehr langsam. Wenn sie zu groß gewählt wird, kann es passieren, dass erst gar kein Minimum gefunden wird (\cite{Ferguson.January2019}, Kapitel 10.3; \cite{Buduma.2022}, Kapitel 4). Daher existieren Verfahren, die die Lernrate dynamisch anpassen können, um den Optimierungsprozess zu beschleunigen (\cite{Albrecht.2024}, S. 174). Bei der Lernrate handelt es sich um einen Hyperparameter. Hyperparameter beeinflussen den Lernprozess und müssen vor dem Training gezielt initialisiert werden. Ähnlich wie die Gestaltung der Architektur erfolgt die Initialisierung der Hyperparameter häufig händisch, wobei automatisierte Werkzeuge dabei unterstützen können \cite{Feurer.2019} \cite{Shawki.2021}.
 
 Um den Gradienten der Verlustfunktion für einen bestimmten Satz von Parametern zu berechnen, wird bei neuronalen Netzwerken das Verfahren Backpropagation angewendet. Auf Grundlage des Verlustes von jedem einzelnen im Training verfügbaren Datenpunkt wird rekursiv von der Output-Schicht bis hin zur Input-Schicht bestimmt, wie die Parameter im Verhältnis zueinander geändert werden müssen, um den Verlust zu reduzieren. Der Gradient entspricht dem Durchschnitt dieser Änderungen (\cite{Russell.2020}, S. 766 f., \cite{Albrecht.2024}, S. 174f.).
 
