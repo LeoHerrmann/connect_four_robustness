@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Connect Four Robustness.iml" filepath="$PROJECT_DIR$/.idea/Connect Four Robustness.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../connect_four_robustness/.idea/Connect Four Robustness.iml" filepath="$PROJECT_DIR$/../connect_four_robustness/.idea/Connect Four Robustness.iml" />
     </modules>
   </component>
 </project>
