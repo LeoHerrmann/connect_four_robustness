@@ -1,9 +1,9 @@
-from pettingzoo.classic import connect_four_v3
+import custom_connect_four_v3
+import matplotlib
 import matplotlib.pyplot as plt
 
 
 def play_game(env):
-        env.reset()
         game_length = 0
 
         for agent in env.agent_iter():
@@ -18,7 +18,6 @@ def play_game(env):
 
                 if env.rewards[env.possible_agents[0]] != env.rewards[env.possible_agents[1]]:
                     winner = max(env.rewards, key=env.rewards.get)
-                    print("Der Gewinner ist: " + winner)
 
                     if winner == env.agents[0]:
                         statistics["result"] = "player_0"
@@ -26,7 +25,6 @@ def play_game(env):
                         statistics["result"] = "player_1"
 
                 else:
-                    print("Das Ergebnis ist unentschieden")
                     statistics["result"] = "draw"
 
                 return statistics
@@ -50,16 +48,26 @@ def play_game(env):
             env.step(action)
 
 
-def play_games(number_of_games):
+def play_games(number_of_games, alternate_player_order=True):
     history = []
     player_0_win_count = 0
     player_1_win_count = 0
     draw_count = 0
     average_game_length = 0
 
-    env = connect_four_v3.env()#render_mode="human")
+    env = custom_connect_four_v3.env()
+    #env = custom_connect_four_v3.env(render_mode="human")
 
     for i in range(number_of_games):
+        game_options = {
+            "reverse_order": False
+        }
+
+        if i % 2 == 0 and alternate_player_order:
+            game_options["reverse_order"] = True
+
+        env.reset(options=game_options)
+
         game_statistics = play_game(env)
 
         if game_statistics["result"] == "player_0":
@@ -79,55 +87,41 @@ def play_games(number_of_games):
             "average_game_length": average_game_length
         })
 
-        print(game_statistics)
-        print(history)
-
     generate_graph(history)
+    print(history[len(history) - 1])
 
     env.close()
 
 
 def generate_graph(history):
+    matplotlib.rcParams["figure.dpi"] = 300
+
     player_0_win_rates = [item['player_0_win_rate'] for item in history]
     player_1_win_rates = [item['player_1_win_rate'] for item in history]
     average_game_lengths = [item['average_game_length'] for item in history]
     game_indices = range(1, len(history) + 1)
 
     plt.figure(1)
-    plt.plot(game_indices, player_0_win_rates, label='Player 0')
-    plt.plot(game_indices, player_1_win_rates, label='Player 1')
-    plt.ylabel('Win Rate')
+    plt.plot(game_indices, player_0_win_rates, label='Spieler 0')
+    plt.plot(game_indices, player_1_win_rates, label='Spieler 1')
+    plt.ylabel('Gewinnrate')
+    plt.xlabel('Anzahl der Spiele')
     plt.grid(True)
     plt.legend()
 
     plt.figure(2)
     plt.plot(game_indices, average_game_lengths, color='black', label='Average Game Length')
-    plt.ylabel('Average Game Length')
-    plt.xlabel('Game Index')
+    plt.ylabel('Durchschnittliche Spieldauer')
+    plt.xlabel('Anzahl der Spiele')
     plt.grid(True)
 
     plt.grid(True)
     plt.show()
 
-    # fig, axs = plt.subplots(2, sharex=True)
 
-    # axs[0].plot(game_indices, player_0_win_rates, label='Player 0')
-    # axs[0].plot(game_indices, player_1_win_rates, label='Player 1')
-    # axs[0].set_ylabel('Win Rate')
-    # axs[0].grid(True)
-    # axs[0].legend()
-
-    # axs[1].plot(game_indices, average_game_lengths, color='black', label='Average Game Length')
-    # axs[1].set_ylabel('Average Game Length')
-    # axs[1].set_xlabel('Game Index')
-    # axs[1].grid(True)
-
-    # plt.grid(True)
-    # plt.show()
-
-
-play_games(1000)
-
-# Was brauche ich jetzt?
-# - Versionskontrolle
-# - Abwechselnde Anfangsspieler, am besten konfigurierbar
+play_games(1000, True)
+play_games(1000, True)
+play_games(1000, True)
+play_games(1000, False)
+play_games(1000, False)
+play_games(1000, False)

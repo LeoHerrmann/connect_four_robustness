@@ -15,11 +15,11 @@ Vier Gewinnt lässt sich für beide Spieler jeweils als Markov Decision Process 
 \item Zustände $S$, die den legalen Spielfeldkonfigurationen entsprechen.
 \item Aktionen $A(s)$, die für bestimmte Zustände erlaubt sind.
 \item Übergangsmodell $P(s, a, s')$, das die Wahrscheinlichkeit beschreibt, von Zustand $s$ mit Aktion $a$ zu $s'$ zu gelangen. Das Übergangsmodell hängt im Fall von kombinatorischen Spielen von der Strategie der anderen Spieler ab. Bei der Modellierung als MDP wird angenommen, dass sich die Strategie des Gegenspielers im Laufe des Spiels nicht ändert. Das Übergangsmodell ist dem Spieler nicht bekannt.
-\item Belohnungsfunktion $R(s, a, s')$, die jedem Zustandsübergang eine Belohnung zuordnet. Bei einem Zwei-Spieler Nullsummenspiel wie Vier Gewinnt beträgt dessen Wert 0, solange kein Endzustand erreicht ist. Wenn ein Endzustand erreicht wird, könnte diese Funktion einen positiven Wert zurückliefern, wenn der untersuchte Spieler gewinnt und einen negativen Wert, wenn der Gegenspieler gewinnt.
+\item Belohnungsfunktion $R(s, a, s')$, die jedem Zustandsübergang eine Belohnung zuordnet. Bei einem Zwei-Spieler Nullsummenspiel wie Vier Gewinnt beträgt dessen Wert 0, solange kein Endzustand erreicht ist. Wenn ein Endzustand erreicht ist, könnte diese Funktion beispielsweise einen positiven Wert zurückliefern, wenn der untersuchte Spieler gewinnt, und einen negativen Wert, wenn der Gegenspieler gewinnt.
 
 \end{itemize}
 
-Das Ziel bei der Lösung eines MDPs besteht darin, eine Policy zu finden, die jedem den Zuständen jeweils eine Aktion zuordnet, und dabei zur höchsten erwartbaren Belohnung führt (\cite{Russell.2020}, S. 562 f.).
+Das Ziel bei der Lösung eines MDPs besteht darin, ein Regelwerk zu finden, das jedem Zustand jeweils eine Aktion zuordnet, und dabei zur höchsten erwartbaren Belohnung führt (\cite{Russell.2020}, S. 562 f.).
 
 \subsubsection{Komplexität}
 
