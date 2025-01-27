@@ -1,3 +1,6 @@
+from datetime import datetime
+import os
+import pickle
 import custom_connect_four_v3
 import matplotlib
 import matplotlib.pyplot as plt
@@ -87,35 +90,52 @@ def play_games(number_of_games, alternate_player_order=True):
             "average_game_length": average_game_length
         })
 
-    generate_graph(history)
+    win_rates_figure, game_length_figure = generate_figures(history)
+    save_history_and_figures(history, win_rates_figure, game_length_figure)
     print(history[len(history) - 1])
 
     env.close()
 
 
-def generate_graph(history):
+def generate_figures(history):
     matplotlib.rcParams["figure.dpi"] = 300
+    matplotlib.rcParams["savefig.dpi"] = 300
 
-    player_0_win_rates = [item['player_0_win_rate'] for item in history]
-    player_1_win_rates = [item['player_1_win_rate'] for item in history]
-    average_game_lengths = [item['average_game_length'] for item in history]
+    player_0_win_rates = [item["player_0_win_rate"] for item in history]
+    player_1_win_rates = [item["player_1_win_rate"] for item in history]
+    average_game_lengths = [item["average_game_length"] for item in history]
     game_indices = range(1, len(history) + 1)
 
-    plt.figure(1)
-    plt.plot(game_indices, player_0_win_rates, label='Spieler 0')
-    plt.plot(game_indices, player_1_win_rates, label='Spieler 1')
-    plt.ylabel('Gewinnrate')
-    plt.xlabel('Anzahl der Spiele')
+    win_rates_figure = plt.figure(1)
+    plt.plot(game_indices, player_0_win_rates, label="Spieler 0")
+    plt.plot(game_indices, player_1_win_rates, label="Spieler 1")
+    plt.ylabel("Gewinnrate")
+    plt.xlabel("Anzahl der Spiele")
     plt.grid(True)
     plt.legend()
 
-    plt.figure(2)
-    plt.plot(game_indices, average_game_lengths, color='black', label='Average Game Length')
-    plt.ylabel('Durchschnittliche Spieldauer')
-    plt.xlabel('Anzahl der Spiele')
+    game_length_figure = plt.figure(2)
+    plt.plot(game_indices, average_game_lengths, color="black", label="Average Game Length")
+    plt.ylabel("Durchschnittliche Spieldauer")
+    plt.xlabel("Anzahl der Spiele")
     plt.grid(True)
 
     plt.grid(True)
+
+    return win_rates_figure, game_length_figure
+
+
+def save_history_and_figures(history, win_rates_figure, game_length_figure):
+    datetime_string = datetime.now().strftime("%Y%m%d-%H%M%S")
+
+    os.makedirs("results", exist_ok=True)
+
+    with open("results/" + datetime_string + "_history" + ".pkl", "wb+") as f:
+        pickle.dump(history, f)
+
+    win_rates_figure.savefig("results/" + datetime_string + "_graph_win_rates")
+    game_length_figure.savefig("results/" + datetime_string + "_graph_game_length")
+
     plt.show()
 
 
