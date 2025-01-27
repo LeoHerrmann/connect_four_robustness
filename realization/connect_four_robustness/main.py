@@ -101,15 +101,21 @@ def generate_figures(history):
     matplotlib.rcParams["figure.dpi"] = 300
     matplotlib.rcParams["savefig.dpi"] = 300
 
-    player_0_win_rates = [item["player_0_win_rate"] for item in history]
-    player_1_win_rates = [item["player_1_win_rate"] for item in history]
+    font = {'family': 'sans-serif',
+            'weight': 'bold',
+            'size': 16}
+
+    matplotlib.rc('font', **font)
+
+    player_0_win_rates = [(item["player_0_win_rate"] * 100) for item in history]
+    player_1_win_rates = [(item["player_1_win_rate"] * 100) for item in history]
     average_game_lengths = [item["average_game_length"] for item in history]
     game_indices = range(1, len(history) + 1)
 
     win_rates_figure = plt.figure(1)
     plt.plot(game_indices, player_0_win_rates, label="Spieler 0")
     plt.plot(game_indices, player_1_win_rates, label="Spieler 1")
-    plt.ylabel("Gewinnrate")
+    plt.ylabel("Gewinnrate [%]")
     plt.xlabel("Anzahl der Spiele")
     plt.grid(True)
     plt.legend()
@@ -133,8 +139,17 @@ def save_history_and_figures(history, win_rates_figure, game_length_figure):
     with open("results/" + datetime_string + "_history" + ".pkl", "wb+") as f:
         pickle.dump(history, f)
 
-    win_rates_figure.savefig("results/" + datetime_string + "_graph_win_rates")
-    game_length_figure.savefig("results/" + datetime_string + "_graph_game_length")
+    win_rates_figure.savefig(
+        "results/" + datetime_string + "_graph_win_rates",
+        bbox_inches='tight',
+        pad_inches=0
+    )
+
+    game_length_figure.savefig(
+        "results/" + datetime_string + "_graph_game_length",
+        bbox_inches='tight',
+        pad_inches=0
+    )
 
     plt.show()
 
