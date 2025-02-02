@@ -166,9 +166,14 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
     plt.show()
 
 
-agents = [MyMctsAgent("RA1", True), RandomAgent("MA1")]
-# agents = [RandomAgent("MA1"), MyMctsAgent("RA1", False)]
-# agents = [MyMctsAgent("MA1", True), MyMctsAgent("RA1", False)]
+agents = [MyMctsAgent("RA1", True, n_simulations=15000), RandomAgent("MA1"),]
+# agents = [RandomAgent("MA1"), MyMctsAgent("RA1", False, n_simulations=15000)]
+# agents = [MyMctsAgent("MA1", True, n_simulations=15000), MyMctsAgent("RA1", False, n_simulations=15000)]
+
+# agents = [MyMctsAgent("RA1", True, n_simulations=20000), RandomAgent("MA1"),]
+# agents = [RandomAgent("MA1"), MyMctsAgent("RA1", False, n_simulations=20000)]
+# agents = [MyMctsAgent("MA1", True, n_simulations=20000), MyMctsAgent("RA1", False, n_simulations=20000)]
+
 
 absolute_history, average_history = play_games(100, agents, False)
 win_rates_figure, game_length_figure = generate_figures(average_history)
