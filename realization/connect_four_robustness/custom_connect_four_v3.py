@@ -223,10 +223,48 @@ class raw_env(AECEnv, EzPickle):
         self._agent_selector = agent_selector(self.agents)
 
         # CUSTOM CHANGE: OPTION TO REVERSE ORDER OF PLAYERS
-        if options["reverse_order"] == True:
-            self._agent_selector.reinit(list(reversed(self._agent_selector.agent_order)))
+        if "reverse_order" in options:
+            if options["reverse_order"] == True:
+                self._agent_selector.reinit(list(reversed(self._agent_selector.agent_order)))
 
         self.agent_selection = self._agent_selector.reset()
+
+        if "state" in options:
+            self.board = [0] * (6 * 7)
+
+            # fill the board according to state
+            state = options["state"]
+
+            for row_index in range(len(state)):
+                for field_index in range(len(state[row_index])):
+                    field = state[row_index][field_index]
+                    if field[0] == 1 and field[1] == 0:
+                        self.board[(row_index * 7) + field_index] = 1
+                    elif field[0] == 0 and field[1] == 1:
+                        self.board[(row_index * 7) + field_index] = 2
+
+            if options["nextPlayerIsFirstPlayer"] is not None:
+                if options["nextPlayerIsFirstPlayer"] == False:
+                    self.agent_selection = self._agent_selector.next()
+
+            # set status, terminations, winner similarly to step
+            winner = self.check_for_winner()
+
+            #next_agent = self._agent_selector.next()
+            next_agent = self._agent_selector.selected_agent
+
+            if winner:
+                self.rewards[self.agent_selection] += 1
+                self.rewards[next_agent] -= 1
+                self.terminations = {i: True for i in self.agents}
+            # check if there is a tie
+            elif all(x in [1, 2] for x in self.board):
+                # once either play wins or there is a draw, game over, both players are done
+                self.terminations = {i: True for i in self.agents}
+
+            # self.agent_selection = next_agent
+
+            self._accumulate_rewards()
 
     def render(self):
         if self.render_mode is None:
