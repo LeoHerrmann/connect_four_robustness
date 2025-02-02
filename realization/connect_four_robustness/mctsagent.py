@@ -1,7 +1,8 @@
 # Code from @flaviendeseure (https://github.com/flaviendeseure/connect4_rl_agent/blob/main/projet/agent/mcts.py)
 
 import numpy as np
-from pettingzoo.classic import connect_four_v3
+import custom_connect_four_v3
+#from pettingzoo.classic import connect_four_v3
 
 from agent import Agent
 
@@ -17,16 +18,20 @@ class MctsNode:
 
 
 class MctsAgent(Agent):
-    def __init__(self, agent_name, n_simulations=1000, c_puct=1.0):
+    def __init__(self, agent_name, is_first_player, n_simulations=100, c_puct=1.0):
         super().__init__()
         self.agent_name = agent_name
+        self.is_first_player = is_first_player
         self.n_simulations = n_simulations
         self.c_puct = c_puct
         self.root_node = MctsNode()
 
-    def get_action(self, state):
+    def get_action(self, observation):
+        if sum(observation["action_mask"]) == 0:
+            print("Seltsam")
+
         for _ in range(self.n_simulations):
-            leaf_node, leaf_state = self.select(self.root_node, state)
+            leaf_node, leaf_state = self.select(self.root_node, observation["observation"])
             reward = self.rollout(leaf_state)
             self.backpropagate(leaf_node, reward)
 
@@ -36,34 +41,38 @@ class MctsAgent(Agent):
     def reset(self):
         self.root_node = MctsNode()
 
-    def select(self, node: MctsNode, state: np.ndarray) -> tuple:
-        env = connect_four_v3.env()
-        env.reset()
-        env.state = state.copy()
+    def select(self, node: MctsNode, observation: np.ndarray) -> tuple:
+        env = custom_connect_four_v3.env()
+        env.reset(options={"reverse_order": not self.is_first_player})
+        env.state = observation.copy()
 
-        done = False
+        # done = False
+        _, _, done, _, _ = env.last()
 
         while not done:
             if len(node.children) == 0:
                 self.expand(node, env)
 
             node = self.get_best_child(node)
+
             _, _, done, _, _ = env.last()  # Call env.last() to get the done value
 
             if not done:
                 env.step(node.action)
+                _, _, done, _, _ = env.last()  # Call env.last() to get the done value
 
         return node, env.state
 
     def rollout(self, state: np.ndarray) -> float:
-        env = connect_four_v3.env()
-        env.reset()
+        env = custom_connect_four_v3.env()
+        env.reset(options={"reverse_order": not self.is_first_player})
         env.state = state.copy()
 
         done = False
 
         while not done:
-            legal_actions = self.get_legal_actions(env)
+            observation, _, _, _, _ = env.last()
+            legal_actions = self.get_legal_actions(observation)
             action = np.random.choice(legal_actions)
             env.step(action)
             _, _, done, _, _ = env.last()  # Call env.last() to get the done value
@@ -78,14 +87,23 @@ class MctsAgent(Agent):
             node = node.parent
 
     def expand(self, node: MctsNode, env) -> None:
-        legal_actions = self.get_legal_actions(env)
+        observation, _, _, _, _ = env.last()
+        legal_actions = self.get_legal_actions(observation)
+
+        if legal_actions == []:
+            print("Achtung, ich glaub, gleich gibts nen Fehler")
+
         for action in legal_actions:
             child_node = MctsNode(parent=node, action=action)
             node.children.append(child_node)
 
-    def get_legal_actions(self, env) -> list:
-        action_mask = env.state["action_mask"]
+    def get_legal_actions(self, observation) -> list:
+        action_mask = observation["action_mask"]
         legal_actions = [i for i, is_legal in enumerate(action_mask) if is_legal]
+
+        if legal_actions == []:
+            print("Oh, das sieht gefährlich aus")
+
         return legal_actions
 
     def get_best_child(self, node: MctsNode) -> MctsNode:
