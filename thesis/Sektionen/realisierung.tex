@@ -1,3 +1,5 @@
+\subsection{Messumgebung}
+
 % PettingZoo-Bibliothek
 
 Als Grundlage für die Messumgebung dient die Open Source Python-Bibliothek PettingZoo, die zum Entwickeln und Testen von MARL-Systemen konzipiert wurde. Sie stellt eine einheitliche Schnittstelle zu Umgebungen bereit, in der Agenten miteinander interagieren können.
@@ -47,6 +49,46 @@ Die Vier-Gewinnt-Umgebung von PettingZoo wurde daher erweitert, um einen Paramet
 	\end{subfigure}
 	\caption{Gewinnrate und durchschnittliche Spieldauer bei abwechselnder Spielerreihenfolge.}
 \end{figure}
+
+
+
+\subsection{MCTS-Agent}
+
+Bei der Implementierung des MCTS-Agenten, diente \glqq Deep Learning and the Game of Go\grqq{} (\cite{Ferguson.January2019}, Kapitel 4.5) als Orientierung. Wie im genannten Werk besteht die im Rahmen dieser Arbeit entstandenen Implementierung aus zwei Klassen. Einer Klasse \texttt{MctsNode}, die einen Knoten im MCTS-Baum abbildet, und einer weiteren Klasse \texttt{MctsAgent}, die den Agenten repräsentiert und die wesentliche Logik des Algorithmus beinhaltet.
+
+Die Klasse \texttt{MctsNode} besitzt dabei unter anderem folgende Attribute:
+\begin{itemize}
+\item \texttt{parent: MctsNode} und \texttt{children: list[MctsNode]}: Sie verwalten Beziehungen zu anderen Instanzen der Klasse \texttt{MctsNode}, sodass sie zusammen den MCTS-Baum abbilden.
+\item \texttt{visitation\char`_count: int } und \texttt{total\char`_reward: int}: Diese Werte werden zur Berechnung der UCT-Werte in der Selection-Phase benötigt und in der Backpropagation-Phase aktualisiert.
+\item \texttt{state: numpy.ndarray(6, 7, 2)}: Dabei handelt es sich um den Spielfeldzustand, den der Knoten repräsentiert. Das Format ist dabei dasselbe wie das, mit dem PettingZoo Beobachtungen über das Spielfeld zur Verfügung stellt. Dieses Attribut dient als Ausgangspunkt für die zufälligen Simulationen.
+\end{itemize}
+
+Die zentrale Methode der Klasse \texttt{MctsAgent} ist die Methode \texttt{get\char`_action(self, state: numpy.ndarray(6, 7, 2)) -> int}. Sie nimmt den Zustand des Spielfelds entgegen, führt den MCTS-Algorithmus durch und gibt eine Zahl zurück, die die Aktion widerspiegelt, die auf Grundlage des Algorithmus gewählt werden soll. Zunächst wird darin ein Objekt der Klasse \texttt{MctsNode} initialisiert, dessen \texttt{state}-Attribut der beobachtete Zustand \texttt{state} zugewiesen wird. Dieses Objekt stellt den Wurzelknoten des MCTS-Baums dar. Anschließend werden n mal folgende Methoden wiederholt, wobei n die Anzahl der pro Entscheidung durchzuführenden Simulationen ist, die über den Konstruktor der Klasse konfiguriert werden kann:
+
+\begin{itemize}
+\item \texttt{select(root\char`_node: MctsNode) -> MctsNode}: Vom zuvor definierten Wurzelknoten werden per UCT-Formel solange Kinder ausgewählt, bis ein Knoten erreicht wurde, der ein Endzustand ist oder nicht vollständig expandiert ist, also weniger Kindknoten als Aktionen hat, die von dem dem Knoten entsprechenden Zustand möglich sind. Die UCT-Konstante kann dabei über den Konstruktor konfiguriert werden. Wenn es sich bei dem erreichten Knoten um einen Endzustand handelt, wird dieser Knoten zurückgegeben. Ansonsten, wird von diesem Knoten ein zufälliger legaler Spielzug ausgeführt und ein neuer Knoten, der den dadurch erreichten Zustand abbildet, wird als Kindknoten hinzugefügt. Dies entspricht dem Expansion-Schritt des MCTS-Algorithmus. Zurückgegeben wird dann der neu hinzugefügte Knoten.
+\item \texttt{simulate(selected\char`_node: MctsNode) -> int}: Diese Methode nimmt den in der \texttt{select}-Methode ausgewählten Knoten entgegen, das Spiel wird ab dem Zustand, den der Knoten repräsentiert, zu Ende gespielt, und das Ergebnis des Spiels wird zurückgegeben.
+\item \texttt{backpropagate(selected\char`_node: MctsNode, result: int) -> None}: Von ausgewählten Knoten wird das Attribut \texttt{visitation\char`_count} erhöht und das Ergebnis der Simulation zu \texttt{total\char`_rewards} addiert. Dieser Vorgang wird jeweils für alle Elternknoten durchgeführt, bis der Wurzelknoten erreicht wurde.
+\end{itemize}
+
+Nach n Wiederholungen wird eine Zahl zurückgegeben, die die Aktion repräsentiert, die vom Wurzelknoten zum direkten Kindknoten führt, dessen \texttt{visitation\char`_count}-Attribut den höchsten Wert hat.
+
+% Anpassungen an der PettingZoo Umgebung
+
+Für den Algorithmus wird ein Abbild für die Dynamik des Spiels benötigt, das unter anderem die Spielregeln, Gewinnbedingungen oder mögliche Aktionen in Abhängigkeit des aktuellen Zustands enthält. Dafür kommt in dieser Implementierung die Vier-Gewinnt-Umgebung von PettingZoo zum Einsatz. Diese enthält ein genau solches Abbild, und dadurch wird Aufwand in der Implementierung gespart. Es hat sich herausgestellt, dass an der Umgebung zwei Modifikationen notwendig sind, da die PettingZoo-Umgebungen in erster Linie zum Training von RL-Agenten konzipiert sind, und nicht um als Modell für symbolische Algorithmen oder modellbasierte RL-Verfahren zu dienen.
+
+Zunächst wird keine Funktionalität unterstützt, um eine PettingZoo-Umgebung mit einem bestimmten Zustand zu initialisieren, was jedoch in der Klasse \texttt{MctsAgent} beispielsweise vor der Durchführung von Simulationen notwendig ist. Die Methode \texttt{reset(self, seed: int, options: dict) -> None} der Vier-Gewinnt-Umgebung wurde daher erweitert, um im \texttt{options}-Parameter nach dem Schlüssel \texttt{``state''} zu suchen, unter dem der gewünschte Zustand abgelegt werden kann, und ggf. entsprechend verarbeitet wird. Der Zustand wird dabei in derselben Form erwartet, wie PettingZoo seine Beobachtungen liefert.
+
+Eine weitere Herausforderung bestand darin, dass PettingZoo-Umgebungen Beobachtungen stets perspektivisch aus Sicht des Agenten liefern, der aktuell am Zug ist. Im Fall von Vier Gewinnt bestehen die Beobachtungen aus einem Array, das das Spielfeld repräsentiert. Dieses Array enthält sechs weitere Arrays, die jeweils eine Reihe des Spielfelds abbilden, wobei jedes dieser Arrays sieben Felder enthält, die einem Feld in der jeweiligen Reihe entsprechen. Jedes dieser Felder ist ein Array bestehend aus zwei Elementen, die jeweils die Werte 0 und 1 annehmen können. Wenn das erste Element 1 ist, bedeutet das, dass der Spieler, der aktuell am Zug ist, einen Stein an der entsprechenden Position platziert hat. Wenn das zweite Feld 1 ist, bedeutet das, dass der Gegenspieler einen Stein platziert hat. 0 bedeutet, dass der entsprechende Spieler an der Position keinen Stein platziert hat \cite{Farama.2025}. Diese perspektivischen Beobachtungen erleichtern die Implementierung von RL-Agenten. Da die Vier-Gewinnt-Umgebung von PettingZoo jedoch nicht mit perspektivischen Beobachtungen, sondern mit einem globalen Zustand arbeitet, mussten Mechanismen implementiert werden, um diesen aus den perspektivischen Beobachtungen zu erzeugen. Dazu speichert die Klasse MctsNode, welcher Spieler als Nächstes am Zug ist, und die reset-Methode der Umgebung berücksichtigt einen entsprechenden Schlüssel im options-Parameter.
+
+Aufgrund der zeitlichen Beschränkung dieser Arbeit wird auf Experimente bezüglich Optimierungen verzichtet. Daher wird als Auswahlstrategie in der Selection-Phase nach den Empfehlungen UCT mit $c=\sqrt{2}$ eingesetzt. Was die Expansion-Phase betrifft, wird sich ebenfalls an den Standard gehalten und nur einen und nicht mehrere Knoten hinzugefügt. In der Simulation-Phase werden Light-Playouts und keine Heavy-Playouts eingesetzt, da Light-Playouts ohne Wissen über das konkret zu lösende Problem auskommen, sodass die Ergebnisse dieser Arbeit so weit möglich auf verschiedene Probleme angewandt werden können.
+
+\subsubsection{Zeitlicher Aufwand von Entscheidungen des MCTS-Agenten}
+
+Die in dieser Arbeit durchgeführten Messungen fanden auf einem Computer mit einer Intel Core i7 8650U CPU statt. Ein MCTS-Agent, der pro Entscheidung 15.000 Simulationen durchführt, benötigt dabei für jeden Zug etwa eine halbe Minute. In einem Spiel mit einer Länge von 40 Zügen rechnet der MCTS-Agent also 10 Minuten. Für 100 Spiele, die im Rahmen dieser zeitlich begrenzten Arbeit an vielen Stellen als ausreichend für aussagekräftige Messungen betrachtet werden, werden für beteiligten MCTS-Agenten 16,67 Stunden benötigt. Die Zeit steigt proportional zur Anzahl der durchgeführten Simulationen.
+
+Es liegt nahe, den MCTS-Agenten durch Parallelisierung zu beschleunigen. Dadurch lässt sich die Rechenzeit proportional (ggf. sogar überproportional) zur auf der Maschine verfügbaren CPU-Ressourcen verkürzen, ohne dass die Ergebnisse dadurch beeinträchtigt werden (vgl. \cite{Chaslot.2008}). Dies ist vor allem bei Echtzeitanwendungen sinnvoll. Ein solcher Anspruch wird in dieser Arbeit jedoch nicht gestellt. Um die Komplexität des Algorithmus möglichst niedrig zu halten, wird auf die Parallelisierung von MCTS verzichtet. Stattdessen werden die Messungen parallelisiert und die Ergebnisse zusammengeführt.
+
 
 % Es kommen Reinforcement Learning Modelle zum Einsatz, die aus RL-Bibliotheken wie CleanRL oder Stable-Baselines bereitgestellt werden. Falls vorhanden, wird auf fertig implementierte Algorithmen zurückgegriffen.
 
