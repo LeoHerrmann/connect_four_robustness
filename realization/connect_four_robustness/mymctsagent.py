@@ -1,12 +1,10 @@
-from abc import ABC
-
 import custom_connect_four_v3
 import random
 import math
-#from pettingzoo.classic import connect_four_v3
-#from custom_tictactoe import tictactoe
-
 from agent import Agent
+# from pettingzoo.classic import connect_four_v3
+# from custom_tictactoe import tictactoe
+
 
 class MyMctsNode:
     id_counter = 0
@@ -57,10 +55,9 @@ class MyMctsNode:
 
 #        return pretty_field
 
-class MyMctsAgent(Agent, ABC):
-    def __init__(self, agent_name, is_first_player, n_simulations=15000, c_uct=1.5):
-        super().__init__()
-        self.agent_name = agent_name
+class MyMctsAgent(Agent):
+    def __init__(self, name, is_first_player, n_simulations=15000, c_uct=1.5):
+        super().__init__(name)
         self.is_first_player = is_first_player
         self.n_simulations = n_simulations
         self.c_uct = c_uct
@@ -77,12 +74,11 @@ class MyMctsAgent(Agent, ABC):
 
         return observed_state
 
-    def get_action(self, observation) -> int:
+    def determine_action(self, observation) -> int:
         observation_from_agents_perspective = observation["observation"]
 
         if self.is_first_player:
             observation_from_global_perspective = observation_from_agents_perspective
-        # observation_from_global_perspective = observation_from_agents_perspective
         else:
             observation_from_global_perspective = self.toggle_perspective_of_observed_state(observation_from_agents_perspective)
 
@@ -109,7 +105,6 @@ class MyMctsAgent(Agent, ABC):
             "nextPlayerIsFirstPlayer": node.selfIsNextPlayer == self.is_first_player
         })
 
-        #environment.state = node.state.copy()
         observation, _, termination, _, _ = environment.last()
         action_mask = observation["action_mask"]
         node_is_fully_expanded = sum(action_mask) == len(node.children)
@@ -122,7 +117,6 @@ class MyMctsAgent(Agent, ABC):
                 "state": node.state.copy(),
                 "nextPlayerIsFirstPlayer": node.selfIsNextPlayer == self.is_first_player
             })
-            #environment.state = node.state.copy()
             observation, _, termination, _, _ = environment.last()
             action_mask = observation["action_mask"]
             node_is_fully_expanded = sum(action_mask) == len(node.children)
@@ -142,19 +136,21 @@ class MyMctsAgent(Agent, ABC):
             observation, _, _, _, _ = environment.last()
 
             observation_from_agents_perspective = observation["observation"]
+            observation_from_global_perspective = observation_from_agents_perspective
 
-            if (self.is_first_player and node.selfIsNextPlayer) or (
-                    not self.is_first_player and not node.selfIsNextPlayer):
-                observation_from_global_perspective = self.toggle_perspective_of_observed_state(
-                    observation_from_agents_perspective)
-            elif (self.is_first_player and not node.selfIsNextPlayer) or (
-                    not self.is_first_player and node.selfIsNextPlayer):
-                observation_from_global_perspective = observation_from_agents_perspective
+            if (self.is_first_player and node.selfIsNextPlayer) or (not self.is_first_player and not node.selfIsNextPlayer):
+                observation_from_global_perspective = self.toggle_perspective_of_observed_state(observation_from_agents_perspective)
 
-            new_node = MyMctsNode(observation_from_global_perspective, not node.selfIsNextPlayer, parent=node, action=randomly_chosen_action)
+            new_node = MyMctsNode(
+                observation_from_global_perspective,
+                not node.selfIsNextPlayer,
+                parent=node,
+                action=randomly_chosen_action
+            )
+
             node.children.append(new_node)
-            return new_node
 
+            return new_node
 
     def simulate(self, leaf_node: MyMctsNode) -> float:
         environment = custom_connect_four_v3.env()
@@ -221,6 +217,3 @@ class MyMctsAgent(Agent, ABC):
     def calculate_uct(self, node: MyMctsNode) -> float:
         exploration = math.sqrt(math.log(node.parent.visit_count) / node.visit_count)
         return node.total_reward / node.visit_count + self.c_uct * exploration
-
-    def reset(self) -> None:
-        pass

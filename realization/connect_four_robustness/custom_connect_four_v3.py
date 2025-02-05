@@ -229,6 +229,7 @@ class raw_env(AECEnv, EzPickle):
 
         self.agent_selection = self._agent_selector.reset()
 
+        # CUSTOM CHANGE: OPTION TO INITIALIZE ENVIRONMENT WITH A CERTAIN STATE
         if "state" in options:
             self.board = [0] * (6 * 7)
 
@@ -250,7 +251,6 @@ class raw_env(AECEnv, EzPickle):
             # set status, terminations, winner similarly to step
             winner = self.check_for_winner()
 
-            #next_agent = self._agent_selector.next()
             next_agent = self._agent_selector.selected_agent
 
             if winner:
@@ -261,8 +261,6 @@ class raw_env(AECEnv, EzPickle):
             elif all(x in [1, 2] for x in self.board):
                 # once either play wins or there is a draw, game over, both players are done
                 self.terminations = {i: True for i in self.agents}
-
-            # self.agent_selection = next_agent
 
             self._accumulate_rewards()
 

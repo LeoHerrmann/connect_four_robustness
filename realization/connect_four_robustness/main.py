@@ -42,9 +42,9 @@ def play_game(env, agents: list[Agent]):
 
             else:
                 if agent == env.possible_agents[0]:
-                    action = agents[0].get_action(observation)
+                    action = agents[0].determine_action(observation)
                 else:
-                    action = agents[1].get_action(observation)
+                    action = agents[1].determine_action(observation)
 
             env.step(action)
 
@@ -65,7 +65,8 @@ def play_games(number_of_games, agents: list[Agent], alternate_player_order=True
         if i % 2 == 0 and alternate_player_order:
             game_options["reverse_order"] = True
 
-        env = custom_connect_four_v3.env(render_mode="human")
+        # env = custom_connect_four_v3.env(render_mode="human")
+        env = custom_connect_four_v3.env()
         # env = tictactoe_v3.env(render_mode="human")
         env.reset(options=game_options)
 

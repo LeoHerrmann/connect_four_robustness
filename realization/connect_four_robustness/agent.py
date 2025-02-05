@@ -1,16 +1,6 @@
-# Code from @flaviendeseure (https://github.com/flaviendeseure/connect4_rl_agent/blob/main/projet/agent/base_agent.py)
+class Agent:
+    def __init__(self, name):
+        self.name = name
 
-from abc import ABC, abstractmethod
-
-
-class Agent(ABC):
-    def __init__(self):
-        self.reset()
-
-    @abstractmethod
-    def get_action(self, observation: dict) -> int:
-        raise NotImplementedError
-
-    @abstractmethod
-    def reset(self) -> None:
+    def determine_action(self, observation: dict) -> int:
         raise NotImplementedError
