@@ -19,6 +19,7 @@ import pettingzoo.utils
 from pettingzoo.classic import connect_four_v3
 import random
 import numpy as np
+import json
 
 from stable_baselines3.common.callbacks import BaseCallback
 
@@ -377,7 +378,16 @@ def execute_self_play_training_loop(
 
         training_model = MaskablePPO.load(latest_policy_path, env)
 
-    print(training_progress_data)
+    save_training_progress_data(training_progress_data)
+
+
+def save_training_progress_data(training_progress_data: list[dict]):
+    history_file_name = f"histories/history_frozen_and_cached_{time.strftime('%Y%m%d-%H%M%S')}.json"
+
+    with open(history_file_name, "w") as fp:
+        json.dump(training_progress_data, fp)
+
+    print("history saved to " + history_file_name)
 
 
 if __name__ == "__main__":
@@ -392,7 +402,7 @@ if __name__ == "__main__":
 
     # evaluate_model_against_other_models("connect_four_v3_20250207-182953.zip", [None])
 
-    iterations_count = 250
+    iterations_count = 10
     step_count_per_iteration = 4096
     threshold_winrate = 0.75
     max_count_of_stationary_models = 5
