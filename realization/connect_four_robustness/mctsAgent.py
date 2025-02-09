@@ -6,15 +6,15 @@ from agent import Agent
 # from custom_tictactoe import tictactoe
 
 
-class MyMctsNode:
+class MctsNode:
     id_counter = 0
 
     def __init__(self, state, selfIsNextPlayer: bool, parent=None, action=None):
-        MyMctsNode.id_counter += 1
+        MctsNode.id_counter += 1
 
         self.id: int = self.id_counter
-        self.parent: MyMctsNode = parent
-        self.children: list[MyMctsNode] = []
+        self.parent: MctsNode = parent
+        self.children: list[MctsNode] = []
         self.state = state
         self.selfIsNextPlayer = selfIsNextPlayer
         self.action: int = action
@@ -55,8 +55,8 @@ class MyMctsNode:
 
 #        return pretty_field
 
-class MyMctsAgent(Agent):
-    def __init__(self, name, is_first_player, n_simulations=15000, c_uct=1.5):
+class MctsAgent(Agent):
+    def __init__(self, name, is_first_player, n_simulations=15000, c_uct=math.sqrt(2)):
         super().__init__(name)
         self.is_first_player = is_first_player
         self.n_simulations = n_simulations
@@ -82,7 +82,7 @@ class MyMctsAgent(Agent):
         else:
             observation_from_global_perspective = self.toggle_perspective_of_observed_state(observation_from_agents_perspective)
 
-        root_node = MyMctsNode(observation_from_global_perspective, True)
+        root_node = MctsNode(observation_from_global_perspective, True)
 
         for _ in range(self.n_simulations):
             node_to_simulate = self.select(root_node)
@@ -93,7 +93,7 @@ class MyMctsAgent(Agent):
 
         return child_with_highest_visitation_count.action
 
-    def select(self, root_node: MyMctsNode) -> MyMctsNode:
+    def select(self, root_node: MctsNode) -> MctsNode:
         node = root_node
 
         environment = custom_connect_four_v3.env()
@@ -141,7 +141,7 @@ class MyMctsAgent(Agent):
             if (self.is_first_player and node.selfIsNextPlayer) or (not self.is_first_player and not node.selfIsNextPlayer):
                 observation_from_global_perspective = self.toggle_perspective_of_observed_state(observation_from_agents_perspective)
 
-            new_node = MyMctsNode(
+            new_node = MctsNode(
                 observation_from_global_perspective,
                 not node.selfIsNextPlayer,
                 parent=node,
@@ -152,7 +152,7 @@ class MyMctsAgent(Agent):
 
             return new_node
 
-    def simulate(self, leaf_node: MyMctsNode) -> float:
+    def simulate(self, leaf_node: MctsNode) -> float:
         environment = custom_connect_four_v3.env()
         # environment = tictactoe.env()
         environment.reset(options={
@@ -174,7 +174,7 @@ class MyMctsAgent(Agent):
         else:
             return environment.rewards["player_1"]
 
-    def backpropagate(self, simulated_node: MyMctsNode, reward: float) -> None:
+    def backpropagate(self, simulated_node: MctsNode, reward: float) -> None:
         node = simulated_node
 
         while node is not None:
@@ -182,7 +182,7 @@ class MyMctsAgent(Agent):
             node.total_reward += reward
             node = node.parent
 
-    def get_child_with_best_uct_score(self, root_node: MyMctsNode) -> MyMctsNode:
+    def get_child_with_best_uct_score(self, root_node: MctsNode) -> MctsNode:
         nodes_with_highest_uct_score = []
         highest_uct_score = self.calculate_uct(root_node.children[0])
 
@@ -198,7 +198,7 @@ class MyMctsAgent(Agent):
 
         return random.choice(nodes_with_highest_uct_score)
 
-    def get_child_with_highest_visitation_count(self, root_node: MyMctsNode) -> MyMctsNode:
+    def get_child_with_highest_visitation_count(self, root_node: MctsNode) -> MctsNode:
         nodes_with_highest_visitation_count = []
         highest_visitation_count = root_node.children[0].visit_count
 
@@ -214,6 +214,6 @@ class MyMctsAgent(Agent):
 
         return random.choice(nodes_with_highest_visitation_count)
 
-    def calculate_uct(self, node: MyMctsNode) -> float:
+    def calculate_uct(self, node: MctsNode) -> float:
         exploration = math.sqrt(math.log(node.parent.visit_count) / node.visit_count)
         return node.total_reward / node.visit_count + self.c_uct * exploration

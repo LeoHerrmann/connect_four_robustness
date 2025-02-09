@@ -6,8 +6,10 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 from agent import Agent
-from mymctsagent import MyMctsAgent
-from randomagent import RandomAgent
+from mctsAgent import MctsAgent
+from ppoAgent import PpoAgent
+from randomAgent import RandomAgent
+from humanAgent import HumanAgent
 
 observation_history = []
 
@@ -65,8 +67,8 @@ def play_games(number_of_games, agents: list[Agent], alternate_player_order=True
         if i % 2 == 0 and alternate_player_order:
             game_options["reverse_order"] = True
 
-        # env = custom_connect_four_v3.env(render_mode="human")
-        env = custom_connect_four_v3.env()
+        env = custom_connect_four_v3.env(render_mode="human")
+        # env = custom_connect_four_v3.env()
         # env = tictactoe_v3.env(render_mode="human")
         env.reset(options=game_options)
 
@@ -167,12 +169,14 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
     plt.show()
 
 
-from ppoAgent import PpoAgent
 
-ppoAgent = PpoAgent("PPO1")
-ppoAgent.train()
+#ppoAgent = PpoAgent("PPO1")
+#ppoAgent.train()
 
-agents = [ppoAgent, RandomAgent("RA1")]
+number_of_games = 100
+alternate_player_order = False
+
+agents = [HumanAgent("HA1"), MctsAgent("HA1", False, n_simulations=10000)]
 
 # agents = [MyMctsAgent("RA1", True, n_simulations=15000), RandomAgent("MA1"),]
 # agents = [RandomAgent("MA1"), MyMctsAgent("RA1", False, n_simulations=15000)]
@@ -183,7 +187,7 @@ agents = [ppoAgent, RandomAgent("RA1")]
 # agents = [MyMctsAgent("MA1", True, n_simulations=20000), MyMctsAgent("RA1", False, n_simulations=20000)]
 
 
-absolute_history, average_history = play_games(100, agents, False)
+absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
 win_rates_figure, game_length_figure = generate_figures(average_history)
 save_absolute_history(absolute_history)
 save_average_history_and_figures(average_history, win_rates_figure, game_length_figure)
