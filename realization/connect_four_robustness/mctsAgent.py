@@ -4,7 +4,7 @@ import math
 from agent import Agent
 # from pettingzoo.classic import connect_four_v3
 # from custom_tictactoe import tictactoe
-
+import copy
 
 class MctsNode:
     id_counter = 0
@@ -63,16 +63,18 @@ class MctsAgent(Agent):
         self.c_uct = c_uct
 
     def toggle_perspective_of_observed_state(self, observed_state):
-        for column_index in range(len(observed_state)):
-            for field_index in range(len(observed_state[column_index])):
-                field = observed_state[column_index][field_index]
+        copied_observed_state = copy.deepcopy(observed_state)
+
+        for column_index in range(len(copied_observed_state)):
+            for field_index in range(len(copied_observed_state[column_index])):
+                field = copied_observed_state[column_index][field_index]
 
                 if field[0] == 1 and field[1] == 0:
-                    observed_state[column_index][field_index] = [0, 1]
+                    copied_observed_state[column_index][field_index] = [0, 1]
                 elif field[0] == 0 and field[1] == 1:
-                    observed_state[column_index][field_index] = [1, 0]
+                    copied_observed_state[column_index][field_index] = [1, 0]
 
-        return observed_state
+        return copied_observed_state
 
     def determine_action(self, observation) -> int:
         observation_from_agents_perspective = observation["observation"]
@@ -90,6 +92,16 @@ class MctsAgent(Agent):
             self.backpropagate(node_to_simulate, result)
 
         child_with_highest_visitation_count = self.get_child_with_highest_visitation_count(root_node)
+
+        # Debugging
+        #for child in root_node.children:
+        #    print("Aktion: ", child.action)
+        #    print("Visitation Count: ", child.visit_count)
+        #    print("Total Reward: ", child.total_reward)
+        #    print("UCT: ", self.calculate_uct(child))
+        #    print()
+
+        # print("decision: ", child_with_highest_visitation_count.action)
 
         return child_with_highest_visitation_count.action
 

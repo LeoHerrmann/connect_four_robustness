@@ -1,6 +1,6 @@
 from datetime import datetime
 import os
-import pickle
+import json
 import custom_connect_four_v3
 import matplotlib
 import matplotlib.pyplot as plt
@@ -98,7 +98,7 @@ def play_games(number_of_games, agents: list[Agent], alternate_player_order=True
 
         print(average_history[len(average_history) - 1])
 
-        env.close()
+        # env.close()
 
     return absolute_history, average_history
 
@@ -137,31 +137,33 @@ def generate_figures(average_history):
     return win_rates_figure, game_length_figure
 
 
-def save_absolute_history(absolute_history):
+def save_absolute_history(absolute_history: list[dict], results_subfolder: str):
     datetime_string = datetime.now().strftime("%Y%m%d-%H%M%S")
 
-    os.makedirs("results", exist_ok=True)
+    results_subfolder_path = "results/" + results_subfolder + "/"
+    os.makedirs(results_subfolder_path, exist_ok=True)
 
-    with open("results/" + datetime_string + "_absolute_history" + ".pkl", "wb+") as f:
-        pickle.dump(absolute_history, f)
+    with open(results_subfolder_path + datetime_string + "_absolute_history" + ".json", "w+") as f:
+        json.dump({"absolute_history": absolute_history}, f)
 
 
-def save_average_history_and_figures(average_history, win_rates_figure, game_length_figure):
+def save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder: str):
     datetime_string = datetime.now().strftime("%Y%m%d-%H%M%S")
 
-    os.makedirs("results", exist_ok=True)
+    results_subfolder_path = "results/" + results_subfolder + "/"
+    os.makedirs(results_subfolder_path, exist_ok=True)
 
-    with open("results/" + datetime_string + "_average_history" + ".pkl", "wb+") as f:
-        pickle.dump(average_history, f)
+    with open(results_subfolder_path + datetime_string + "_average_history.json", "w+") as f:
+        json.dump({"average_history": average_history}, f)
 
     win_rates_figure.savefig(
-        "results/" + datetime_string + "_graph_win_rates",
+        results_subfolder_path + datetime_string + "_graph_win_rates",
         bbox_inches='tight',
         pad_inches=0
     )
 
     game_length_figure.savefig(
-        "results/" + datetime_string + "_graph_game_length",
+        results_subfolder_path + datetime_string + "_graph_game_length",
         bbox_inches='tight',
         pad_inches=0
     )
@@ -169,26 +171,27 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
     plt.show()
 
 
+# ppoAgent = PpoAgent("PPO1")
+# ppoAgent.train()
+# agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250209-115101.zip")]
+# agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250209-141836.zip")]
 
-#ppoAgent = PpoAgent("PPO1")
-#ppoAgent.train()
+# ACHTUNG ENV.CLOSE
 
-number_of_games = 100
 alternate_player_order = False
 
-agents = [HumanAgent("HA1"), MctsAgent("HA1", False, n_simulations=10000)]
+number_of_games = 5
+number_of_mcts_simulations = 2500
+results_subfolder = "mcts_vs_mcts_" + str(number_of_mcts_simulations)
 
-# agents = [MyMctsAgent("RA1", True, n_simulations=15000), RandomAgent("MA1"),]
-# agents = [RandomAgent("MA1"), MyMctsAgent("RA1", False, n_simulations=15000)]
-# agents = [MyMctsAgent("MA1", True, n_simulations=15000), MyMctsAgent("RA1", False, n_simulations=15000)]
+agents = [HumanAgent("HA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
 
-# agents = [MyMctsAgent("RA1", True, n_simulations=20000), RandomAgent("MA1"),]
-# agents = [RandomAgent("MA1"), MyMctsAgent("RA1", False, n_simulations=20000)]
-# agents = [MyMctsAgent("MA1", True, n_simulations=20000), MyMctsAgent("RA1", False, n_simulations=20000)]
-
+# agents = [MctsAgent("MC1", True, n_simulations=number_of_mcts_simulations), RandomAgent("RA1")]
+# agents = [RandomAgent("RA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
+# agents = [MctsAgent("MC1", True, n_simulations=number_of_mcts_simulations), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
 
 absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
 win_rates_figure, game_length_figure = generate_figures(average_history)
-save_absolute_history(absolute_history)
-save_average_history_and_figures(average_history, win_rates_figure, game_length_figure)
+save_absolute_history(absolute_history, results_subfolder)
+save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
 print(average_history[len(average_history) - 1])
