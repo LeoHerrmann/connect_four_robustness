@@ -1,9 +1,8 @@
-"""Uses Stable-Baselines3 to train agents in the Connect Four environment using invalid action masking.
+"""
+Uses Stable-Baselines3 to train agents in the Connect Four environment using invalid action masking.
 
 For information about invalid action masking in PettingZoo, see https://pettingzoo.farama.org/api/aec/#action-masking
 For more information about invalid action masking in SB3, see https://sb3-contrib.readthedocs.io/en/master/modules/ppo_mask.html
-
-Author: Elliot (https://github.com/elliottower)
 """
 
 import glob
@@ -27,7 +26,7 @@ from stable_baselines3.common.callbacks import BaseCallback
 class SB3ActionMaskWrapper(pettingzoo.utils.BaseWrapper):
     """Wrapper to allow PettingZoo environments to be used with SB3 illegal action masking."""
 
-    def __init__(self, env, stationary_models: list[MaskablePPO]):
+    def __init__(self, env, stationary_models: list[MaskablePPO | None]):
         super().__init__(env)
         self.stationary_models = stationary_models
         self.training_agent_is_player_0 = True
@@ -53,14 +52,16 @@ class SB3ActionMaskWrapper(pettingzoo.utils.BaseWrapper):
             stationary_agent_observation = self.observe(self.agent_selection)
             stationary_agent_action_mask = self.action_mask()
 
-            if len(self.stationary_models) == 0:
+            randomly_selected_stationary_model = random.choice(self.stationary_models)
+
+            if randomly_selected_stationary_model is None:
                 # If no stationary models are given execute step based on random policy
                 stationary_agent_legal_actions = [i for i, is_legal in enumerate(stationary_agent_action_mask) if is_legal]
                 stationary_agent_chosen_action = random.choice(stationary_agent_legal_actions)
             else:
                 # If stationary models are given execute step based on a random stationary model
                 stationary_agent_chosen_action = int(
-                    random.choice(self.stationary_models).predict(
+                    randomly_selected_stationary_model.predict(
                         stationary_agent_observation, action_masks=stationary_agent_action_mask, deterministic=False
                     )[0]
                 )
@@ -97,14 +98,16 @@ class SB3ActionMaskWrapper(pettingzoo.utils.BaseWrapper):
         stationary_agent_observation = self.observe(self.agent_selection)
         stationary_agent_action_mask = self.action_mask()
 
-        if len(self.stationary_models) == 0:
+        randomly_selected_stationary_model = random.choice(self.stationary_models)
+
+        if randomly_selected_stationary_model is None:
             # If no stationary models are given execute step based on random policy
             stationary_agent_legal_actions = [i for i, is_legal in enumerate(stationary_agent_action_mask) if is_legal]
             stationary_agent_chosen_action = random.choice(stationary_agent_legal_actions)
         else:
             # If stationary models are given execute step based on given model
             stationary_agent_chosen_action = int(
-                random.choice(self.stationary_models).predict(
+                randomly_selected_stationary_model.predict(
                     stationary_agent_observation, action_masks=stationary_agent_action_mask, deterministic=False
                 )[0]
             )
@@ -139,15 +142,17 @@ class ValueLossCallback(BaseCallback):
     def __init__(self):
         super().__init__()
         self.value_losses = []
+        self.policy_gradient_losses = []
 
     def _on_step(self) -> bool:
         return True
 
     def _on_rollout_end(self) -> None:
         self.value_losses.append(self.logger.name_to_value["train/value_loss"])
+        self.policy_gradient_losses.append(self.logger.name_to_value["train/policy_gradient_loss"])
 
 
-def train_action_mask(env_fn, steps=10_000, seed=0, stationary_models: list[MaskablePPO] = None, training_model: MaskablePPO = None, **env_kwargs):
+def train_action_mask(env_fn, steps=10_000, seed=0, stationary_models: list[MaskablePPO | None] = None, training_model: MaskablePPO = None, **env_kwargs):
     """Train a single model to play as each agent in a zero-sum game environment using invalid action masking."""
     env = env_fn.env(**env_kwargs)
 
@@ -179,37 +184,43 @@ def train_action_mask(env_fn, steps=10_000, seed=0, stationary_models: list[Mask
 
     env.close()
 
-    return value_loss_callback.value_losses
+    return value_loss_callback.value_losses, value_loss_callback.policy_gradient_losses
 
 
-def eval_action_mask(env_fn, num_games=100, model_0_path: str = None, model_1_path: str = None, render_mode=None, **env_kwargs):
+def eval_action_mask(env_fn, num_games=100, model_0_paths: list[str] = None, training_model_path: str = None, render_mode=None, **env_kwargs):
     # Evaluate a trained agent vs a random agent
     env = env_fn.env(render_mode=render_mode, **env_kwargs)
 
-    print(
-        f"Starting evaluation {model_0_path if model_0_path is not None else 'random_agent'} "
-        f"vs {model_1_path if model_1_path is not None else 'random_agent'}."
-        f" Trained agent will play as {env.possible_agents[1]}."
-    )
+    print("Starting evaluation of")
 
-    model_0 = None
+    for model_0_path in model_0_paths:
+        print(model_0_path if model_0_path is not None else 'random_agent')
+
+    print(f"vs {training_model_path if training_model_path is not None else 'random_agent'}.")
+
+    stationary_model_list = []
     model_1 = None
 
-    if model_0_path is not None:
-        model_0 = MaskablePPO.load(model_0_path)
+    for model_0_path in model_0_paths:
+        if model_0_path is not None:
+            stationary_model_list.append(MaskablePPO.load(model_0_path))
+        else:
+            stationary_model_list.append(None)
 
-    if model_1_path is not None:
-        model_1 = MaskablePPO.load(model_1_path)
+    if training_model_path is not None:
+        model_1 = MaskablePPO.load(training_model_path)
 
-    scores = {agent: 0 for agent in env.possible_agents}
-    total_rewards = {agent: 0 for agent in env.possible_agents}
+    scores = {"stationary_model": 0, "training_model": 0}
+    total_rewards = {"stationary_model": 0, "training_model": 0}
     round_rewards = []
-    game_lenghts = []
+    game_lengths = []
+    stationary_model_is_first_player = False
 
     for i in range(num_games):
         env.reset(seed=i)
         env.action_space(env.possible_agents[0]).seed(i)
 
+        stationary_model_is_first_player = not stationary_model_is_first_player
         game_length = 0
 
         for agent in env.agent_iter():
@@ -224,25 +235,37 @@ def eval_action_mask(env_fn, num_games=100, model_0_path: str = None, model_1_pa
                     env.rewards[env.possible_agents[0]]
                     != env.rewards[env.possible_agents[1]]
                 ):
-                    winner = max(env.rewards, key=env.rewards.get)
-                    scores[winner] += env.rewards[
-                        winner
+                    winning_player = max(env.rewards, key=env.rewards.get)
+
+                    if (winning_player == env.possible_agents[0] and stationary_model_is_first_player) or (winning_player == env.possible_agents[1] and not stationary_model_is_first_player):
+                        winning_model = "stationary_model"
+                    else:
+                        winning_model = "training_model"
+
+                    scores[winning_model] += env.rewards[
+                        winning_player
                     ]  # only tracks the largest reward (winner of game)
+
                 # Also track negative and positive rewards (penalizes illegal moves)
                 for a in env.possible_agents:
-                    total_rewards[a] += env.rewards[a]
+                    if (a == env.possible_agents[0] and stationary_model_is_first_player) or (a == env.possible_agents[1] and not stationary_model_is_first_player):
+                        total_rewards["stationary_model"] += env.rewards[a]
+                    else:
+                        total_rewards["training_model"] += env.rewards[a]
+
                 # List of rewards by round, for reference
                 round_rewards.append(env.rewards)
-                game_lenghts.append(game_length)
-                game_length = 0
+                game_lengths.append(game_length)
                 break
             else:
-                if agent == env.possible_agents[0]:
-                    if model_0 is None:
+                if (agent == env.possible_agents[0] and stationary_model_is_first_player) or (agent == env.possible_agents[1] and not stationary_model_is_first_player):
+                    randomly_selected_model_0 = random.choice(stationary_model_list)
+
+                    if randomly_selected_model_0 is None:
                         act = env.action_space(agent).sample(action_mask)
                     else:
                         act = int(
-                            model_0.predict(
+                            randomly_selected_model_0.predict(
                                 observation, action_masks=action_mask, deterministic=False
                             )[0]
                         )
@@ -263,15 +286,15 @@ def eval_action_mask(env_fn, num_games=100, model_0_path: str = None, model_1_pa
     if sum(scores.values()) == 0:
         winrate = 0
     else:
-        winrate = scores[env.possible_agents[1]] / sum(scores.values())
+        winrate = scores["training_model"] / sum(scores.values())
 
-    average_game_length = sum(game_lenghts) / len(game_lenghts)
+    average_game_length = sum(game_lengths) / len(game_lengths)
 
     # print("Rewards by round: ", round_rewards)
     # print("Total rewards (incl. negative rewards): ", total_rewards)
     # print("Final scores: ", scores)
     print("Winrate: ", winrate)
-    print("Average game length: ", winrate)
+    print("Average game length: ", average_game_length)
     return round_rewards, total_rewards, winrate, scores, average_game_length
 
 
@@ -284,7 +307,7 @@ def evaluate_model_against_other_models(model_path, other_model_paths):
             env_fn,
             num_games=100,
             model_0_path=model_path,
-            model_1_path=other_model_path,
+            training_model_path=other_model_path,
             render_mode="human",
             **env_kwargs
         )
@@ -313,7 +336,8 @@ def execute_self_play_training_loop(
     policy_paths = []
     path_to_latest_model_which_made_more_than_winning_threshold = None
 
-    stationary_models = []
+    stationary_models = [None for _ in range(max_number_of_stationary_models)]
+    stationary_model_paths = [None for _ in range(max_number_of_stationary_models)]
     training_model = None
 
     training_progress_data = []
@@ -321,7 +345,7 @@ def execute_self_play_training_loop(
     for i in range(number_of_iterations):
         print("Iteration", i, "of", number_of_iterations)
 
-        value_losses = train_action_mask(
+        value_losses, policy_gradient_losses = train_action_mask(
             env_fn,
             steps=number_of_steps_per_iteration,
             seed=0,
@@ -337,8 +361,8 @@ def execute_self_play_training_loop(
         _, _, winrate_stationary, _, average_game_length_stationary = eval_action_mask(
             env_fn,
             num_games=100,
-            model_0_path=path_to_latest_model_which_made_more_than_winning_threshold,
-            model_1_path=latest_policy_path,
+            model_0_paths=stationary_model_paths,
+            training_model_path=latest_policy_path,
             render_mode=None,
             **env_kwargs
         )
@@ -347,8 +371,8 @@ def execute_self_play_training_loop(
         _, _, winrate_random, _, average_game_length_random = eval_action_mask(
             env_fn,
             num_games=100,
-            model_0_path=None,
-            model_1_path=latest_policy_path,
+            model_0_paths=[None],
+            training_model_path=latest_policy_path,
             render_mode=None,
             **env_kwargs
         )
@@ -359,17 +383,22 @@ def execute_self_play_training_loop(
             "winrate_random": round(winrate_random, 3),
             "average_game_length_random": average_game_length_random,
             "value_losses": [np.round(value_loss, 3).item() for value_loss in value_losses],
-            "latest_stationary_policy": path_to_latest_model_which_made_more_than_winning_threshold
+            "policy_gradient_losses": [np.round(policy_gradient_loss, 3).item() for policy_gradient_loss in policy_gradient_losses],
+            "latest_stationary_policy": stationary_model_paths[len(stationary_model_paths) - 1]
         })
 
         # Create new stationary model and add it to stationary_models
         if winrate_stationary > threshold_winrate_for_updating_stationary_model:
-            path_to_latest_model_which_made_more_than_winning_threshold = latest_policy_path
             new_stationary_model = MaskablePPO.load(latest_policy_path)
 
             if len(stationary_models) >= max_number_of_stationary_models:
                 stationary_models.pop(0)
+
+            if len(stationary_model_paths) >= max_number_of_stationary_models:
+                stationary_model_paths.pop(0)
+
             stationary_models.append(new_stationary_model)
+            stationary_model_paths.append(latest_policy_path)
 
         env = env_fn.env(**env_kwargs)
         env = SB3ActionMaskWrapper(env, stationary_models)
@@ -402,7 +431,7 @@ if __name__ == "__main__":
 
     # evaluate_model_against_other_models("connect_four_v3_20250207-182953.zip", [None])
 
-    iterations_count = 10
+    iterations_count = 5000
     step_count_per_iteration = 4096
     threshold_winrate = 0.75
     max_count_of_stationary_models = 5
