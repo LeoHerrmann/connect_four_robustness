@@ -37,7 +37,7 @@ class PpoAgent(Agent):
 
         chosen_action = int(
             self.model.predict(
-                observation["observation"], action_masks=action_mask, deterministic=True
+                observation["observation"], action_masks=action_mask, deterministic=False
             )[0]
         )
         return chosen_action

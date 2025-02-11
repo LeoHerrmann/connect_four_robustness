@@ -173,6 +173,9 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
 
 # ppoAgent = PpoAgent("PPO1")
 # ppoAgent.train()
+
+# agents = [PpoAgent("HA1", "ppoWeights/connect_four_v3_20250211-083831.zip"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250211-115705.zip")]
+# agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250211-115705.zip")]
 # agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250209-115101.zip")]
 # agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250209-141836.zip")]
 
@@ -180,8 +183,8 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
 
 alternate_player_order = False
 
-number_of_games = 5
-number_of_mcts_simulations = 2500
+number_of_games = 50
+number_of_mcts_simulations = 5000
 results_subfolder = "mcts_vs_mcts_" + str(number_of_mcts_simulations)
 
 agents = [HumanAgent("HA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
