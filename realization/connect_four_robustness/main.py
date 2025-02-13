@@ -171,15 +171,7 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
     plt.show()
 
 
-# ppoAgent = PpoAgent("PPO1")
-# ppoAgent.train()
-
-# agents = [PpoAgent("HA1", "ppoWeights/connect_four_v3_20250211-083831.zip"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250211-115705.zip")]
-# agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250211-115705.zip")]
-# agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250209-115101.zip")]
-# agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250209-141836.zip")]
-
-# ACHTUNG ENV.CLOSE
+agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250213-050515.zip")]
 
 alternate_player_order = False
 
@@ -187,11 +179,7 @@ number_of_games = 50
 number_of_mcts_simulations = 5000
 results_subfolder = "mcts_vs_mcts_" + str(number_of_mcts_simulations)
 
-agents = [HumanAgent("HA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
-
-# agents = [MctsAgent("MC1", True, n_simulations=number_of_mcts_simulations), RandomAgent("RA1")]
-# agents = [RandomAgent("RA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
-# agents = [MctsAgent("MC1", True, n_simulations=number_of_mcts_simulations), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
+# agents = [HumanAgent("HA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
 
 absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
 win_rates_figure, game_length_figure = generate_figures(average_history)
