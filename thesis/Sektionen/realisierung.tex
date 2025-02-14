@@ -1,5 +1,7 @@
 \subsection{Messumgebung}
 
+\label{messumgebung}
+
 % PettingZoo-Bibliothek
 
 Als Grundlage für die Messumgebung dient die Open Source Python-Bibliothek PettingZoo, die zum Entwickeln und Testen von MARL-Systemen konzipiert wurde. Sie stellt eine einheitliche Schnittstelle zu Umgebungen bereit, in der Agenten miteinander interagieren können.
@@ -18,13 +20,13 @@ Im Zuge der Realisierung der Messumgebung ist aufgefallen, dass wenn zwei Agente
 
 \begin{figure}[ht!]%[!tbp]
 	\begin{subfigure}[b]{0.48\textwidth}
-		\includegraphics[width=\textwidth]{Bilder/constant_player_order_graph_win_rates.png}
+		\includegraphics[width=\textwidth]{Bilder/random_vs_random_constant_player_order_graph_win_rates.png}
 		\caption{Gewinnrate.}
 		\label{fig:f1}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
-		\includegraphics[width=\textwidth]{Bilder/constant_player_order_graph_game_length.png}
+		\includegraphics[width=\textwidth]{Bilder/random_vs_random_constant_player_order_graph_game_length.png}
 		\caption{Durchschnittliche Spieldauer.}
 		\label{fig:f2}
 	\end{subfigure}
@@ -37,13 +39,13 @@ Die Vier-Gewinnt-Umgebung von PettingZoo wurde daher erweitert, um einen Paramet
 
 \begin{figure}[ht!]%[!tbp]
 	\begin{subfigure}[b]{0.48\textwidth}
-		\includegraphics[width=\textwidth]{Bilder/alternating_player_order_graph_win_rates.png}
+		\includegraphics[width=\textwidth]{Bilder/random_vs_random_alternating_player_order_graph_win_rates.png}
 		\caption{Gewinnrate.}
 		\label{fig:f3}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
-		\includegraphics[width=\textwidth]{Bilder/alternating_player_order_graph_game_length.png}
+		\includegraphics[width=\textwidth]{Bilder/random_vs_random_alternating_player_order_graph_game_length.png}
 		\caption{Durchschnittliche Spieldauer.}
 		\label{fig:f4}
 	\end{subfigure}
@@ -85,17 +87,51 @@ Aufgrund der zeitlichen Beschränkung dieser Arbeit wird auf Experimente bezügl
 
 \subsubsection{Zeitlicher Aufwand von Entscheidungen des MCTS-Agenten}
 
-Die in dieser Arbeit durchgeführten Messungen fanden auf einem Computer mit einer Intel Core i7 8650U CPU statt. Ein MCTS-Agent, der pro Entscheidung 5.000 Simulationen durchführt, benötigt dabei für jeden Zug etwa eine zehn Sekunden. In einem Spiel mit einer Länge von 40 Zügen rechnet der MCTS-Agent also 3:20 Minuten. Für 200 Spiele, die im Rahmen dieser zeitlich begrenzten Arbeit an vielen Stellen als ausreichend für aussagekräftige Messungen betrachtet werden, werden für jeden beteiligten MCTS-Agenten 5 Stunden benötigt. Die Zeit steigt proportional zur Anzahl der durchgeführten Simulationen.
+Die in dieser Arbeit durchgeführten Messungen fanden auf einem Computer mit einer Intel Core i7 8650U CPU statt. Ein MCTS-Agent, der pro Entscheidung 5.000 Simulationen durchführt, benötigt dabei für jeden Zug etwa eine zehn Sekunden. In einem Spiel mit einer Länge von 20 Zügen rechnet der MCTS-Agent also 200 Sekunden. Für 200 Spiele, die im Rahmen dieser zeitlich begrenzten Arbeit an vielen Stellen als ausreichend für aussagekräftige Messungen betrachtet werden, werden für jeden beteiligten MCTS-Agenten mehr als elf Stunden benötigt. Die Rechenzeit verhält sich proportional zur Anzahl der durchgeführten Simulationen.
 
 Es liegt nahe, den MCTS-Agenten durch Parallelisierung zu beschleunigen. Dadurch lässt sich die Rechenzeit proportional (ggf. sogar überproportional) zur auf der Maschine verfügbaren CPU-Ressourcen verkürzen, ohne dass die Ergebnisse dadurch beeinträchtigt werden (vgl. \cite{Chaslot.2008}). Dies ist vor allem bei Echtzeitanwendungen sinnvoll. Ein solcher Anspruch wird in dieser Arbeit jedoch nicht gestellt. Um die Komplexität des Algorithmus möglichst niedrig zu halten, wird auf die Parallelisierung von MCTS verzichtet. Stattdessen werden die Messungen parallelisiert und die Ergebnisse zusammengeführt.
 
 \subsubsection{Quantitative Untersuchung}
 
-% Da gehts morgen weiter.
+Um einen Eindruck davon zu bekommen, wie sich die Spielstärke des implementierten MCTS-Agenten in Abhängigkeit von der Anzahl der für jede Entscheidung durchgeführten Simulationen zu bekommen, wurde eine qualitative Analyse des MCTS-Agenten durchgeführt, in der 200 Spiele gegen einen zufällig spielenden Agenten mit abwechselndem Anzugsrecht durchgeführt wurden und 200 Spiele gegen sich selbst mit konstantem Anzugsrecht. Diese Messungen wurden mit 50, 100, 250, 500, 750, 1000, 2500 und 5000 Simulationen pro Entscheidung durchgeführt.
+
+\begin{figure}[ht!]%[!tbp]
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/mcts_vs_random_win_rate_vs_n_simulations.png}
+		\caption{Gewinnrate.}
+		\label{fig:f5}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/mcts_vs_random_game_length_vs_n_simulations.png}
+		\caption{Durchschnittliche Spieldauer.}
+		\label{fig:f6}
+	\end{subfigure}
+	\caption{Gewinnrate und durchschnittliche Spieldauer in Abhängigkeit von der Anzahl der Simulationen pro Entscheidung beim Spiel eines MCTS-Agenten gegen einen zufällig spielenden Agenten.}
+\end{figure}
+
+Die Gewinnrate, die der MCTS-Agent gegen den zufällig spielenden Agenten erzielt, beträgt bei 50 Simulationen pro Entscheidung bereits 98,5 \% und steigt bis 1000 Simulationen auf 100 \%, welche der Agent auch bei 2500 und 5000 Simulationen hält. Die mittlere Spieldauer startet bei 50 Simulationen mit 14.21 Zügen und flacht bei 2500 Simulationen mit 9,69 ab. Dass die Spieldauer bei 5000 Simulationen auf 9,72 steigt, dabei handelt es sich vermutlich um eine stochastisch bedingte Messungenauigkeit. Die kürzeste mögliche durchschnittliche Spieldauer beträgt dabei 7.5, denn damit der anziehende Spieler gewinnt kann, müssen mindestens sieben Steine platziert sein, bzw. acht Steine, damit der nachziehende Spieler gewinnen kann. Sie ist auch bei perfekter Spielweise des MCTS-Agenten schwer zu erreichen, da ein Spiel länger dauert, sobald sein Gegenspieler eine durch den MCTS-Agenten gebildete Kette blockiert. Aus den Messungen geht hervor, dass der MCTS-Agent einem zufällig spielenden Agenten bereits bei 50 Simulationen pro Entscheidung weit überlegen ist. Auch wenn die Gewinnrate ab 1000 Simulationen 100 \% beträgt, kann über die kürzer werdende Spieldauer eine Steigerung der Leistung beobachtet werden. Der MCTS-Agent entscheidet mit steigender Anzahl von Simulationen pro Entscheidung das Spiel schneller für sich.
+
+\begin{figure}[ht!]%[!tbp]
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/mcts_vs_mcts_win_rate_vs_n_simulations.png}
+		\caption{Gewinnrate.}
+		\label{fig:f7}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/mcts_vs_mcts_game_length_vs_n_simulations.png}
+		\caption{Durchschnittliche Spieldauer.}
+		\label{fig:f8}
+	\end{subfigure}
+	\caption{Gewinnrate und durchschnittliche Spieldauer in Abhängigkeit von der Anzahl der Simulationen pro Entscheidung beim Spiel von zwei MCTS-Agenten gegeneinander.}
+\end{figure}
+
+Im Spiel gegen sich selbst erzielt der MCTS-Agent mit Anzugsrecht bei 50 Simulationen eine Gewinnrate von 60,0 \%. Sie steigt von dort auf 79,0 \% bei 5000 Simulationen pro Entscheidung. Bei 750 Simulationen sinkt die Gewinnrate auf 67,0 \% von 68,0 \% bei 500 Simulationen. Diese Beobachtung ist vermutlich stochastisch bedingt. Die durchschnittliche Spieldauer steigt zunächst rapide von 16,08 bei 50 Simulationen auf 18,99 Spieldauer bei 250 Simulationen und sinkt von dort auf 12,07 bei 5000 Simulationen. Aus der steigenden Gewinnrate und sinkenden Spieldauer geht hervor, dass der MCTS-Agent den Vorteil, das Anzugsrecht zu haben, unso konsequenter ausnutzen kann, je mehr Simulationen pro Entscheidung durchgeführt werden. Im Vergleich zu den Messungen aus Kapitel \ref{messumgebung}, in denen zwei zufällig entscheidende Agenten mit konstantem Anzugsrecht spielen, wird deutlich, dass dies bereits bei 50 Simulationen der Fall ist. Da der erste Spieler das Spiel theoretisch immer gewinnen kann, sollte die Gewinnrate mit steigender Simulationsanzahl zu 100 \% konvergieren.
 
 \subsubsection{Qualitative Untersuchung}
 
-Neben der quantitativen Analyse gegen zufällig spielende Agenten und gegen sich selbst wurde auch eine kurze qualitative Analyse im Spiel gegen einen menschlichen Spieler durchgeführt, um einen Eindruck über das Spielverhalten des MCTS-Agenten zu gewinnen. Der menschliche Spieler ist bei den Untersuchungen stets der Spieler, der den ersten Stein setzen darf. Er kann damit theoretisch jedes Spiel gewinnen und hat so mehr Kontrolle über den Spielverlauf, was die Analyse vereinfacht.
+Neben der quantitativen Analyse gegen zufällig spielende Agenten und gegen sich selbst wurde auch eine kurze qualitative Analyse im Spiel gegen einen menschlichen Spieler durchgeführt, um einen Eindruck über das strategische Spielverhalten des MCTS-Agenten zu gewinnen, das aus den quantitativen Analysen nicht hervorgeht. Der menschliche Spieler ist bei den Untersuchungen stets der Spieler, der den ersten Stein setzen darf. Er kann damit theoretisch jedes Spiel gewinnen und hat so mehr Kontrolle über den Spielverlauf, was die Analyse vereinfacht.
 
 Ist der MCTS-Agent konfiguriert, um 500 Simulationen pro Entscheidung durchzuführen, lässt sich bereits beobachten, dass, wenn er bereits drei Steine in einer Kette platziert hat, stets den vierten Stein platziert, um zu gewinnen, sofern dies möglich ist. Wenn hingegen sein Gegenspieler drei Steine in einer Reihe hat, versäumt der Agent häufig, den vierten Stein zu blockieren, sodass der Gegenspieler das Spiel für sich entscheiden kann. Wird der MCTS-Agent nicht unter Druck gesetzt, wirken seine Züge häufig ziellos. Wenn er Angriffe vorbereitet, sind seine Züge leicht durchschaubar, was es als Mensch recht einfach macht, sie zu verteidigen. Es ist auch ohne strategische Kenntnisse des Spiels leicht möglich, gegen den MCTS-Agenten zu gewinnen. Ein Vorgehen das dabei häufig funktioniert, besteht darin, darauf abzuzielen, einen Stein in der vierten Reihe der mittleren Spalte platziert zu bekommen, und von dort aus eine diagonale Kette nach links unten oder rechts unten zu bilden. Manchmal geht dieser Plan nicht auf, jedoch entwickeln sich dadurch im Laufe des Spiels schnell andere offensichtliche Gewinnchancen.
 
@@ -114,7 +150,6 @@ Bei einem geringeren Wert für $c_{UCT}$ werden Knoten, die selten untersucht wu
 Eine mögliche Lösung zum Beheben dieser Schwachstelle besteht darin, während der Simulationen nicht alle Züge rein zufällig zu wählen, sondern die Wahrscheinlichkeit zu erhöhen, dass der Gegenspieler den vierten Stein in eine bereits existierende Dreierkette platziert, sofern dies möglich ist, sodass in den Simulationen nicht-blockierende Züge eine niedrigere Gewinnrate aufweisen und mit einer niedrigeren Wahrscheinlichkeit gewählt werden.
 
 Da das Ziel dieser Arbeit nicht darin besteht, optimale Agenten zu entwickeln, und die Ergebnisse möglichst unabhängig von Optimierungen auf Vier Gewinnt sein sollen, wird diese Funktionalität nicht eingebaut. Aufgrund der zeitlichen Beschränkung dieser Arbeit können mögliche Nebenwirkungen von niedrigen Werten für $c_{UCT}$ nicht untersucht werden. Aus diesem Grund werden die anstehenden Messungen weiterhin mit dem Standardwert von $c_{UCT} = \sqrt2$ durchgeführt.
-
 
 % Es kommen Reinforcement Learning Modelle zum Einsatz, die aus RL-Bibliotheken wie CleanRL oder Stable-Baselines bereitgestellt werden. Falls vorhanden, wird auf fertig implementierte Algorithmen zurückgegriffen.
 
