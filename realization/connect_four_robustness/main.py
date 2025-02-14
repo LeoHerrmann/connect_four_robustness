@@ -171,7 +171,8 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
     plt.show()
 
 
-agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250213-050515.zip")]
+# agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250214-024650.zip")]
+agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250214-030027.zip")]
 
 alternate_player_order = False
 
