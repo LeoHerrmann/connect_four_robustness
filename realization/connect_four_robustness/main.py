@@ -1,11 +1,11 @@
-import copy
 from datetime import datetime
 import os
 import json
-import custom_connect_four_v3
 import matplotlib
 import matplotlib.pyplot as plt
-import random
+
+import custom_connect_four_v3
+from distortionGenerator import distort_state, distort_action
 
 from agent import Agent
 from mctsAgent import MctsAgent
@@ -14,6 +14,7 @@ from randomAgent import RandomAgent
 from humanAgent import HumanAgent
 
 observation_history = []
+
 
 def play_game(env, agents: list[Agent]):
         game_length = 0
@@ -45,12 +46,18 @@ def play_game(env, agents: list[Agent]):
                 return statistics
 
             else:
+                distorted_state = distort_state(observation["observation"], probability_of_distorting_observation)
+                distorted_observation = observation
+                distorted_observation["observation"] = distorted_state
+
                 if agent == env.possible_agents[0]:
                     action = agents[0].determine_action(observation)
                 else:
                     action = agents[1].determine_action(observation)
 
-            env.step(action)
+                distorted_action = distort_action(action, observation["action_mask"], probability_of_distorting_action)
+
+            env.step(distorted_action)
 
 
 def play_games(number_of_games, agents: list[Agent], alternate_player_order=True):
@@ -103,57 +110,6 @@ def play_games(number_of_games, agents: list[Agent], alternate_player_order=True
         # env.close()
 
     return absolute_history, average_history
-
-
-def distort_state(state, probability: float):
-    "Returns a deep copy of the given state which is distorted with the given probability"
-
-    if probability > 1 or probability < 0:
-        raise ValueError("probability must be between zero and one")
-
-    if random.randint(0, 99) / 100 >= probability:
-        return copy.deepcopy(state)
-
-    distorted_state = copy.deepcopy(state)
-    coordinates_of_removable_pieces = []
-    coordinates_of_addable_pieces = []
-
-    for row_index in range(len(distorted_state)):
-        for column_index in range(len(distorted_state[row_index])):
-            current_field = distorted_state[row_index][column_index]
-            current_field_is_occupied = current_field[0] == 1 or current_field[1] == 1
-
-            if row_index > 0:
-                field_above = distorted_state[row_index - 1][column_index]
-                field_above_is_occupied = field_above[0] == 1 or field_above[1] == 1
-                if current_field_is_occupied and field_above_is_occupied:
-                    coordinates_of_removable_pieces.append((row_index, column_index))
-
-            if row_index < len(distorted_state) - 1:
-                field_below = distorted_state[row_index + 1][column_index]
-                field_below_is_occupied = field_below[0] == 1 or field_below[1] == 1
-
-                if not current_field_is_occupied and not field_below_is_occupied:
-                    coordinates_of_addable_pieces.append((row_index, column_index))
-
-    rn = random.randint(0, len(coordinates_of_removable_pieces) + len(coordinates_of_addable_pieces) - 1)
-
-    if rn < len(coordinates_of_removable_pieces):
-        row_index_of_piece_to_remove = coordinates_of_removable_pieces[rn][0]
-        column_index_of_piece_to_remove = coordinates_of_removable_pieces[rn][1]
-        distorted_state[row_index_of_piece_to_remove][column_index_of_piece_to_remove] = [0, 0]
-    else:
-        row_index_of_piece_to_add = coordinates_of_addable_pieces[rn - len(coordinates_of_removable_pieces)][0]
-        column_index_of_piece_to_add = coordinates_of_addable_pieces[rn - len(coordinates_of_removable_pieces)][1]
-
-        new_piece = [0, 1]
-
-        if random.randint(0, 1) == 0:
-            new_piece = [1, 0]
-
-        distorted_state[row_index_of_piece_to_add][column_index_of_piece_to_add] = new_piece
-
-    return distorted_state
 
 
 def generate_figures(average_history):
@@ -228,13 +184,14 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
 # agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250216-035830.zip")]
 
 alternate_player_order = False
-
-number_of_games = 50
-number_of_mcts_simulations = 500
+probability_of_distorting_observation = 0.0
+probability_of_distorting_action = 0.0
+number_of_games = 2
+number_of_mcts_simulations = 5000
 results_subfolder = "mcts_vs_mcts_" + str(number_of_mcts_simulations)
 
-# agents = [HumanAgent("HA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
-agents = [MctsAgent("MC1", True, n_simulations=number_of_mcts_simulations), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
+agents = [HumanAgent("HA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
+# agents = [MctsAgent("MC1", True, n_simulations=number_of_mcts_simulations), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
 
 absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
 win_rates_figure, game_length_figure = generate_figures(average_history)
