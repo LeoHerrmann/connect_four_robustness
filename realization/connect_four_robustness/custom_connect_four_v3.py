@@ -170,7 +170,20 @@ class raw_env(AECEnv, EzPickle):
         return self.action_spaces[agent]
 
     def _legal_moves(self):
-        return [i for i in range(7) if self.board[i] == 0]
+        # return [i for i in range(7) if self.board[i] == 0]
+        legal_moves = []
+
+        for column_index in range(7):
+            it_is_legal_to_place_a_piece_in_this_column = False
+
+            for row_index in range(6):
+                if self.board[row_index * 7 + column_index] == 0:
+                    it_is_legal_to_place_a_piece_in_this_column = True
+
+            if it_is_legal_to_place_a_piece_in_this_column:
+                legal_moves.append(column_index)
+
+        return legal_moves
 
     # action in this case is a value from 0 to 6 indicating position to move on the flat representation of the connect4 board
     def step(self, action):
@@ -179,8 +192,10 @@ class raw_env(AECEnv, EzPickle):
             or self.terminations[self.agent_selection]
         ):
             return self._was_dead_step(action)
+
         # assert valid move
-        assert self.board[0:7][action] == 0, "played illegal move."
+        # assert self.board[0:7][action] == 0, "played illegal move."
+        assert action in self._legal_moves(), "played illegal move."
 
         piece = self.agents.index(self.agent_selection) + 1
         for i in list(filter(lambda x: x % 7 == action, list(range(41, -1, -1)))):
