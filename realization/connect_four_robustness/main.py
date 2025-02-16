@@ -5,7 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 import custom_connect_four_v3
-from distortionGenerator import distort_state, distort_action
+from distortionGenerator import DistortionGenerator
 
 from agent import Agent
 from mctsAgent import MctsAgent
@@ -46,7 +46,7 @@ def play_game(env, agents: list[Agent]):
                 return statistics
 
             else:
-                distorted_state = distort_state(observation["observation"], probability_of_distorting_observation)
+                distorted_state = distortion_generator.distort_state(observation["observation"])
                 distorted_observation = observation
                 distorted_observation["observation"] = distorted_state
 
@@ -55,7 +55,7 @@ def play_game(env, agents: list[Agent]):
                 else:
                     action = agents[1].determine_action(observation)
 
-                distorted_action = distort_action(action, observation["action_mask"], probability_of_distorting_action)
+                distorted_action = distortion_generator.distort_action(action, observation["action_mask"])
 
             env.step(distorted_action)
 
@@ -184,8 +184,7 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
 # agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250216-035830.zip")]
 
 alternate_player_order = False
-probability_of_distorting_observation = 0.0
-probability_of_distorting_action = 0.0
+distortion_generator = DistortionGenerator(0.0, 0.0)
 number_of_games = 2
 number_of_mcts_simulations = 5000
 results_subfolder = "mcts_vs_mcts_" + str(number_of_mcts_simulations)
