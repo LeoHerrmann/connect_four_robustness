@@ -4,14 +4,14 @@ import numpy
 
 
 class DistortionGenerator:
-    def __init__(self, probability_of_distorting_observations: float, probability_of_distorting_actions: float):
-        if probability_of_distorting_observations > 1 or probability_of_distorting_observations < 0:
-            raise ValueError("probability of distorting observations must be between zero and one")
+    def __init__(self, maximum_number_of_distorted_fields: int, probability_of_distorting_actions: float):
+        if maximum_number_of_distorted_fields < 0:
+            raise ValueError("Maximum number of distorted fields mus at least be zero")
 
         if probability_of_distorting_actions > 1 or probability_of_distorting_actions < 0:
-            raise ValueError("probability of distorting actions must be between zero and one")
+            raise ValueError("Probability of distorting actions must be between zero and one")
 
-        self.probability_of_distorting_observations = probability_of_distorting_observations
+        self.maximum_number_of_distorted_fields = maximum_number_of_distorted_fields
         self.probability_of_distorting_actions = probability_of_distorting_actions
 
     def distort_action(self, action: int, action_mask: list[int]) -> int:
@@ -27,49 +27,50 @@ class DistortionGenerator:
     def distort_state(self, state: numpy.ndarray) -> numpy.ndarray:
         """Returns a deep copy of the given state which is distorted with the respective distortion probability"""
 
-        if random.randint(0, 99) / 100 >= self.probability_of_distorting_observations:
-            return copy.deepcopy(state)
+        number_of_fields_to_distort = random.randint(0, self.maximum_number_of_distorted_fields)
 
         distorted_state = copy.deepcopy(state)
-        coordinates_of_removable_pieces = []
-        coordinates_of_addable_pieces = []
 
-        for row_index in range(len(distorted_state)):
-            for column_index in range(len(distorted_state[row_index])):
-                current_field = distorted_state[row_index][column_index]
-                current_field_is_occupied = current_field[0] == 1 or current_field[1] == 1
-                number_of_free_fields_in_column = free_fields_in_column(distorted_state, column_index)
+        for i in range(number_of_fields_to_distort):
+            coordinates_of_removable_pieces = []
+            coordinates_of_addable_pieces = []
 
-                if row_index > 0:
-                    field_above = distorted_state[row_index - 1][column_index]
-                    field_above_is_occupied = field_above[0] == 1 or field_above[1] == 1
+            for row_index in range(len(distorted_state)):
+                for column_index in range(len(distorted_state[row_index])):
+                    current_field = distorted_state[row_index][column_index]
+                    current_field_is_occupied = current_field[0] == 1 or current_field[1] == 1
+                    number_of_free_fields_in_column = free_fields_in_column(distorted_state, column_index)
 
-                    if current_field_is_occupied and field_above_is_occupied and number_of_free_fields_in_column != 0:
-                        coordinates_of_removable_pieces.append((row_index, column_index))
+                    if row_index > 0:
+                        field_above = distorted_state[row_index - 1][column_index]
+                        field_above_is_occupied = field_above[0] == 1 or field_above[1] == 1
 
-                if row_index < len(distorted_state) - 1:
-                    field_below = distorted_state[row_index + 1][column_index]
-                    field_below_is_occupied = field_below[0] == 1 or field_below[1] == 1
+                        if current_field_is_occupied and field_above_is_occupied and number_of_free_fields_in_column != 0:
+                            coordinates_of_removable_pieces.append((row_index, column_index))
 
-                    if not current_field_is_occupied and not field_below_is_occupied and number_of_free_fields_in_column >= 2:
-                        coordinates_of_addable_pieces.append((row_index, column_index))
+                    if row_index < len(distorted_state) - 1:
+                        field_below = distorted_state[row_index + 1][column_index]
+                        field_below_is_occupied = field_below[0] == 1 or field_below[1] == 1
 
-        rn = random.randint(0, len(coordinates_of_removable_pieces) + len(coordinates_of_addable_pieces) - 1)
+                        if not current_field_is_occupied and not field_below_is_occupied and number_of_free_fields_in_column >= 2:
+                            coordinates_of_addable_pieces.append((row_index, column_index))
 
-        if rn < len(coordinates_of_removable_pieces):
-            row_index_of_piece_to_remove = coordinates_of_removable_pieces[rn][0]
-            column_index_of_piece_to_remove = coordinates_of_removable_pieces[rn][1]
-            distorted_state[row_index_of_piece_to_remove][column_index_of_piece_to_remove] = [0, 0]
-        else:
-            row_index_of_piece_to_add = coordinates_of_addable_pieces[rn - len(coordinates_of_removable_pieces)][0]
-            column_index_of_piece_to_add = coordinates_of_addable_pieces[rn - len(coordinates_of_removable_pieces)][1]
+            rn = random.randint(0, len(coordinates_of_removable_pieces) + len(coordinates_of_addable_pieces) - 1)
 
-            new_piece = [0, 1]
+            if rn < len(coordinates_of_removable_pieces):
+                row_index_of_piece_to_remove = coordinates_of_removable_pieces[rn][0]
+                column_index_of_piece_to_remove = coordinates_of_removable_pieces[rn][1]
+                distorted_state[row_index_of_piece_to_remove][column_index_of_piece_to_remove] = [0, 0]
+            else:
+                row_index_of_piece_to_add = coordinates_of_addable_pieces[rn - len(coordinates_of_removable_pieces)][0]
+                column_index_of_piece_to_add = coordinates_of_addable_pieces[rn - len(coordinates_of_removable_pieces)][1]
 
-            if random.randint(0, 1) == 0:
-                new_piece = [1, 0]
+                new_piece = [0, 1]
 
-            distorted_state[row_index_of_piece_to_add][column_index_of_piece_to_add] = new_piece
+                if random.randint(0, 1) == 0:
+                    new_piece = [1, 0]
+
+                distorted_state[row_index_of_piece_to_add][column_index_of_piece_to_add] = new_piece
 
         return distorted_state
 

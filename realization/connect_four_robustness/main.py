@@ -2,6 +2,7 @@ from datetime import datetime
 import os
 import json
 import matplotlib
+matplotlib.use('gtk3agg')
 import matplotlib.pyplot as plt
 
 import custom_connect_four_v3
@@ -184,13 +185,13 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
 # agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250216-035830.zip")]
 
 alternate_player_order = False
-distortion_generator = DistortionGenerator(0.0, 0.0)
-number_of_games = 2
+distortion_generator = DistortionGenerator(0, 0.0)
+number_of_games = 100
 number_of_mcts_simulations = 5000
 results_subfolder = "mcts_vs_mcts_" + str(number_of_mcts_simulations)
 
-agents = [HumanAgent("HA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
-# agents = [MctsAgent("MC1", True, n_simulations=number_of_mcts_simulations), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
+agents = [RandomAgent("RA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
+# agents = [MctsAgent("MC1", True, n_simulations=number_of_mcts_simulations), RandomAgent("RA1")]
 
 absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
 win_rates_figure, game_length_figure = generate_figures(average_history)
