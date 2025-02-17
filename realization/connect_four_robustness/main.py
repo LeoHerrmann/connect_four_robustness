@@ -77,8 +77,8 @@ def play_games(number_of_games, agents: list[Agent], alternate_player_order=True
         if i % 2 == 0 and alternate_player_order:
             game_options["reverse_order"] = True
 
-        env = custom_connect_four_v3.env(render_mode="human")
-        # env = custom_connect_four_v3.env()
+        # env = custom_connect_four_v3.env(render_mode="human")
+        env = custom_connect_four_v3.env()
         # env = tictactoe_v3.env(render_mode="human")
         env.reset(options=game_options)
 
@@ -188,8 +188,9 @@ alternate_player_order = False
 distortion_generator = DistortionGenerator(0, 0.0)
 number_of_games = 100
 number_of_mcts_simulations = 5000
-results_subfolder = "mcts_vs_mcts_" + str(number_of_mcts_simulations)
 
+print("STARTING RANDOM VS MCTS")
+results_subfolder = "random_vs_mcts_" + str(number_of_mcts_simulations)
 agents = [RandomAgent("RA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
 # agents = [MctsAgent("MC1", True, n_simulations=number_of_mcts_simulations), RandomAgent("RA1")]
 
@@ -198,3 +199,15 @@ win_rates_figure, game_length_figure = generate_figures(average_history)
 save_absolute_history(absolute_history, results_subfolder)
 save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
 print(average_history[len(average_history) - 1])
+
+print("STARTING MCTS VS RANDOM")
+results_subfolder = "mcts_vs_random" + str(number_of_mcts_simulations)
+# agents = [RandomAgent("RA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
+agents = [MctsAgent("MC1", True, n_simulations=number_of_mcts_simulations), RandomAgent("RA1")]
+
+absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+win_rates_figure, game_length_figure = generate_figures(average_history)
+save_absolute_history(absolute_history, results_subfolder)
+save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
+print(average_history[len(average_history) - 1])
+
