@@ -4,14 +4,14 @@ import numpy
 
 
 class DistortionGenerator:
-    def __init__(self, maximum_number_of_distorted_fields: int, probability_of_distorting_actions: float):
-        if maximum_number_of_distorted_fields < 0:
-            raise ValueError("Maximum number of distorted fields mus at least be zero")
+    def __init__(self, number_of_fields_to_distort: int, probability_of_distorting_actions: float):
+        if number_of_fields_to_distort < 0:
+            raise ValueError("Number of fields to distort must be at least zero")
 
         if probability_of_distorting_actions > 1 or probability_of_distorting_actions < 0:
             raise ValueError("Probability of distorting actions must be between zero and one")
 
-        self.maximum_number_of_distorted_fields = maximum_number_of_distorted_fields
+        self.number_of_fields_to_distort = number_of_fields_to_distort
         self.probability_of_distorting_actions = probability_of_distorting_actions
 
     def distort_action(self, action: int, action_mask: list[int]) -> int:
@@ -27,11 +27,9 @@ class DistortionGenerator:
     def distort_state(self, state: numpy.ndarray) -> numpy.ndarray:
         """Returns a deep copy of the given state which is distorted with the respective distortion probability"""
 
-        number_of_fields_to_distort = random.randint(0, self.maximum_number_of_distorted_fields)
-
         distorted_state = copy.deepcopy(state)
 
-        for i in range(number_of_fields_to_distort):
+        for i in range(self.number_of_fields_to_distort):
             coordinates_of_removable_pieces = []
             coordinates_of_addable_pieces = []
 

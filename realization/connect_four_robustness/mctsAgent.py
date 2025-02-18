@@ -91,15 +91,21 @@ class MctsAgent(Agent):
             result = self.simulate(node_to_simulate)
             self.backpropagate(node_to_simulate, result)
 
+        # Debugging
+        if len(root_node.children) == 0:
+            print("For some reason, the root node has no children. An exception is about to occur. Let's print the state")
+            print(observation_from_agents_perspective)
+            root_node.print_pretty_state()
+
         child_with_highest_visitation_count = self.get_child_with_highest_visitation_count(root_node)
 
         # Debugging
-        #for child in root_node.children:
-        #    print("Aktion: ", child.action)
-        #    print("Visitation Count: ", child.visit_count)
-        #    print("Total Reward: ", child.total_reward)
-        #    print("UCT: ", self.calculate_uct(child))
-        #    print()
+        # for child in root_node.children:
+        #     print("Aktion: ", child.action)
+        #     print("Visitation Count: ", child.visit_count)
+        #     print("Total Reward: ", child.total_reward)
+        #     print("UCT: ", self.calculate_uct(child))
+        #     print()
 
         # print("decision: ", child_with_highest_visitation_count.action)
 
