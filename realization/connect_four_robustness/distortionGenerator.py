@@ -52,8 +52,6 @@ class DistortionGenerator:
                         players_for_which_current_field_builds_diagonal_chain = determine_players_for_which_field_builds_diagonal_chain(distorted_state, row_index, column_index)
                         players_for_which_current_field_builds_horizontal_chain = determine_players_for_which_field_builds_horizontal_chain(distorted_state, row_index, column_index)
 
-                        print(row_index, column_index, players_for_which_current_field_builds_diagonal_chain, players_for_which_current_field_builds_horizontal_chain)
-
                         if not current_field_is_occupied and not field_below_is_occupied and number_of_free_fields_in_column >= 2:
                             if 1 not in players_for_which_current_field_builds_diagonal_chain and 1 not in players_for_which_current_field_builds_horizontal_chain:
                                 coordinates_of_addable_pieces.append((row_index, column_index, 1))
