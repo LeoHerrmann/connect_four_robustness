@@ -49,15 +49,15 @@ class DistortionGenerator:
                     if row_index < len(distorted_state) - 1:
                         field_below = distorted_state[row_index + 1][column_index]
                         field_below_is_occupied = field_below[0] == 1 or field_below[1] == 1
-                        player_for_which_current_field_builds_diagonal_chain = determine_player_for_which_field_builds_diagonal_chain(distorted_state, row_index, column_index)
+                        players_for_which_current_field_builds_diagonal_chain = determine_players_for_which_field_builds_diagonal_chain(distorted_state, row_index, column_index)
+                        players_for_which_current_field_builds_horizontal_chain = determine_players_for_which_field_builds_horizontal_chain(distorted_state, row_index, column_index)
+
+                        print(row_index, column_index, players_for_which_current_field_builds_diagonal_chain, players_for_which_current_field_builds_horizontal_chain)
 
                         if not current_field_is_occupied and not field_below_is_occupied and number_of_free_fields_in_column >= 2:
-                            if player_for_which_current_field_builds_diagonal_chain == -1:
-                                coordinates_of_addable_pieces.append((row_index, column_index, 0))
+                            if 1 not in players_for_which_current_field_builds_diagonal_chain and 1 not in players_for_which_current_field_builds_horizontal_chain:
                                 coordinates_of_addable_pieces.append((row_index, column_index, 1))
-                            elif player_for_which_current_field_builds_diagonal_chain == 0:
-                                coordinates_of_addable_pieces.append((row_index, column_index, 1))
-                            elif player_for_which_current_field_builds_diagonal_chain == 1:
+                            if 0 not in players_for_which_current_field_builds_diagonal_chain and 0 not in players_for_which_current_field_builds_horizontal_chain:
                                 coordinates_of_addable_pieces.append((row_index, column_index, 0))
 
 
@@ -82,11 +82,70 @@ class DistortionGenerator:
         return distorted_state
 
 
-def determine_player_for_which_field_builds_diagonal_chain(distorted_state, target_field_row_index: int, target_field_column_index: int) -> int:
+def determine_players_for_which_field_builds_horizontal_chain(distorted_state, target_field_row_index: int, target_field_column_index: int) -> list[int]:
+    """Checks whether placing the target field results in building a horizontal chain.
+        Returns list of player indices who form a horizontal chain by playing a piece to inside the target field"""
+
+    players_for_which_field_builds_horizontal_chain = []
+
+    for row_index in range(len(distorted_state)):
+        for column_index in range(len(distorted_state[row_index]) - 3):
+            chain_coords = [
+                (row_index, column_index),
+                (row_index, column_index + 1),
+                (row_index, column_index + 2),
+                (row_index, column_index + 3),
+            ]
+
+            coordinates_contain_target_field = False
+
+            for coordinates in chain_coords:
+                if coordinates[0] == target_field_row_index and coordinates[1] == target_field_column_index:
+                    coordinates_contain_target_field = True
+
+            if coordinates_contain_target_field:
+                target_field_builds_diagonal_chain_for_player_0 = True
+
+                for coordinates in chain_coords:
+                    coordinates_are_occupied_by_player_0 = distorted_state[coordinates[0]][coordinates[1]][0] == 1
+                    coordinates_are_target_coordinates = coordinates[0] == target_field_row_index and coordinates[
+                        1] == target_field_column_index
+
+                    if coordinates_are_occupied_by_player_0 or coordinates_are_target_coordinates:
+                        target_field_builds_diagonal_chain_for_player_0 = True
+                    else:
+                        target_field_builds_diagonal_chain_for_player_0 = False
+                        break
+
+                if target_field_builds_diagonal_chain_for_player_0:
+                    if 0 not in players_for_which_field_builds_horizontal_chain:
+                        players_for_which_field_builds_horizontal_chain.append(0)
+
+                target_field_builds_diagonal_chain_for_player_1 = True
+
+                for coordinates in chain_coords:
+                    coordinates_are_occupied_by_player_1 = distorted_state[coordinates[0]][coordinates[1]][1] == 1
+                    coordinates_are_target_coordinates = coordinates[0] == target_field_row_index and coordinates[
+                        1] == target_field_column_index
+
+                    if coordinates_are_occupied_by_player_1 or coordinates_are_target_coordinates:
+                        target_field_builds_diagonal_chain_for_player_1 = True
+                    else:
+                        target_field_builds_diagonal_chain_for_player_1 = False
+                        break
+
+                if target_field_builds_diagonal_chain_for_player_1:
+                    if 1 not in players_for_which_field_builds_horizontal_chain:
+                        players_for_which_field_builds_horizontal_chain.append(1)
+
+    return players_for_which_field_builds_horizontal_chain
+
+
+def determine_players_for_which_field_builds_diagonal_chain(distorted_state, target_field_row_index: int, target_field_column_index: int) -> list[int]:
     """Checks whether placing the target field results in building a diagonal chain.
-    Returns -1 when no diagonal chain is formed.
-    Returns 0 when diagonal chain for player 0 is formed.
-    Returns 1 when diagonal chain for player 1 is formed."""
+    Returns list of player indices who form a diagonal chain by playing a piece to inside the target field"""
+
+    players_for_which_field_builds_diagonal_chain = []
 
     for row_index in range(len(distorted_state) - 3):
         for column_index in range(len(distorted_state[row_index]) - 3):
@@ -119,7 +178,8 @@ def determine_player_for_which_field_builds_diagonal_chain(distorted_state, targ
                         break
 
                 if target_field_builds_diagonal_chain_for_player_0:
-                    return 0
+                    if 0 not in players_for_which_field_builds_diagonal_chain:
+                        players_for_which_field_builds_diagonal_chain.append(0)
 
                 target_field_builds_diagonal_chain_for_player_1 = True
 
@@ -134,7 +194,8 @@ def determine_player_for_which_field_builds_diagonal_chain(distorted_state, targ
                         break
 
                 if target_field_builds_diagonal_chain_for_player_1:
-                    return 1
+                    if 1 not in players_for_which_field_builds_diagonal_chain:
+                        players_for_which_field_builds_diagonal_chain.append(1)
 
     for row_index in range(3, len(distorted_state)):
         for column_index in range(len(distorted_state[row_index]) - 3):
@@ -167,7 +228,8 @@ def determine_player_for_which_field_builds_diagonal_chain(distorted_state, targ
                         break
 
                 if target_field_builds_diagonal_chain_for_player_0:
-                    return 0
+                    if 0 not in players_for_which_field_builds_diagonal_chain:
+                        players_for_which_field_builds_diagonal_chain.append(0)
 
                 target_field_builds_diagonal_chain_for_player_1 = True
 
@@ -182,9 +244,10 @@ def determine_player_for_which_field_builds_diagonal_chain(distorted_state, targ
                         break
 
                 if target_field_builds_diagonal_chain_for_player_1:
-                    return 1
+                    if 1 not in players_for_which_field_builds_diagonal_chain:
+                        players_for_which_field_builds_diagonal_chain.append(1)
 
-    return -1
+    return players_for_which_field_builds_diagonal_chain
 
 
 def free_fields_in_column(state, column_index: int) -> int:

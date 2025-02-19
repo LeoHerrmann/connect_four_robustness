@@ -201,7 +201,7 @@ save_average_history_and_figures(average_history, win_rates_figure, game_length_
 print(average_history[len(average_history) - 1])
 
 print("STARTING MCTS VS RANDOM")
-results_subfolder = "mcts_vs_random" + str(number_of_mcts_simulations)
+results_subfolder = "mcts_vs_random_" + str(number_of_mcts_simulations)
 # agents = [RandomAgent("RA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
 agents = [MctsAgent("MC1", True, n_simulations=number_of_mcts_simulations), RandomAgent("RA1")]
 
