@@ -152,6 +152,12 @@ class ValueLossCallback(BaseCallback):
 def train_action_mask(env_fn, model_tuples: list[tuple[ModelWrapper, ModelWrapper]], steps=10_000, seed=0, **env_kwargs):
     """Train a single model to play as each agent in a zero-sum game environment using invalid action masking."""
 
+    # Reset lowest win rates and strongest opponents of model wrappers
+    for model_wrapper_tuple in model_tuples:
+        for model_wrapper in model_wrapper_tuple:
+            model_wrapper.lowest_win_rate = 1.0
+            model_wrapper.strongest_opponent_name = None
+
     # Evaluate all models against each other and save the strongest opponent
     for player_0_index in range(len(model_tuples)):
         for player_1_index in range(len(model_tuples)):
@@ -196,7 +202,7 @@ def train_action_mask(env_fn, model_tuples: list[tuple[ModelWrapper, ModelWrappe
 
         # Train each model against its strongest opponent
         env_0 = env_fn.env(**env_kwargs)
-        print(f"Starting training of {model_tuple[0].name} on {str(env_0.metadata['name'])}.")
+        print(f"Starting training of {model_tuple[0].name} against stationary {stationary_model_for_model_0.name} on {str(env_0.metadata['name'])}.")
         env_0 = SB3ActionMaskWrapper(env_0, stationary_model_for_model_0.model, True)
         env_0.reset(seed=seed)  # Must call reset() in order to re-define the spaces
         env_0 = ActionMasker(env_0, mask_fn)  # Wrap to enable masking (SB3 function)
@@ -212,7 +218,7 @@ def train_action_mask(env_fn, model_tuples: list[tuple[ModelWrapper, ModelWrappe
         model_0_policy_gradient_losses += value_loss_0_callback.policy_gradient_losses[1:]
 
         env_1 = env_fn.env(**env_kwargs)
-        print(f"Starting training of {model_tuple[1].name} on {str(env_0.metadata['name'])}.")
+        print(f"Starting training of {model_tuple[1].name} against stationary {stationary_model_for_model_1.name} on {str(env_0.metadata['name'])}.")
         env_1 = SB3ActionMaskWrapper(env_1, stationary_model_for_model_1.model, False)
         env_1.reset(seed=seed)  # Must call reset() in order to re-define the spaces
         env_1 = ActionMasker(env_1, mask_fn)  # Wrap to enable masking (SB3 function)
@@ -425,12 +431,7 @@ def evaluate_model_wrappers_against_each_other(env_fn, models: tuple[ModelWrappe
     return winrate_player_0, average_game_length
 
 
-def execute_self_play_training_loop(
-    number_of_iterations: int,
-    number_of_steps_per_iteration: int,
-    population_size: int
-):
-    # Initialize models
+def initialize_model_wrapper_tuples(population_size: int) -> list[tuple[ModelWrapper, ModelWrapper]]:
     model_wrapper_tuples = []
 
     for i in range(population_size):
@@ -438,7 +439,7 @@ def execute_self_play_training_loop(
         env_0 = SB3ActionMaskWrapper(env_0, None, True)
         env_0.reset(seed=0)
         env_0 = ActionMasker(env_0, mask_fn)
-        training_model_0 = MaskablePPO(MaskableActorCriticPolicy, env_0, verbose=1, learning_rate=0.00001)
+        training_model_0 = MaskablePPO(MaskableActorCriticPolicy, env_0, verbose=1, learning_rate=0.000005)
         training_model_0.set_random_seed(0)
         model_wrapper_0 = ModelWrapper(f"model_{i}_0", training_model_0)
 
@@ -446,11 +447,57 @@ def execute_self_play_training_loop(
         env_1 = SB3ActionMaskWrapper(env_1, None, False)
         env_1.reset(seed=0)
         env_1 = ActionMasker(env_1, mask_fn)
-        training_model_1 = MaskablePPO(MaskableActorCriticPolicy, env_1, verbose=1, learning_rate=0.00001)
+        training_model_1 = MaskablePPO(MaskableActorCriticPolicy, env_1, verbose=1, learning_rate=0.000005)
         training_model_1.set_random_seed(0)
         model_wrapper_1 = ModelWrapper(f"model_{i}_1", training_model_1)
 
         model_wrapper_tuples.append((model_wrapper_0, model_wrapper_1))
+
+    return model_wrapper_tuples
+
+
+def initialize_model_wrapper_tuples_from_files(model_file_paths: list[tuple[str, str]], names: list[tuple[str, str]]) -> list[tuple[ModelWrapper, ModelWrapper]]:
+    if len(model_file_paths) != len(names):
+        raise ValueError("Number of model file paths must be the same as number of names")
+
+    model_wrapper_tuples = []
+
+    for i in range(len(model_file_paths)):
+        model_0_file_path = model_file_paths[i][0]
+        model_0_name = names[i][0]
+        model_0 = MaskablePPO.load(model_0_file_path)
+        model_wrapper_0 = ModelWrapper(model_0_name, model_0)
+
+        model_1_file_path = model_file_paths[i][1]
+        model_1_name = names[i][1]
+        model_1 = MaskablePPO.load(model_1_file_path)
+        model_wrapper_1 = ModelWrapper(model_1_name, model_1)
+
+        model_wrapper_tuples.append((model_wrapper_0, model_wrapper_1))
+
+    return model_wrapper_tuples
+
+
+def execute_self_play_training_loop(
+    number_of_iterations: int,
+    number_of_steps_per_iteration: int,
+    population_size: int
+):
+    # Initialize models
+    model_wrapper_tuples = initialize_model_wrapper_tuples(population_size)
+    #model_wrapper_tuples = initialize_model_wrapper_tuples_from_files(
+    #    [
+    #        (
+    #            "models_for_initialization/small_500_00001/model_0_0_20250220-114117.zip",
+    #            "models_for_initialization/small_500_00001/model_0_1_20250220-114117.zip"
+    #        ),
+    #        (
+    #            "models_for_initialization/small_500_00001/model_1_0_20250220-114117.zip",
+    #            "models_for_initialization/small_500_00001/model_1_1_20250220-114117.zip"
+    #        )
+    #    ],
+    #    [("model_0_0", "model_0_1"), ("model_1_0", "model_1_1")],
+    #)
 
     training_progress_data = []
 
@@ -520,9 +567,9 @@ if __name__ == "__main__":
 
     # evaluate_model_against_other_models("connect_four_v3_20250207-182953.zip", [None])
 
-    iterations_count = 40
+    iterations_count = 500
     step_count_per_iteration = 4096
-    size_of_population = 3
+    size_of_population = 2
 
     execute_self_play_training_loop(
         iterations_count,
