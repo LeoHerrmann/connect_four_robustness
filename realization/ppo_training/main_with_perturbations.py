@@ -208,7 +208,7 @@ def train_action_mask(env_fn, model_tuples: list[tuple[ModelWrapper, ModelWrappe
         env_0 = ActionMasker(env_0, mask_fn)  # Wrap to enable masking (SB3 function)
         model_tuple[0].model.set_env(env_0)
         value_loss_0_callback = ValueLossCallback()
-        model_tuple[0].model.learn(total_timesteps=steps, callback=value_loss_0_callback)
+        model_tuple[0].model.learn(total_timesteps=steps, callback=value_loss_0_callback, reset_num_timesteps=False)
         # model_tuple[0].model.save(f"weights_from_main_with_perturbations/{model_tuple[0].name}_{time.strftime('%Y%m%d-%H%M%S')}")
         # print(f"Model of {model_tuple[0].name} has been saved.")
         print(f"Finished training on {str(env_0.unwrapped.metadata['name'])}.\n")
@@ -224,7 +224,7 @@ def train_action_mask(env_fn, model_tuples: list[tuple[ModelWrapper, ModelWrappe
         env_1 = ActionMasker(env_1, mask_fn)  # Wrap to enable masking (SB3 function)
         model_tuple[1].model.set_env(env_1)
         value_loss_1_callback = ValueLossCallback()
-        model_tuple[1].model.learn(total_timesteps=steps, callback=value_loss_1_callback)
+        model_tuple[1].model.learn(total_timesteps=steps, callback=value_loss_1_callback, reset_num_timesteps=False)
         # model_tuple[1].model.save(f"weights_from_main_with_perturbations/{model_tuple[1].name}_{time.strftime('%Y%m%d-%H%M%S')}")
         # print(f"Model of {model_tuple[1].name} has been saved.")
         print(f"Finished training on {str(env_1.unwrapped.metadata['name'])}.\n")
@@ -439,7 +439,7 @@ def initialize_model_wrapper_tuples(population_size: int) -> list[tuple[ModelWra
         env_0 = SB3ActionMaskWrapper(env_0, None, True)
         env_0.reset(seed=0)
         env_0 = ActionMasker(env_0, mask_fn)
-        training_model_0 = MaskablePPO(MaskableActorCriticPolicy, env_0, verbose=1, learning_rate=0.000005)
+        training_model_0 = MaskablePPO(MaskableActorCriticPolicy, env_0, verbose=1, learning_rate=0.00001)
         training_model_0.set_random_seed(0)
         model_wrapper_0 = ModelWrapper(f"model_{i}_0", training_model_0)
 
@@ -447,7 +447,7 @@ def initialize_model_wrapper_tuples(population_size: int) -> list[tuple[ModelWra
         env_1 = SB3ActionMaskWrapper(env_1, None, False)
         env_1.reset(seed=0)
         env_1 = ActionMasker(env_1, mask_fn)
-        training_model_1 = MaskablePPO(MaskableActorCriticPolicy, env_1, verbose=1, learning_rate=0.000005)
+        training_model_1 = MaskablePPO(MaskableActorCriticPolicy, env_1, verbose=1, learning_rate=0.00001)
         training_model_1.set_random_seed(0)
         model_wrapper_1 = ModelWrapper(f"model_{i}_1", training_model_1)
 
@@ -512,6 +512,9 @@ def execute_self_play_training_loop(
             seed=0,
             **env_kwargs
         )
+
+        # Save and load models
+        model_wrapper_tuples = save_and_load_model_tuples(model_wrapper_tuples)
 
         # Evaluate against random model
         accumulated_winrate = 0
