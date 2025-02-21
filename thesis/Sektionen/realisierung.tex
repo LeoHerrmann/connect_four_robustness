@@ -18,6 +18,8 @@ Die Implementierung der Messumgebung baut auf der offiziellen Implementierung de
 
 Im Zuge der Realisierung der Messumgebung ist aufgefallen, dass wenn zwei Agenten (Spieler 0 und Spieler 1) alle Aktionen im Spiel mit derselben Wahrscheinlichkeit rein zufällig wählen, nach 1000 Spielen Spieler 0 mit 55,20 \% gegenüber Spieler 1 mit 44,30 \% eine wesentlich höhere Gewinnrate erzielt.
 
+Um sicherzustellen, dass es sich dabei nicht um einen stochastisch bedingten Messfehler handelt, wurde Binomialtests durchgeführt. Bei gleichen Chancen für beide Spieler wird eine Gewinnrate von jeweils 50 \% erwartet. Die Tests mit $n = 995$ entschiedenen Spielen, wovon $k_1 = 552$ durch den ersten Spieler und $k_2 = 443$ durch den zweiten Spieler gewonnen wurden, liefern unter der Hypothese, dass die beiden Spieler gleiche Chancen haben, p-Werte von 0,0060 und 0,0006, was unter dem Signifikanzniveau von $\alpha = 0.05$ liegt. Dadurch wird die Hypothese verworfen, was bedeutet, dass die Differenz der Gewinnraten trotz stochastischer Schwankungen signifikant ist.
+
 \begin{figure}[ht!]%[!tbp]
 	\begin{subfigure}[b]{0.48\textwidth}
 		\includegraphics[width=\textwidth]{Bilder/random_vs_random_constant_player_order_graph_win_rates.png}
@@ -35,7 +37,7 @@ Im Zuge der Realisierung der Messumgebung ist aufgefallen, dass wenn zwei Agente
 
 Das lässt sich dadurch erklären, dass die Vier-Gewinnt-Umgebung so implementiert ist, dass Spieler 0 immer der Spieler ist, der den ersten Stein setzen darf. Er ist damit seinem Gegenspieler immer einen Spielzug voraus, was die Wahrscheinlichkeit erhöht, als erstes Vier Steine in eine Reihe zu bekommen. An dieser Stelle sei nochmals zu erwähnen, dass bei Vier Gewinnt der erste Spieler bei optimaler Spielweise stets gewinnen kann. Um ausgeglichene Messungen zu gewährleisten, muss daher sichergestellt werden, dass sich im Rahmen der Messungen die beiden Spieler mit dem ersten Zug abwechseln.
 
-Die Vier-Gewinnt-Umgebung von PettingZoo wurde daher erweitert, um einen Parameter entgegenzunehmen und zu verarbeiten, der bestimmt, welcher Spieler anfangen soll. Die Messumgebung wechselt den Wert des Parameters nach jedem Spiel durch. Nach dieser Änderung weisen die Spiele wesentlich ausgeglichenere Ergebnisse auf. Spieler 0 gewinnt 50,30 \% und Spieler 1 49,50 \% der Spiele. Die durchschnittliche Spieldauer bleibt dabei mit 22,48 Zügen vor der Änderung gegenüber 22,26 Zügen nach der Änderung nahezu unverändert.
+Die Vier-Gewinnt-Umgebung von PettingZoo wurde daher erweitert, um einen Parameter entgegenzunehmen und zu verarbeiten, der bestimmt, welcher Spieler anfangen soll. Die Messumgebung wechselt den Wert des Parameters nach jedem Spiel durch. Nach dieser Änderung weisen die Spiele wesentlich ausgeglichenere Ergebnisse auf. Spieler 0 gewinnt 50,30 \% und Spieler 1 49,50 \% der Spiele. Der zuvor bereits durchgeführte Binomialtest liefert mit den Werten $n = 998$, $k_1 = 503$ und $k_2 = 495$ p-Werte von jeweils 0.8246, was deutlich über dem Signifikanzniveau von $\alpha = 0.05$ liegt, wodurch die Hypothese behalten wird. Die durchschnittliche Spieldauer bleibt dabei mit 22,48 Zügen vor der Änderung gegenüber 22,26 Zügen nach der Änderung nahezu unverändert.
 
 \begin{figure}[ht!]%[!tbp]
 	\begin{subfigure}[b]{0.48\textwidth}
