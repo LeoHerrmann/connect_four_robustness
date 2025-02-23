@@ -10,6 +10,7 @@ import gymnasium as gym
 from sb3_contrib import MaskablePPO
 from sb3_contrib.common.maskable.policies import MaskableActorCriticPolicy
 from sb3_contrib.common.wrappers import ActionMasker
+from stable_baselines3.common.utils import safe_mean
 
 import pettingzoo.utils
 from pettingzoo.classic import connect_four_v3
@@ -126,8 +127,8 @@ class ValueLossCallback(BaseCallback):
     def _on_rollout_end(self) -> None:
         self.value_losses.append(self.logger.name_to_value["train/value_loss"])
         self.policy_gradient_losses.append(self.logger.name_to_value["train/policy_gradient_loss"])
-        #self.mean_episode_lengths.append(self.logger.name_to_value["rollout/ep_len_mean"])
-        #self.mean_episode_rewards.append(self.logger.name_to_value["rollout/ep_rew_mean"])
+        self.mean_episode_lengths.append(safe_mean([ep_info["l"] for ep_info in self.model.ep_info_buffer]))
+        self.mean_episode_rewards.append(safe_mean([ep_info["r"] for ep_info in self.model.ep_info_buffer]))
 
 
 def train_action_mask(env_fn, model: MaskablePPO, steps=10_000, seed=0, **env_kwargs):
@@ -156,7 +157,7 @@ def train_action_mask(env_fn, model: MaskablePPO, steps=10_000, seed=0, **env_kw
     mean_episode_lengths += value_loss_0_callback.mean_episode_lengths[1:]
     mean_episode_rewards += value_loss_0_callback.mean_episode_rewards[1:]
 
-    return value_losses, policy_gradient_losses
+    return value_losses, policy_gradient_losses, mean_episode_lengths, mean_episode_rewards
 
 
 def evaluate_model_wrapper_tuple_against_random_agent(env_fn, model: MaskablePPO, num_games, **env_kwargs):
@@ -252,7 +253,7 @@ def execute_training(number_of_steps_per_iteration: int, learning_rate: float):
     training_progress_data = []
 
     # Train model
-    value_losses, policy_gradient_losses = train_action_mask(
+    value_losses, policy_gradient_losses, mean_episode_lengths, mean_episode_rewards = train_action_mask(
         env_fn,
         model,
         steps=number_of_steps_per_iteration,
@@ -272,8 +273,8 @@ def execute_training(number_of_steps_per_iteration: int, learning_rate: float):
     training_progress_data.append({
         "winrate_random_final": round(winrate, 3),
         "average_game_length_random_final": average_game_length,
-        #"mean_episode_lengths": [np.round(mean_episode_length, 3).item() for mean_episode_length in mean_episode_lengths],
-        #"mean_episode_rewards": [np.round(mean_episode_reward, 3).item() for mean_episode_reward in mean_episode_rewards],
+        "mean_episode_lengths": [np.round(mean_episode_length, 3).item() for mean_episode_length in mean_episode_lengths],
+        "mean_episode_rewards": [np.round(mean_episode_reward, 3).item() for mean_episode_reward in mean_episode_rewards],
         "value_losses": [np.round(value_loss, 3).item() for value_loss in value_losses],
         "policy_gradient_losses": [np.round(policy_gradient_loss, 4).item() for policy_gradient_loss in policy_gradient_losses],
         "time_stamp": time.strftime('%Y%m%d-%H%M%S')
