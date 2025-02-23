@@ -30,6 +30,8 @@ class DistortionGenerator:
         distorted_state = copy.deepcopy(state)
 
         for i in range(self.number_of_fields_to_distort):
+            # Determine which pieces can be added or removed
+
             coordinates_of_removable_pieces = []
             coordinates_of_addable_pieces = []
 
@@ -69,8 +71,14 @@ class DistortionGenerator:
                             ):
                                 coordinates_of_addable_pieces.append((row_index, column_index, 0))
 
+            # Randomly select a piece to add or to remove if possible
 
-            rn = random.randint(0, len(coordinates_of_removable_pieces) + len(coordinates_of_addable_pieces) - 1)
+            maximum_for_rn = len(coordinates_of_removable_pieces) + len(coordinates_of_addable_pieces) - 1
+
+            if maximum_for_rn == 0:
+                break
+
+            rn = random.randint(0, maximum_for_rn)
 
             if rn < len(coordinates_of_removable_pieces):
                 row_index_of_piece_to_remove = coordinates_of_removable_pieces[rn][0]

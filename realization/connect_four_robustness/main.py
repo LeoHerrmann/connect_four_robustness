@@ -210,4 +210,3 @@ win_rates_figure, game_length_figure = generate_figures(average_history)
 save_absolute_history(absolute_history, results_subfolder)
 save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
 print(average_history[len(average_history) - 1])
-
