@@ -49,11 +49,15 @@ class DistortionGenerator:
                     if row_index < len(distorted_state) - 1:
                         field_below = distorted_state[row_index + 1][column_index]
                         field_below_is_occupied = field_below[0] == 1 or field_below[1] == 1
-                        players_for_which_current_field_builds_diagonal_chain = determine_players_for_which_field_builds_diagonal_chain(distorted_state, row_index, column_index)
-                        players_for_which_current_field_builds_horizontal_chain = determine_players_for_which_field_builds_horizontal_chain(distorted_state, row_index, column_index)
-                        players_for_which_current_field_builds_vertical_chain = determine_players_for_which_field_builds_horizontal_chain(distorted_state, row_index, column_index)
 
                         if not current_field_is_occupied and not field_below_is_occupied and number_of_free_fields_in_column >= 2:
+                            players_for_which_current_field_builds_diagonal_chain = determine_players_for_which_field_builds_diagonal_chain(
+                                distorted_state, row_index, column_index)
+                            players_for_which_current_field_builds_horizontal_chain = determine_players_for_which_field_builds_horizontal_chain(
+                                distorted_state, row_index, column_index)
+                            players_for_which_current_field_builds_vertical_chain = determine_players_for_which_field_builds_vertical_chain(
+                                distorted_state, row_index, column_index)
+
                             if (1 not in players_for_which_current_field_builds_diagonal_chain and
                                     1 not in players_for_which_current_field_builds_horizontal_chain and
                                     1 not in players_for_which_current_field_builds_vertical_chain
