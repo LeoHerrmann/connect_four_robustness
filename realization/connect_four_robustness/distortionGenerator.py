@@ -75,7 +75,7 @@ class DistortionGenerator:
 
             maximum_for_rn = len(coordinates_of_removable_pieces) + len(coordinates_of_addable_pieces) - 1
 
-            if maximum_for_rn == 0:
+            if maximum_for_rn < 0:
                 break
 
             rn = random.randint(0, maximum_for_rn)
