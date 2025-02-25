@@ -178,7 +178,7 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
         pad_inches=0
     )
 
-    plt.show()
+    plt.show(block=False)
 
 
 # agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250214-024650.zip")]
@@ -186,27 +186,87 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
 
 alternate_player_order = False
 distortion_generator = DistortionGenerator(0, 0.0)
-number_of_games = 100
-number_of_mcts_simulations = 5000
 
-print("STARTING RANDOM VS MCTS")
-results_subfolder = "random_vs_mcts_" + str(number_of_mcts_simulations)
-agents = [RandomAgent("RA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
+# Measure PPO vs Random with distortions
+
+number_of_games = 1000
+
+numbers_of_fields_to_distort = [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+
+for number_of_fields_to_distort in numbers_of_fields_to_distort:
+    print("STARTING WITH", number_of_fields_to_distort, "FIELDS TO DISTORT")
+
+    distortion_generator = DistortionGenerator(number_of_fields_to_distort, 0.0)
+
+    print("STARTING RANDOM VS PPO")
+    results_subfolder = "random_vs_ppo_" + str(number_of_fields_to_distort) + "_0"
+    agents = [RandomAgent("RA1"), PpoAgent("PA1", "ppoWeights/ppo_model_random_1000000_0_00001.zip")]
+
+    absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+    win_rates_figure, game_length_figure = generate_figures(average_history)
+    save_absolute_history(absolute_history, results_subfolder)
+    save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
+    print(average_history[len(average_history) - 1])
+
+    print("STARTING PPO VS RANDOM")
+    results_subfolder = "ppo_vs_random_" + str(number_of_fields_to_distort) + "_0"
+    agents = [PpoAgent("PA1", "ppoWeights/ppo_model_random_1000000_0_00001.zip"), RandomAgent("RA1")]
+
+    absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+    win_rates_figure, game_length_figure = generate_figures(average_history)
+    save_absolute_history(absolute_history, results_subfolder)
+    save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
+    print(average_history[len(average_history) - 1])
+
+probabilities_of_distorting_actions = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+
+for probability_of_distorting_actions in probabilities_of_distorting_actions:
+    print("STARTING WITH", probability_of_distorting_actions, "Probability of distorting actions")
+
+    distortion_generator = DistortionGenerator(0, probability_of_distorting_actions)
+
+    print("STARTING RANDOM VS PPO")
+    results_subfolder = "random_vs_ppo_" + "0_" + str(probability_of_distorting_actions)
+    agents = [RandomAgent("RA1"), PpoAgent("PA1", "ppoWeights/ppo_model_random_1000000_0_00001.zip")]
+
+    absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+    win_rates_figure, game_length_figure = generate_figures(average_history)
+    save_absolute_history(absolute_history, results_subfolder)
+    save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
+    print(average_history[len(average_history) - 1])
+
+    print("STARTING PPO VS RANDOM")
+    results_subfolder = "ppo_vs_random_" + "0_" + str(probability_of_distorting_actions)
+    agents = [PpoAgent("PA1", "ppoWeights/ppo_model_random_1000000_0_00001.zip"), RandomAgent("RA1")]
+
+    absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+    win_rates_figure, game_length_figure = generate_figures(average_history)
+    save_absolute_history(absolute_history, results_subfolder)
+    save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
+    print(average_history[len(average_history) - 1])
+
+# Measure MCTS vs Random with distortions
+
+# distortion_generator = DistortionGenerator(0, 0.0)
+# number_of_games = 100
+# number_of_mcts_simulations = 5000
+
+# print("STARTING RANDOM VS MCTS")
+# results_subfolder = "random_vs_mcts_" + str(number_of_mcts_simulations)
+# agents = [RandomAgent("RA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
+
+# absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+# win_rates_figure, game_length_figure = generate_figures(average_history)
+# save_absolute_history(absolute_history, results_subfolder)
+# save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
+# print(average_history[len(average_history) - 1])
+
+# print("STARTING MCTS VS RANDOM")
+# results_subfolder = "mcts_vs_random_" + str(number_of_mcts_simulations)
 # agents = [MctsAgent("MC1", True, n_simulations=number_of_mcts_simulations), RandomAgent("RA1")]
 
-absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
-win_rates_figure, game_length_figure = generate_figures(average_history)
-save_absolute_history(absolute_history, results_subfolder)
-save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
-print(average_history[len(average_history) - 1])
-
-print("STARTING MCTS VS RANDOM")
-results_subfolder = "mcts_vs_random_" + str(number_of_mcts_simulations)
-# agents = [RandomAgent("RA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
-agents = [MctsAgent("MC1", True, n_simulations=number_of_mcts_simulations), RandomAgent("RA1")]
-
-absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
-win_rates_figure, game_length_figure = generate_figures(average_history)
-save_absolute_history(absolute_history, results_subfolder)
-save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
-print(average_history[len(average_history) - 1])
+# absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+# win_rates_figure, game_length_figure = generate_figures(average_history)
+# save_absolute_history(absolute_history, results_subfolder)
+# save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
+# print(average_history[len(average_history) - 1])
