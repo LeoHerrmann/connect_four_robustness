@@ -1,5 +1,6 @@
 import json
 import glob
+import pathlib
 import matplotlib
 matplotlib.use('gtk3agg')
 import matplotlib.pyplot as plt
@@ -9,7 +10,7 @@ def read_absolute_history(directory: str) -> list[dict]:
 	file_pattern = directory + "*absolute_history.json"
 	matching_files = glob.glob(file_pattern)
 
-	if len(matching_files) != 0:
+	if len(matching_files) != 1:
 		raise FileNotFoundError(f"Need exactly 1 file matching {file_pattern} but found {len(matching_files)}")
 
 	with open(matching_files[0]) as f:
@@ -33,7 +34,7 @@ def merge_absolute_history(m_vs_r_abs_his: list[dict], r_vs_m_abs_his: list[dict
 		else:
 			raise ValueError(f"Winner must be either player_0, player_1, draw. But it was {winner_history_item_1}")
 
-		winner_history_item_2 = m_vs_r_abs_his[i]["winner"]
+		winner_history_item_2 = r_vs_m_abs_his[i]["winner"]
 
 		if winner_history_item_2 == "player_1":
 			winner_new_history_item_2 = "method"
@@ -57,7 +58,7 @@ def merge_absolute_history(m_vs_r_abs_his: list[dict], r_vs_m_abs_his: list[dict
 		merged_absolute_history.append(new_history_item_1)
 		merged_absolute_history.append(new_history_item_2)
 
-		return merged_absolute_history
+	return merged_absolute_history
 
 
 def generate_avgerage_history(abs_his: list[dict]) -> list[dict]:
@@ -70,11 +71,11 @@ def generate_avgerage_history(abs_his: list[dict]) -> list[dict]:
 	for i in range(len(abs_his)):
 		game_count = i + 1
 
-		total_game_length += average_history[i]["game_length"]
+		total_game_length += abs_his[i]["game_length"]
 
-		if average_history[i]["winner"] == "method":
+		if abs_his[i]["winner"] == "method":
 			total_wins_method += 1
-		elif average_history[i]["winner"] == "random":
+		elif abs_his[i]["winner"] == "random":
 			total_wins_random += 1
 
 		new_history_item = {
@@ -85,10 +86,10 @@ def generate_avgerage_history(abs_his: list[dict]) -> list[dict]:
 
 		average_history.append(new_history_item)
 
-		return average_history
+	return average_history
 
 
-def generate_avgerage_history_figures(average_history: list[dict]) -> (matplotlib.pyplot.figure, matplotlib.pyplot.figure):
+def generate_and_save_avgerage_history_figures(average_history: list[dict], method_name: str, destination_directory: str) -> None:
 	matplotlib.rcParams["figure.dpi"] = 300
 	matplotlib.rcParams["savefig.dpi"] = 300
 
@@ -98,18 +99,28 @@ def generate_avgerage_history_figures(average_history: list[dict]) -> (matplotli
 
 	matplotlib.rc('font', **font)
 
-	player_0_win_rates = [(item["win_rate_mcts"] * 100) for item in average_history]
+	player_0_win_rates = [(item["win_rate_method"] * 100) for item in average_history]
 	player_1_win_rates = [(item["win_rate_random"] * 100) for item in average_history]
 	average_game_lengths = [item["average_game_length"] for item in average_history]
 	game_indices = range(1, len(average_history) + 1)
 
 	win_rates_figure = plt.figure(1)
-	plt.plot(game_indices, player_0_win_rates, label="MCTS")
+	plt.plot(game_indices, player_0_win_rates, label=method_name.upper())
 	plt.plot(game_indices, player_1_win_rates, label="Zufällig")
 	plt.ylabel("Gewinnrate [%]")
 	plt.xlabel("Anzahl der Spiele")
 	plt.grid(True)
 	plt.legend()
+
+	win_rates_figure.savefig(
+		destination_directory + "win_rates_figure.jpg",
+		bbox_inches='tight',
+		pad_inches=0
+	)
+
+	plt.show(block=False)
+	plt.clf()
+	plt.close()
 
 	game_length_figure = plt.figure(2)
 	plt.plot(game_indices, average_game_lengths, color="black", label="Average Game Length")
@@ -117,30 +128,22 @@ def generate_avgerage_history_figures(average_history: list[dict]) -> (matplotli
 	plt.xlabel("Anzahl der Spiele")
 	plt.grid(True)
 
-	plt.grid(True)
-
-	return win_rates_figure, game_length_figure
-
-
-def save_history(history: list[dict], destination_path: str, key: str) -> None:
-	with open(destination_path, "w+") as f:
-		json.dump({key: history}, f)
-
-
-def save_figures(win_rates_figure, game_length_figure, destination_directory: str) -> None:
-	win_rates_figure.savefig(
-		destination_directory + "win_rates_figure.jpg",
-		bbox_inches='tight',
-		pad_inches=0
-	)
-
 	game_length_figure.savefig(
 		destination_directory + "game_length_figure.jpg",
 		bbox_inches='tight',
 		pad_inches=0
 	)
 
-	plt.show()
+	plt.show(block=False)
+	plt.clf()
+	plt.close()
+
+
+def save_history(history: list[dict], destination_path: str, key: str) -> None:
+	pathlib.Path( "/".join(destination_path.split("/")[:-1])).mkdir(parents=True, exist_ok=True)
+
+	with open(destination_path, "w+") as f:
+		json.dump({key: history}, f)
 
 
 methods = ["mcts", "ppo"]
@@ -156,34 +159,31 @@ for method in methods:
 	for i in [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]:
 		m_vs_r_abs_his = read_absolute_history(method_read_directory + f"{method}_vs_random_0_{i}/")
 		r_vs_m_abs_his = read_absolute_history(method_read_directory + f"random_vs_{method}_0_{i}/")
-		write_dir = f"uncertain_{uncertainty}/alternating_player_order/{method}_vs_random_0_i/"
+		write_dir = f"uncertain_{uncertainty}/alternating_player_order/{method}_vs_random_0_{i}/"
 		
 		merged_abs_his = merge_absolute_history(m_vs_r_abs_his, r_vs_m_abs_his)
 		merged_avg_his = generate_avgerage_history(merged_abs_his)
-		win_rate_graph, game_length_graph = generate_avgerage_history_figures(merged_avg_his)
+		generate_and_save_avgerage_history_figures(merged_avg_his, method, write_dir)
 
-		save_history(merged_abs_his, write_dir + "/absolute_history.json", "absolute_history")
-		save_history(merged_avg_his, write_dir + "/average_history.json", "average_history")
-		save_figures(win_rate_graph, game_length_graph, write_dir)
-
+		save_history(merged_abs_his, write_dir + "absolute_history.json", "absolute_history")
+		save_history(merged_avg_his, write_dir + "average_history.json", "average_history")
 
 # Merge histories with uncertain observations
 
 uncertainty = "observations"
-read_directory = f"{uncertainty}/constant_player_order/"
+read_directory = f"uncertain_{uncertainty}/constant_player_order/"
 
 for method in methods:
 	method_read_directory = read_directory + f"{method}_vs_random_uncertain_{uncertainty}/"
 
 	for i in [0, 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]:
-		m_vs_r_abs_his = read_absolute_history(f"{method}_vs_random_{i}_0/")
-		r_vs_m_abs_his = read_absolute_history(f"random_vs_{method}_{i}_0/")
-		write_dir = f"uncertain_{uncertainty}/alternating_player_order/{method}_vs_random_i_0/"
+		m_vs_r_abs_his = read_absolute_history(method_read_directory + f"{method}_vs_random_{i}_0/")
+		r_vs_m_abs_his = read_absolute_history(method_read_directory + f"random_vs_{method}_{i}_0/")
+		write_dir = f"uncertain_{uncertainty}/alternating_player_order/{method}_vs_random_{i}_0/"
 		
 		merged_abs_his = merge_absolute_history(m_vs_r_abs_his, r_vs_m_abs_his)
 		merged_avg_his = generate_avgerage_history(merged_abs_his)
-		win_rate_graph, game_length_graph = generate_avgerage_history_figures(merged_avg_his)
+		generate_and_save_avgerage_history_figures(merged_avg_his, method, write_dir)
 		
-		save_history(merged_abs_his, write_dir + "/absolute_history.json", "absolute_history")
-		save_history(merged_avg_his, write_dir + "/average_history.json", "average_history")
-		save_figures(win_rate_graph, game_length_graph, write_dir)
+		save_history(merged_abs_his, write_dir + "absolute_history.json", "absolute_history")
+		save_history(merged_avg_his, write_dir + "average_history.json", "average_history")
