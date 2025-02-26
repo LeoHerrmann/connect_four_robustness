@@ -167,11 +167,11 @@ def train_action_mask(env_fn, model_tuples: list[tuple[ModelWrapper, ModelWrappe
 
             player_1_win_rate = 1 - player_0_win_rate
 
-            if player_0_win_rate < model_tuples[player_0_index][0].lowest_win_rate:
+            if player_0_win_rate <= model_tuples[player_0_index][0].lowest_win_rate:
                 model_tuples[player_0_index][0].lowest_win_rate = player_0_win_rate
                 model_tuples[player_0_index][0].strongest_opponent_name = model_tuples[player_1_index][1].name
 
-            if player_1_win_rate < model_tuples[player_1_index][1].lowest_win_rate:
+            if player_1_win_rate <= model_tuples[player_1_index][1].lowest_win_rate:
                 model_tuples[player_1_index][1].lowest_win_rate = player_1_win_rate
                 model_tuples[player_1_index][1].strongest_opponent_name = model_tuples[player_0_index][0].name
 
@@ -347,7 +347,7 @@ def evaluate_model_wrapper_tuple_against_random_agent(env_fn, model_wrapper_tupl
 
 
 
-def evaluate_model_wrappers_against_each_other(env_fn, models: tuple[ModelWrapper, ModelWrapper], num_games=100, **env_kwargs):
+def evaluate_model_wrappers_against_each_other(env_fn, models: tuple[ModelWrapper, ModelWrapper], num_games=500, **env_kwargs):
     # Evaluate a trained agent vs a random agent
     env = env_fn.env(**env_kwargs)
 
@@ -465,12 +465,14 @@ def initialize_model_wrapper_tuples_from_files(model_file_paths: list[tuple[str,
     for i in range(len(model_file_paths)):
         model_0_file_path = model_file_paths[i][0]
         model_0_name = names[i][0]
-        model_0 = MaskablePPO.load(model_0_file_path)
+        model_0_custom_objects = {'learning_rate': 0.00001}
+        model_0 = MaskablePPO.load(model_0_file_path, custom_objects=model_0_custom_objects)
         model_wrapper_0 = ModelWrapper(model_0_name, model_0)
 
         model_1_file_path = model_file_paths[i][1]
         model_1_name = names[i][1]
-        model_1 = MaskablePPO.load(model_1_file_path)
+        model_1_custom_objects = {'learning_rate': 0.00001}
+        model_1 = MaskablePPO.load(model_1_file_path, custom_objects=model_1_custom_objects)
         model_wrapper_1 = ModelWrapper(model_1_name, model_1)
 
         model_wrapper_tuples.append((model_wrapper_0, model_wrapper_1))
@@ -484,20 +486,20 @@ def execute_self_play_training_loop(
     population_size: int
 ):
     # Initialize models
-    model_wrapper_tuples = initialize_model_wrapper_tuples(population_size)
-    #model_wrapper_tuples = initialize_model_wrapper_tuples_from_files(
-    #    [
-    #        (
-    #            "models_for_initialization/small_500_00001/model_0_0_20250220-114117.zip",
-    #            "models_for_initialization/small_500_00001/model_0_1_20250220-114117.zip"
-    #        ),
-    #        (
-    #            "models_for_initialization/small_500_00001/model_1_0_20250220-114117.zip",
-    #            "models_for_initialization/small_500_00001/model_1_1_20250220-114117.zip"
-    #        )
-    #    ],
-    #    [("model_0_0", "model_0_1"), ("model_1_0", "model_1_1")],
-    #)
+    #model_wrapper_tuples = initialize_model_wrapper_tuples(population_size)
+    model_wrapper_tuples = initialize_model_wrapper_tuples_from_files(
+        [
+            (
+                "models_for_initialization/ppo_model_random_1000000_0_00001.zip",
+                "models_for_initialization/ppo_model_random_1000000_0_00001.zip"
+            ),
+            (
+                "models_for_initialization/ppo_model_random_1000000_0_00001.zip",
+                "models_for_initialization/ppo_model_random_1000000_0_00001.zip"
+            )
+        ],
+        [("model_0_0", "model_0_1"), ("model_1_0", "model_1_1")],
+    )
 
     training_progress_data = []
 
@@ -524,7 +526,7 @@ def execute_self_play_training_loop(
             _, _, winrate, _, average_game_length = evaluate_model_wrapper_tuple_against_random_agent(
                 env_fn,
                 model_wrapper_tuple,
-                num_games=100,
+                num_games=500,
                 **env_kwargs
             )
 
