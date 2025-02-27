@@ -6,20 +6,22 @@ from agent import Agent
 # from custom_tictactoe import tictactoe
 import copy
 
+
 class MctsNode:
     id_counter = 0
 
-    def __init__(self, state, selfIsNextPlayer: bool, parent=None, action=None):
+    def __init__(self, state, self_is_next_player: bool, parent=None, action=None):
         MctsNode.id_counter += 1
 
         self.id: int = self.id_counter
         self.parent: MctsNode = parent
         self.children: list[MctsNode] = []
         self.state = state
-        self.selfIsNextPlayer = selfIsNextPlayer
+        self.selfIsNextPlayer = self_is_next_player
         self.action: int = action
         self.visit_count: int = 0
-        self.total_reward: float = 0
+        self.player_0_wins: int = 0
+        self.player_1_wins: int = 0
 
     def pretty_state(self):
         pretty_field = ["_"] * (6 * 7)
@@ -55,8 +57,9 @@ class MctsNode:
 
 #        return pretty_field
 
+
 class MctsAgent(Agent):
-    def __init__(self, name, is_first_player, n_simulations=15000, c_uct=math.sqrt(2)):
+    def __init__(self, name, is_first_player, n_simulations=5000, c_uct=math.sqrt(2)):
         super().__init__(name)
         self.is_first_player = is_first_player
         self.n_simulations = n_simulations
@@ -88,8 +91,8 @@ class MctsAgent(Agent):
 
         for _ in range(self.n_simulations):
             node_to_simulate = self.select(root_node)
-            result = self.simulate(node_to_simulate)
-            self.backpropagate(node_to_simulate, result)
+            winner = self.simulate(node_to_simulate)
+            self.backpropagate(node_to_simulate, winner)
 
         # Debugging
         if len(root_node.children) == 0:
@@ -170,7 +173,7 @@ class MctsAgent(Agent):
 
             return new_node
 
-    def simulate(self, leaf_node: MctsNode) -> float:
+    def simulate(self, leaf_node: MctsNode) -> str | None:
         environment = custom_connect_four_v3.env()
         # environment = tictactoe.env()
         environment.reset(options={
@@ -181,23 +184,30 @@ class MctsAgent(Agent):
         observation, _, termination, _, _ = environment.last()
 
         while not termination:
-            action_mask  = observation["action_mask"]
+            action_mask = observation["action_mask"]
             legal_actions = [i for i, is_legal in enumerate(action_mask) if is_legal]
             chosen_action = random.choice(legal_actions)
             environment.step(chosen_action)
             observation, _, termination, _, _ = environment.last()
 
-        if self.is_first_player:
-            return environment.rewards["player_0"]
+        if environment.rewards["player_0"] == 1:
+            return "player_0"
+        elif environment.rewards["player_1"] == 1:
+            return "player_1"
         else:
-            return environment.rewards["player_1"]
+            return None
 
-    def backpropagate(self, simulated_node: MctsNode, reward: float) -> None:
+    def backpropagate(self, simulated_node: MctsNode, winner: str) -> None:
         node = simulated_node
 
         while node is not None:
             node.visit_count += 1
-            node.total_reward += reward
+
+            if winner == "player_0":
+                node.player_0_wins += 1
+            elif winner == "player_1":
+                node.player_1_wins += 1
+
             node = node.parent
 
     def get_child_with_best_uct_score(self, root_node: MctsNode) -> MctsNode:
@@ -233,5 +243,18 @@ class MctsAgent(Agent):
         return random.choice(nodes_with_highest_visitation_count)
 
     def calculate_uct(self, node: MctsNode) -> float:
+        if (node.selfIsNextPlayer and self.is_first_player) or (not node.selfIsNextPlayer and not self.is_first_player):
+            current_player = "player_1"
+        elif (not node.selfIsNextPlayer and self.is_first_player) or (node.selfIsNextPlayer and not self.is_first_player):
+            current_player = "player_0"
+        else:
+            raise ValueError("That is weird. For some reason the next player could not be determined. Please debug this code.")
+
+        if current_player == "player_0":
+            winning_pct = node.player_0_wins / node.visit_count
+        else:
+            winning_pct = node.player_1_wins / node.visit_count
+
         exploration = math.sqrt(math.log(node.parent.visit_count) / node.visit_count)
-        return node.total_reward / node.visit_count + self.c_uct * exploration
+
+        return winning_pct + self.c_uct * exploration

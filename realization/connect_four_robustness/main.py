@@ -77,8 +77,8 @@ def play_games(number_of_games, agents: list[Agent], alternate_player_order=True
         if i % 2 == 0 and alternate_player_order:
             game_options["reverse_order"] = True
 
-        # env = custom_connect_four_v3.env(render_mode="human")
-        env = custom_connect_four_v3.env()
+        env = custom_connect_four_v3.env(render_mode="human")
+        # env = custom_connect_four_v3.env()
         # env = tictactoe_v3.env(render_mode="human")
         env.reset(options=game_options)
 
@@ -187,9 +187,16 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
 alternate_player_order = False
 distortion_generator = DistortionGenerator(0, 0.0)
 
-# Measure PPO vs Random with distortions
-
 number_of_games = 1000
+
+
+# Test MCTS vs. Human
+
+agents = [HumanAgent("HA1"), MctsAgent("MA1", False, 5000)]
+absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+
+
+# Measure PPO vs Random with distortions
 
 numbers_of_fields_to_distort = [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
 
