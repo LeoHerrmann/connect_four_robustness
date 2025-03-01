@@ -181,22 +181,42 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
     plt.show(block=False)
 
 
-# agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250214-024650.zip")]
-# agents = [HumanAgent("HA1"), PpoAgent("HA1", "ppoWeights/connect_four_v3_20250216-035830.zip")]
+
+
 
 alternate_player_order = False
 distortion_generator = DistortionGenerator(0, 0.0)
 
-number_of_games = 1000
 
+# Test MCTS vs. MCTS
+
+number_of_games = 200
+
+numbers_of_mcts_simulations = [5000]    # [50, 100, 250, 500, 750, 1000, 2500]
+
+for number_of_mcts_simulations in numbers_of_mcts_simulations:
+    agents = [MctsAgent("MA1", True, 5000), MctsAgent("MA2", False, 5000)]
+    results_subfolder = "mcts_vs_mcts_" + str(number_of_mcts_simulations)
+
+    absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+    win_rates_figure, game_length_figure = generate_figures(average_history)
+    save_absolute_history(absolute_history, results_subfolder)
+    save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
+    print(average_history[len(average_history) - 1])
+
+exit()
 
 # Test MCTS vs. Human
+
+number_of_games = 100
 
 agents = [HumanAgent("HA1"), MctsAgent("MA1", False, 5000)]
 absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
 
 
 # Measure PPO vs Random with distortions
+
+number_of_games = 1000
 
 numbers_of_fields_to_distort = [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
 

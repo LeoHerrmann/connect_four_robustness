@@ -37,6 +37,7 @@ def generate_figures(
     player_1_win_rates_uppers = [interval[1] for interval in final_win_rates_player_1_cis_times_hundred]
 
     win_rates_figure = plt.figure(1)
+    plt.ylim(0, 100)
     plt.plot(simulation_counts, final_win_rates_player_0_times_hundred, marker="o", label="Spieler 0", color="tab:blue", markersize=3)
     plt.plot(simulation_counts, final_win_rates_player_1_times_hundred, marker="o", label="Spieler 1", color="tab:orange", markersize=3)
     
