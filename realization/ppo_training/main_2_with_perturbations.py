@@ -486,20 +486,20 @@ def execute_self_play_training_loop(
     population_size: int
 ):
     # Initialize models
-    #model_wrapper_tuples = initialize_model_wrapper_tuples(population_size)
-    model_wrapper_tuples = initialize_model_wrapper_tuples_from_files(
-        [
-            (
-                "models_for_initialization/ppo_model_random_1000000_0_00001.zip",
-                "models_for_initialization/ppo_model_random_1000000_0_00001.zip"
-            ),
-            (
-                "models_for_initialization/ppo_model_random_1000000_0_00001.zip",
-                "models_for_initialization/ppo_model_random_1000000_0_00001.zip"
-            )
-        ],
-        [("model_0_0", "model_0_1"), ("model_1_0", "model_1_1")],
-    )
+    model_wrapper_tuples = initialize_model_wrapper_tuples(population_size)
+    #model_wrapper_tuples = initialize_model_wrapper_tuples_from_files(
+    #    [
+    #        (
+    #            "models_for_initialization/ppo_model_random_1000000_0_00001.zip",
+    #            "models_for_initialization/ppo_model_random_1000000_0_00001.zip"
+    #        ),
+    #        (
+    #            "models_for_initialization/ppo_model_random_1000000_0_00001.zip",
+    #            "models_for_initialization/ppo_model_random_1000000_0_00001.zip"
+    #        )
+    #    ],
+    #    [("model_0_0", "model_0_1"), ("model_1_0", "model_1_1")],
+    #)
 
     training_progress_data = []
 
@@ -572,8 +572,8 @@ if __name__ == "__main__":
 
     # evaluate_model_against_other_models("connect_four_v3_20250207-182953.zip", [None])
 
-    iterations_count = 500
-    step_count_per_iteration = 4096
+    iterations_count = 100
+    step_count_per_iteration = 20480
     size_of_population = 2
 
     execute_self_play_training_loop(
