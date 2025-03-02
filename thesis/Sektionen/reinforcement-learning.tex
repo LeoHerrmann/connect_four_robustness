@@ -18,7 +18,7 @@ Bei RL wird zwischen modellbasierten und modellfreien Ansätzen unterschieden. D
 
 Daher sind modellfreie Methoden einfacher in der Implementierung und gut geeignet für Szenarien, die aufgrund ihrer Komplexität schwierig zu modellieren sind (\cite{Sutton.2018}, S. 12). Aufgrund der Fähigkeit, Vorhersagen über die Umgebung treffen zu können, weisen modellbasierte Methoden eine höhere Sample Complexity auf, was bedeutet, dass beim Training weniger Versuche benötigt werden, um ein effektives Regelwerk zu erlernen. Das ist besonders vorteilhaft, wenn Versuche teuer sind und nicht es eine Herausforderung darstellt, genügend Daten zu erheben, so zum Beispiel beim Training in der realen Welt (\cite{Russell.2020}, S. 687, S. 818, S. 959 f.).
 
-Aufgrund des niedrigeren Implementierungsaufwands und des im Fall von Vier Gewinnt günstigen Trainings, richtet sich der Fokus der Arbeit auf modellfreie Methoden. Außerdem wurde in verschiedenen Untersuchungen modellfreie Methoden erfolgreich zur Implementierung von Agents für Vier Gewinnt eingesetzt \cite{Alderton.2019}, \cite{Taylor.2024}, \cite{Dabas.2022}, \cite{Wäldchen.2022}.
+Aufgrund des niedrigeren Implementierungsaufwands und des im Fall von Vier Gewinnt günstigen Trainings, richtet sich der Fokus der Arbeit auf modellfreie Methoden. Außerdem wurde in verschiedenen Untersuchungen modellfreie Methoden erfolgreich zur Implementierung von Agents für Vier Gewinnt eingesetzt, \cite{Taylor.2024}, \cite{Dabas.2022}, \cite{Wäldchen.2022}.
 
 \paragraph{Wertbasierte vs. strategiebasierte Verfahren}
 
@@ -91,6 +91,8 @@ Das Standard-Gradientenverfahren berechnet den Verlust auf Grundlage aller beim 
 Es ist anzumerken, dass über das Gradientenverfahren in den meisten Fällen nicht das globale Minimum der Verlustfunktion gefunden werden kann, sondern nur ein lokales Minimum. Dies reicht in den meisten Fällen jedoch aus, da die lokalen Minima von Verlustfunktionen gerade bei größeren KNNs größtenteils ähnlich niedrige Werte aufweisen, und die Wahrscheinlichkeit, ein lokales Minimum mit einem wesentlichen höheren Wert zu finden, sehr niedrig ist (\cite{Sutton.2018}, S. 200; \cite{Ferguson.January2019}, Kapitel 5.4.4; \cite{Choromanska.2015}).
 
 \subsubsection{Advantage Actor-Critic}
+
+\label{a2c}
 
 Advanced Actor Critic (A2C) ist ein weit verbreitetes Verfahren, das sich nach den vorangegangenen Kapiteln zur Lösung von Vier Gewinnt eignet. Es ist ein Single-Agent-Verfahren, das modellfrei und off-policy arbeitet, und parametisierte Funktionen (wie z.B. KNNs) einsetzt, um das optimale Verhalten zu approximieren. Darüber hinaus handelt es sich um ein Actor-Critic-Verfahren, welche strategiebasierte Ansätze in der Actor-Komponente mit wertebasierten Ansätzen in der Critic-Komponente kombinieren (\cite{Albrecht.2024}, S. 202 ff.).
 

@@ -95,7 +95,7 @@ Es liegt nahe, den MCTS-Agenten durch Parallelisierung zu beschleunigen. Dadurch
 
 \subsubsection{Quantitative Untersuchung}
 
-Um einen Eindruck davon zu bekommen, wie sich die Spielstärke des implementierten MCTS-Agenten in Abhängigkeit von der Anzahl der für jede Entscheidung durchgeführten Simulationen zu bekommen, wurde eine qualitative Analyse des MCTS-Agenten durchgeführt, in der 200 Spiele gegen einen zufällig spielenden Agenten mit abwechselndem Anzugsrecht durchgeführt wurden und 200 Spiele gegen sich selbst mit konstantem Anzugsrecht. Diese Messungen wurden mit 50, 100, 250, 500, 750, 1000, 2500 und 5000 Simulationen pro Entscheidung durchgeführt.
+Um einen Eindruck davon zu bekommen, von der Strategie des implementierten MCTS-Agenten in Abhängigkeit von der Anzahl der für jede Entscheidung durchgeführten Simulationen zu bekommen, wurde eine qualitative Analyse des MCTS-Agenten durchgeführt, in der 200 Spiele gegen einen zufällig spielenden Agenten mit abwechselndem Anzugsrecht durchgeführt wurden und 200 Spiele gegen sich selbst mit konstantem Anzugsrecht. Diese Messungen wurden mit 50, 100, 250, 500, 750, 1000, 2500 und 5000 Simulationen pro Entscheidung durchgeführt.
 
 \begin{figure}[ht!]%[!tbp]
 	\begin{subfigure}[b]{0.48\textwidth}
@@ -131,11 +131,11 @@ Die Gewinnrate, die der MCTS-Agent gegen den zufällig spielenden Agenten erziel
 
 Im Spiel gegen sich selbst erzielt der MCTS-Agent mit Anzugsrecht bei 50 Simulationen eine Gewinnrate von 60,0 \% (95 \%-CI: 53,1 - 66,5). Sie steigt von dort auf 79,0 \% (95 \%-CI: 72,8 - 84,1) bei 5000 Simulationen pro Entscheidung. Die sinkende Gewinnrate bei 750 Simulationen im Vergleich zu 500 Simulationen von 68,0 \% (95 \%-CI: 61,2 - 74,1) auf 67,0 \% (95 \%-CI: 60,2 - 73,1) kommt vermutlich durch stochastische Schwankungen zustande, die durch die zufällig gewählten Züge in den Selction- und Simulation-Phasen des Algorithmus entstehen. Die durchschnittliche Spieldauer steigt zunächst rapide von 16,08 (95 \%-CI: 15,20 - 16,96) bei 50 Simulationen auf 18,99 Züge (95 \%-CI: 17,94 - 20,04) bei 250 Simulationen und sinkt von dort auf 12,07 Züge (95 \%-CI: 11,25 - 12,89) bei 5000 Simulationen. Aus der steigenden Gewinnrate geht hervor, dass der MCTS-Agent den Vorteil, das Anzugsrecht zu haben, umso konsequenter ausnutzen kann, je mehr Simulationen pro Entscheidung durchgeführt werden. Im Vergleich zu den Messungen aus Kapitel \ref{messumgebung}, in denen zwei zufällig entscheidende Agenten mit konstantem Anzugsrecht spielen, wird deutlich, dass dies bereits bei 50 Simulationen der Fall ist. Da der erste Spieler das Spiel theoretisch immer gewinnen kann, sollte die Gewinnrate mit steigender Simulationsanzahl zu 100 \% konvergieren. 
 
-Verwunderlich ist, dass die durchschnittliche Spieldauer mit steigender Anzahl von Simulationen auf ein so tiefes Niveau sinkt. Schließlich liegt die Vermutung nahe, dass der MCTS-Agent nicht nur besser im Angriff, sondern auch in der Verteidigung wird, wodurch sich komplexere Spielsituationen und damit längere Spiele entwickeln sollten. Eine möglich Erklärung dafür ist die im Abschnitt \ref{quantitative-untersuchung} erläuterte Schwäche des Algorithmus.
+Verwunderlich ist, dass die durchschnittliche Spieldauer mit steigender Anzahl von Simulationen auf ein so tiefes Niveau sinkt. Schließlich liegt die Vermutung nahe, dass der MCTS-Agent nicht nur besser im Angriff, sondern auch in der Verteidigung wird, wodurch sich komplexere Spielsituationen und damit längere Spiele entwickeln sollten. Eine möglich Erklärung dafür ist die im Abschnitt \ref{qualitative-untersuchung} erläuterte Schwäche des Algorithmus.
 
 \subsubsection{Qualitative Untersuchung}
 
-\label{quantitative-untersuchung}
+\label{qualitative-untersuchung}
 
 Neben der quantitativen Analyse gegen zufällig spielende Agenten und gegen sich selbst wurde auch eine kurze qualitative Analyse im Spiel gegen einen menschlichen Spieler durchgeführt, um einen Eindruck über das strategische Spielverhalten des MCTS-Agenten zu gewinnen, das aus den quantitativen Analysen nicht hervorgeht. Der menschliche Spieler ist bei den Untersuchungen stets der Spieler, der den ersten Stein setzen darf. Er kann damit theoretisch jedes Spiel gewinnen und hat so mehr Kontrolle über den Spielverlauf, was die Analyse vereinfacht.
 
@@ -149,37 +149,37 @@ Bei 5.000 Simulationen pro Zug setzt der MCTS-Agenten seinen ersten Stein, wenn 
 
 \subsubsection{Einführung in Stable Baselines3}
 
-Das PPO-Verfahren wird in dieser Arbeit nicht von Grund auf implementiert, stattdessen wird auf eine Implementierung des Verfahrens aus dem Framework Stable Baselines3 zurückgegriffen. Dieses Framework enthält Implementierungen von verschiedenen RL-Verfahren, die auf den Referenzimplementierungen von OpenAI aufbauen. Das Framework bietet eine Schnittstelle, die es ermöglicht, die implementierten RL-Verfahren auf Gymnasium-Umgebungen anzuwenden. Aufgrund der Ähnlichkeit der Schnittstellen von Gymnasium und PettingZoo lässt sich Stable Baselines3 auch auf PettingZoo-Umgebungen anwenden \cite{Raffin.2021} \cite{Farama.2025}.
+Das PPO-Verfahren wird in dieser Arbeit nicht von Grund auf implementiert. Stattdessen wird auf eine Implementierung des Verfahrens aus dem Framework Stable Baselines3 zurückgegriffen. Dieses Framework enthält Implementierungen von verschiedenen RL-Verfahren, die auf den Referenzimplementierungen von OpenAI aufbauen. Das Framework bietet eine Schnittstelle, die es ermöglicht, die implementierten RL-Verfahren auf Gymnasium-Umgebungen anzuwenden. Aufgrund der Ähnlichkeit der Schnittstellen von Gymnasium und PettingZoo lässt sich Stable Baselines3 auch auf PettingZoo-Umgebungen anwenden \cite{Raffin.2021} \cite{Farama.2025}.
 
-Die grundlegende Vorgehensweise bei der Verwendung des Frameworks besteht darin, aus einer Klasse, die ein ausgewähltes RL-Verfahren implementiert (z.B. PPO), ein Objekt zu erzeugen, das ein zu trainierendes RL-Modell repräsentiert. Diesem Modell wird dabei eine Gymnasium- oder PettingZoo-Umgebung zugeordnet, in der das Modell trainiert werden soll. Anschließend kann das Training über die Methode des Modells %\texttt{learn(total\char`_timesteps: int)} starten. Dabei beschreibt total_timesteps die Anzahl von Schritten, die in der Trainingsumgebung durchgeführt werden sollen \cite{Raffin.2021}.
+Die grundlegende Vorgehensweise bei der Verwendung des Frameworks besteht darin, aus einer Klasse, die ein ausgewähltes RL-Verfahren implementiert (z.B. PPO), ein Objekt zu erzeugen, das ein zu trainierendes RL-Modell repräsentiert. Diesem Modell wird dabei eine Gymnasium- oder PettingZoo-Umgebung zugeordnet, in der das Modell trainiert werden soll. Anschließend kann das Training über die Methode des Modells \texttt{learn(total\char`_timesteps: int)} starten. Dabei beschreibt \texttt{total\char`_timesteps} die Anzahl von Schritten, die in der Trainingsumgebung durchgeführt werden sollen \cite{Raffin.2021}.
 
 Bei jedem Schritt wird die Step-Methode des Umgebung aufgerufen, die die Aktion eines Agenten entgegen nimmt und den Zustand der Umgebung entsprechend verändert. Wurde ein Endzustand erreicht, wird die Reset-Methode der Umgebung aufgerufen, die die Umgebung wieder in den Ursprungszustand versetzt. Über optionale Funktionsparameter ist es möglich, Hyperparameter des Trainings anzupassen. Dazu gehören beispielsweise die Lernrate, die Architektur der neuronalen Netzwerke des RL-Modells, oder die Anzahl von durchzuführenden Trainingsschritten bis die Parameter der Netzwerke auf Grundlage der zuletzt gesammelten Erfahrungen aktualisiert werden sollen \cite{Raffin.2021}.
 
 \paragraph{Wrapper}
 
-Wird einem Modell PettingZoo-Umgebung direkt zugeordnet und startet dann das Training, so wird das Modell die Züge für alle Agenten der Umgebung durchführen und im Laufe des Trainings seine Parameter auf Grundlage der Belohnungen jedes Agenten anpassen \cite{Farama.2025}. Dadurch wird das in MARL allgegenwärtige Moving Target Problem verstärkt. Wenn alle Agenten der Umgebung ihre Parameter gleichzeitig aktualisieren, versucht jeder Agent, sich an das Verhalten der anderen sich ändernden Agenten anzupassen. Das kann zyklisches und instabiles Lernverhalten hervorrufen (\cite{Albrecht.2024}, S. 12). Aus diesem Grund ist es gängige Praxis bei MARL, nur einen Agenten auf einmal zu trainieren und die anderen Agenten stationär zu halten (\cite{Albrecht.2024}, S. 300; \cite{Zhong.2020}).
+\label{wrapper}
 
-Um dieses Verhalten zu ermöglichen, wurde für die Implementierung der Trainingsstrategien die PettingZoo-Umgebung von Vier Gewinnt von einem Wrapper umschlossen, der nach außen dieselbe Schnittstelle bereitstellt, wie die Umgebung selbst. Dem Modell wird nicht die Vier-Gewinnt-Umgebung zugeordnet, sondern der Wrapper. Die Step-Methode wurde über den Wrapper erweitert, nicht nur den Zug auszuführen, den das trainierende Modell gewählt hat, sondern auch den Zug, der durch ein stationäres Regelwerk gewählt wird. Damit das Modell trotzdem lernen kann, nicht nur als erster sondern auch als zweiter Spieler zu spielen, kann in der Reset-Methode Logik eingebunden werden, um einen Zug für einen stationären Agenten durchzuführen, und damit das Anzugsrecht zu wechseln.
+Wird einem Modell eine PettingZoo-Umgebung direkt zugeordnet und anschließend ein Training gestartet, so wird das Modell die Züge für alle Agenten der Umgebung durchführen und im Laufe des Trainings seine Parameter auf Grundlage der Belohnungen jedes Agenten anpassen \cite{Farama.2025}. Dadurch wird das in MARL allgegenwärtige Moving-Target-Problem verstärkt. Wenn alle Agenten der Umgebung ihre Parameter gleichzeitig aktualisieren, versucht jeder Agent, sich an das Verhalten der anderen sich ändernden Agenten anzupassen. Das kann zyklisches und instabiles Lernverhalten hervorrufen (\cite{Albrecht.2024}, S. 12). Aus diesem Grund ist es gängige Praxis bei MARL, nur einen Agenten auf einmal zu trainieren und die anderen Agenten stationär zu halten (\cite{Albrecht.2024}, S. 300; \cite{Zhong.2020}).
+
+Um dieses Verhalten abbilden zu können, wird für die Implementierung der Trainingsstrategien die PettingZoo-Umgebung von Vier Gewinnt von einem Wrapper umschlossen, der nach außen dieselbe Schnittstelle bereitstellt, wie die Umgebung selbst. Die Vier-Gewinnt-Umgebung wird nicht direkt dem Modell zugeordnet, sondern der Wrapper, der diese Umgebung enthält. Die Step-Methode wurde über den Wrapper erweitert, nicht nur den Zug auszuführen, den das trainierende Modell gewählt hat, sondern auch den Zug, der durch ein stationäres Regelwerk gewählt wird. Damit das Modell trotzdem lernen kann, nicht nur als erster sondern auch als zweiter Spieler zu spielen, kann in der Reset-Methode Logik eingebunden werden, um einen Zug für einen stationären Agenten durchzuführen, und damit das Anzugsrecht zu wechseln.
 
 \paragraph{Action Masking}
 
-Neben den bereits im Konzept genannten Vorteilen hat das Verfahren PPO auch den Vorteil, dass das Stable Baselines3 die Implementierung MaskablePPO enthält, die Action Masking unterstützt. Für A2C existiert derzeit keine solche Implementierung \cite{Raffin.2021}. Action Masking sorgt dafür, dass das Modell im Training und in der Anwendung daran gehindert wird, Entscheidungen zu treffen, die die Umgebung nicht erlaubt \cite{Huang_2022}. Im Vier Gewinnt bedeutet das beispielsweise, einen Stein in eine Spalte zu platzieren, die bereits voll ist. Die PettingZoo-Umgebung ist zwar darauf ausgelegt, bei illegalen Entscheidungen das Spiel zu beenden und dem Agenten, der diese Entscheidung getroffen hat, mit einer entsprechenden negativen Belohnung zu bestrafen \cite{Farama.2025}. Es wurde jedoch gezeigt, dass der Einsatz von Action Masking effektiver ist als sich auf die Bestrafung über die Umgebung zu verlassen \cite{Huang_2022}.
+Neben den bereits in Kapitel \ref{a2c} genannten Vorteilen besitzt das Verfahren PPO auch den Vorteil, dass Stable Baselines3 die Implementierung \texttt{MaskablePPO} enthält, die Action Masking unterstützt. Für A2C existiert derzeit keine solche Implementierung \cite{Raffin.2021}. Action Masking sorgt dafür, dass das Modell im Training und in der Anwendung daran gehindert wird, Entscheidungen zu treffen, die die Umgebung nicht erlaubt \cite{Huang_2022}. Im Vier Gewinnt bedeutet das beispielsweise, einen Spielstein in eine Spalte zu platzieren, in der bereits alle Felder belegt sind. Die PettingZoo-Umgebung ist zwar darauf ausgelegt, bei illegalen Aktionen das Spiel zu beenden und den verantwortlichen Agenten mit einer entsprechenden negativen Belohnung zu bestrafen \cite{Farama.2025}. Es wurde jedoch gezeigt, dass der Einsatz von Action Masking effektiver ist als sich auf die Bestrafung über die Umgebung zu verlassen \cite{Huang_2022}.
 
 Damit Action Masking in der Implementierung der Trainingsumgebung funktioniert, muss die dem Modell zugeordnete Umgebung eine Methode \texttt{action\char`_mask()} implementieren, die Auskunft darüber gibt, welche Aktionen möglich und welche nicht möglich sind. Das ist in den PettingZoo-Umgebungen standardmäßig nicht der Fall. Diese Funktionalität wurde daher dem oben genannten Wrapper hinzugefügt.
 
-% Das gefailte Verfahren
-
 \subsubsection{Implementierte Trainingsverfahren}
 
-Im Rahmen der Arbeit wurden zwei verschiedene Trainingsverfahren implementiert. Ersteres konnte aufgrund mangelnder Zeit nicht erfolgreich umgesetzt werden.
+Im Rahmen der Arbeit wurden zwei verschiedene Trainingsverfahren implementiert. Ersteres konnte aufgrund mangelnder Zeit nicht erfolgreich umgesetzt werden. Aus diesem Grund wurde auf eine einfachere Trainingsstrategie umgestellt.
 
-\paragraph{Verfahren von Zhong, Zhou und Peng}
+\paragraph{Verfahren nach Zhong et al.}
 
-Zunächst wurde versucht, die in \cite{Zhong.2020} von Zhong, Zhou und Peng herausgearbeitete Trainingsstrategie für Zwei Spieler Nullsummenspiele zu implementieren. Im Zuge dieser Strategie werden mehrere Modelle auf einmal trainiert. Die Modelle sind dabei in $n$ 2er Tupel organisiert. Die jeweils ersten Modelle der Tupel spielen stets als erster Spieler und die jeweils zweiten Modelle der Tupel spielen stets als zweiter Spieler. Folgende zwei Schritte werden für $N$ Iterationen wiederholt:
+Zunächst wurde versucht, die in \cite{Zhong.2020} von Zhong et al. herausgearbeitete Trainingsstrategie für Zwei-Spieler-Nullsummenspiele zu implementieren. Im Zuge dieser Strategie werden mehrere Modelle auf einmal trainiert. Die Modelle sind dabei in $n$ 2-Tupel organisiert. Die jeweils ersten Modelle der Tupel spielen stets als erster Spieler und die jeweils zweiten Modelle der Tupel spielen stets als zweiter Spieler. Folgende zwei Schritte werden für $N$ Iterationen wiederholt:
 
 \begin{itemize}
-	\item Es findet eine Evaluierung statt, in der jedes erste Modell eines Tupels gegen jedes zweite Modell eines Tupels spielt. Dabei werden die Gewinnraten aufgezeichnet.
-	\item Anschließend werden alle Modelle für $l$ Trainingsschritte jeweils gegen das Modell trainiert, gegen das die niedrigste Gewinnrate erzielt wurde
+	\item Jedes erste Modell aller Tupel wird gegen jedes zweite Modell aller Tupel durch wiederholte Spiele evaluiert. Dabei werden die Gewinnraten aufgezeichnet.
+	\item Anschließend werden alle Modelle für $l$ Trainingsschritte jeweils gegen das Modell trainiert, gegen das die niedrigste Gewinnrate erzielt wurde.
 \end{itemize}
 
 In der genannten Arbeit wurde für verschiedene exemplarische Anwendungsfälle gezeigt, dass diese Strategie zu leistungsfähigeren Modellen führt als andere weit verbreitete Self-Play-Strategien. Diese anderen Strategien bestehen häufig darin, ein Modell wiederholt für eine bestimmte Anzahl von Trainingsschritten gegen eine ältere und stationäre Version von sich selbst zu trainieren und zwischenzuspeichern. Bei jeder Wiederholung wird der Gegenspieler durch das neuste, beste oder ein zufälliges zwischengespeichertes Modell ersetzt.
@@ -188,37 +188,151 @@ Ein Anwendungsfall, an dem in \cite{Zhong.2020} die überlegene Leistungsfähigk
 
 % Anwendung auf vier Gewinnt
 
-Im Rahmen dieser Arbeit wurde das Verfahren mit den Lernraten $\alpha_0 = 0,001$, $\alpha_1 = 0,003$ (Standardwert aus Stable Baselines3), $\alpha_2 = 0,0001$, $\alpha_3 = 0,00003$ und $alpha_4 = 0,00001$ durchgeführt. In \cite{Zhong.2020} werden nach der Evaluation jeweils so viele Trainingsschritte durchgeführt, bis $l = 10$ Parameteraktualisierungen der RL-Modelle hervorgerufen wurden. Nach dem voreingestellten Hyperparametern der Implementierung von PPO in Stable Baselines3 werden die Parameter der neuronalen Netzwerke nach 2048 Trainingsschritten aktualisiert. Bei der Anwendung des Verfahrens in dieser Arbeit werden also 20480 Schritte durchgeführt, um die gleiche Anzahl von $l = 10$ Parameteraktualisierungen hervorzurufen wie in \cite{Zhong.2020}. Die Anzahl der Iterationen $N$ beträgt in n\cite{Zhong.2020} je nach Anwendungsfall 40 bzw. 50. Um die Wahrscheinlichkeit zu reduzieren, dass das Training aufgrund von zu kurzer Dauer fehlschlägt, wurde in dieser Arbeit $N = 100$ gewählt. Die Architektur der neuronalen Netzwerke und alle anderen Hyperparameter werden bei den Standardwerten von Stable Baselines3 belassen.
+Im Rahmen dieser Arbeit wurde das Verfahren mit den Lernraten $\alpha_0 = 0,001$, $\alpha_1 = 0,003$ (Standardwert aus Stable Baselines3), $\alpha_2 = 0,0001$, $\alpha_3 = 0,00003$ und $\alpha_4 = 0,00001$ durchgeführt. In \cite{Zhong.2020} werden nach der Evaluation jeweils so viele Trainingsschritte durchgeführt, bis $l = 10$ Parameteraktualisierungen der RL-Modelle hervorgerufen wurden. Nach dem voreingestellten Hyperparametern der Implementierung von PPO in Stable Baselines3 werden die Parameter der neuronalen Netzwerke nach 2048 Trainingsschritten aktualisiert. Bei der Anwendung des Verfahrens in dieser Arbeit werden also 20480 Schritte durchgeführt, um die gleiche Anzahl von $l = 10$ Parameteraktualisierungen hervorzurufen wie in \cite{Zhong.2020}. Die Anzahl der Iterationen $N$ beträgt in \cite{Zhong.2020} je nach Anwendungsfall 40 bzw. 50. Um die Wahrscheinlichkeit zu reduzieren, dass das Training aufgrund von zu kurzer Dauer fehlschlägt, wurde in dieser Arbeit $N = 100$ gewählt. Die Architektur der neuronalen Netzwerke und alle anderen Hyperparameter werden bei den Standardwerten von Stable Baselines3 belassen.
 
 Während der Trainings mit den verschiedenen Lernraten wurde nach allen $N$ Iterationen jeweils der durchschnittliche Policy-Gradient-Verlust und Werteverlust der Iteration, und die über 500 Spiele gemittelte Gewinnrate und Spieldauer von zufälligen Modelltupeln gegen einen zufällig spielenden Agenten aufgezeichnet. Der Policy-Gradient- und Werteverlust werden jeweils als Maß dafür verwendet, wie stark die Gewichte des Actor- bzw. Ciritc-Netzwerks angepasst werden. Konvergieren die Verluste gegen Ende des Trainings in der Nähe von 0, deutet das darauf hin, dass das Modell sein Optimierungspotenzial ausgeschöpft hat und kein neues Verhalten mehr lernt.
 
 % Ergebnis der Anwendung auf Vier Gewinnt
 
-Die Gewinnrate steigt bei den Trainings mit den kleineren Lernraten $\alpha_2$, $\alpha_3$ und $\alpha_4$, innerhalb der ersten 20 Iterationen und fluktuiert von dort bis zum Ende des jeweiligen Trainings auf einem konstanten Niveau. Dieses Niveau beträgt bei den Lernraten $\alpha_3$ und $\alpha_4$ etwa 80 \% und bei $\alpha_2$ etwa 85 \%.
-- (Graphen von höchster und niedrigster Lernrate)
+\begin{figure}[ht!]%[!tbp]
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/ensemble-training/a_0_001/graph_win_rates.png}
+		\caption{Verlauf der Gewinnrate mit Lernrate $\alpha_0$.}
+		\label{fig:f9}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/ensemble-training/e_0_00001/graph_win_rates.png}
+		\caption{Verlauf der Gewinnrate mit Lernrate $\alpha_4$.}
+		\label{fig:f10}
+	\end{subfigure}
+	\caption{Verlauf der Gewinnrate während des Trainings nach Zhong et al. mit den Lernraten $\alpha_0$ und $\alpha_4$}
+\end{figure}
 
-Die durchschnittliche Spieldauer bei allen Trainings unabhängig von der Lernrate ähnlich. Die Spieldauer sinkt im Verlauf des Trainings auf knapp unter 12 Züge und steigt wieder auf zwischen 14 und 18 Züge. Der Punkt mit der niedrigsten Spieldauer tritt dabei mit kleineren Lernraten tendenziell erst nach mehr Iterationen auf.
-- (Graphen von höchster und niedrigster Lernrate)
+\begin{figure}[ht!]%[!tbp]
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/ensemble-training/a_0_001/graph_game_lengths.png}
+		\caption{Verlauf der Spieldauer mit Lernrate $\alpha_0$.}
+		\label{fig:f11}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/ensemble-training/e_0_00001/graph_game_lengths.png}
+		\caption{Verlauf der Spieldauer mit Lernrate $\alpha_4$.}
+		\label{fig:f12}
+	\end{subfigure}
+	\caption{Verlauf der Spieldauer während des Trainings nach Zhong et al. mit den Lernraten $\alpha_0$ und $\alpha_4$}
+\end{figure}
 
-Eine sinkende Gewinnrate bzw. eine konstante Gewinnrate mit steigender Spieldauer deuten darauf hin, dass Verhalten, das stark gegen einen zufällig spielenden Agenten ist, im Laufe des Trainings erlernt und anschließend wieder verlernt wird. Die Spielstärke des MCTS-Agenten, der gegen zufällig spielende Gegenspieler eine Gewinnrate von 100 \% und eine Spieldauer von 9 Zügen erzielt, wird im Laufe des Trainings wird an keiner Stelle erreicht.
+Die Gewinnrate steigt bei den Trainings mit den kleineren Lernraten $\alpha_2$, $\alpha_3$ und $\alpha_4$, innerhalb der ersten 20 Iterationen und fluktuiert von dort bis zum Ende des jeweiligen Trainings auf einem konstanten Niveau. Dieses Niveau beträgt bei der Lernrate $\alpha_2$ etwa 85 \% und bei $\alpha_3$ und $\alpha_4$ etwa 80 \%. Mit den Lernraten $\alpha_0$ und $\alpha_1$ steigt die Gewinnrate nach etwa 5 Iterationen auf knapp über 90 \% und fällt danach auf etwa 80 \%.
+
+Die durchschnittliche Spieldauer verläuft bei allen Trainings unabhängig von der Lernrate ähnlich. Die Spieldauer sinkt im Verlauf des Trainings auf knapp unter 12 Züge und steigt wieder auf zwischen 14 und 18 Züge. Der Punkt mit der niedrigsten Spieldauer tritt dabei mit kleineren Lernraten tendenziell erst nach mehr Iterationen auf.
+
+Eine sinkende Gewinnrate bzw. eine konstante Gewinnrate mit steigender Spieldauer deuten darauf hin, dass Verhalten, das stark gegen einen zufällig spielenden Agenten ist, im Laufe des Trainings erlernt und anschließend wieder verlernt wird. Die Spielstärke des MCTS-Agenten, der gegen zufällig spielende Gegenspieler eine Gewinnrate von 100 \% und eine Spieldauer von 9 Zügen erzielt, wird im Laufe des Trainings an keiner Stelle erreicht.
 
 Um die Ursache für das stagnierende bzw. rückläufige Lernverhalten zu ergründen, wurden der Policy-Gradient-Verlust und der Werteverlust näher betrachtet.
 
-Bei den großen Lernraten $\alpha_0$ und $\alpha_1$, fluktuiert der Werteverlust weitgehend auf einem konstanten Niveau zwischen 0,2 und 0,4. Dieses Verhalten kann auf eine zu große Lernrate zurückzuführen sein, die dazu führt, dass die Parameter um ein Verlustminimum herum oszillieren. Die Fluktuationen werden mit einer kleineren Lernrate kleiner.
-Bei der mittleren Lernrate $\alpha_2$ lässt sich beobachten, dass der Werteverlust vor einer konstanten Fluktuation in den ersten 20 Iterationen von 0,5 auf etwa 0,25 sinkt. Das kann ein Hinweis dafür sein, dass sich die Parameter während der ersten Iterationen auf ein lokales Minimum zu bewegen. Bei den kleineren Lernraten $\alpha_3$ und $\alpha_4$ werden kleinere Fluktuationen, dafür ein unregelmäßiges Verhalten mit Einbrüchen der Werteverluste über mehrere aufeinanderfolgende Iterationen beobachtet. Die Einbrüche erfolgen dabei teilweise für beide Spieler unterschiedlich. Plötzlich einbrechender und wieder steigender Verlust können darauf hinweisen, dass die trainierenden Modelle neues Verhalten erlernen und die Änderungen voneinander reagieren.
-- (Graphen von größter, mittlerer und kleinster Lernrate)
+Bei den großen Lernraten $\alpha_0$ und $\alpha_1$, fluktuiert der Werteverlust weitgehend auf einem konstanten Niveau zwischen 0,2 und 0,4. Dieses Verhalten kann auf eine zu große Lernrate zurückzuführen sein, die dazu führt, dass die Parameter um ein Verlustminimum herum oszillieren. Bei der mittleren Lernrate $\alpha_2$ lässt sich beobachten, dass der Werteverlust vor einer konstanten Fluktuation in den ersten 20 Iterationen von 0,5 auf etwa 0,25 sinkt. Das kann ein Hinweis dafür sein, dass sich die Parameter während der ersten Iterationen auf ein lokales Minimum zu bewegen. Bei den kleineren Lernraten $\alpha_3$ und $\alpha_4$ werden kleinere Fluktuationen, dafür ein unregelmäßiges Verhalten mit Einbrüchen der Werteverluste über mehrere aufeinanderfolgende Iterationen beobachtet. Die Einbrüche erfolgen dabei teilweise für beide Spieler unterschiedlich. Plötzlich einbrechender und wieder steigender Verlust können darauf hinweisen, dass die trainierenden Modelle neues Verhalten erlernen und auf die Verhaltensänderungen voneinander reagieren.
 
-Bei den Trainings mit den Lernraten $\alpha_0$ und $\alpha_2$ fluktuiert der Policy-Gradient-Verlust über den gesamten Verlauf um einen konstanten Wert von -0,025 bzw. 0,015. Die Fluktuation um einen konstanten Wert deutet dabei auf eine zu große Lernrate hin.
-Bei der zweitgrößten Lernrate $\alpha_1$ wird eine Fluktuation konstanten Ausmaßes beobachtet, wobei der Wert um den fluktuiert wird, in den ersten 60 Iterationen von etwa -0,025 auf -0,010 steigt und danach auf -0,020 sinkt. Ähnlich wie beim Werteverlust bei der mittleren Lernrate $\alpha_2$ kann der sich zunächst an Null annähernde Verlust als eine positive Entwicklung interpretiert werden. Je kleiner die Lernrate ist, desto näher bewegen sich die Werte für den Policy-Gradient-Verlust bei Null und desto kleiner werden über den größten Teil des Verlaufs die Fluktuationen. Dafür treten im Verhältnis zur sinkenden Fluktuation häufiger einzelne größere Ausreißer auf. Dies kann wie der Werteverlust mit plötzlichen länger andauernden Einbrüchen auf neu erlerntes Verhalten hindeuten.
-- (Graphen von größter, zweitgrößter und kleinerstem PG Verlust)
+\begin{figure}[ht!]%[!tbp]
+	\begin{subfigure}[b]{0.32\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/ensemble-training/a_0_001/graph_value_losses.png}
+		\caption{Verlauf des Werteverlustes mit Lernrate $\alpha_0$.}
+		\label{fig:f13}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.32\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/ensemble-training/c_0_0001/graph_value_losses.png}
+		\caption{Verlauf des Werteverlustes mit Lernrate $\alpha_2$.}
+		\label{fig:f14}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.32\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/ensemble-training/e_0_00001/graph_value_losses.png}
+		\caption{Verlauf des Werteverlustes mit Lernrate $\alpha_4$.}
+		\label{fig:f15}
+	\end{subfigure}
+	\caption{Verlauf des Werteverlustes während des Trainings nach Zhong et al. mit den Lernraten $\alpha_0$ und $\alpha_4$}
+\end{figure}
+
+Der Policy-Gradient-Verlust fluktuiert bei den Trainings mit den Lernraten $\alpha_0$ und $\alpha_2$ über den gesamten Verlauf um einen konstanten Wert von -0,025 bzw. 0,015. Die Fluktuation um einen konstanten Wert deutet dabei auf eine zu große Lernrate hin. Bei der zweitgrößten Lernrate $\alpha_1$ wird eine Fluktuation konstanten Ausmaßes beobachtet, wobei der Wert um den fluktuiert wird, in den ersten 60 Iterationen von etwa -0,025 auf -0,010 steigt und danach auf -0,020 sinkt. Ähnlich wie beim Werteverlust bei der mittleren Lernrate $\alpha_2$ kann der sich zunächst an Null annähernde Verlust als eine positive Entwicklung interpretiert werden. Je kleiner die Lernrate ist, desto näher bewegen sich die Werte für den Policy-Gradient-Verlust bei Null und desto kleiner werden über den größten Teil des Verlaufs die Fluktuationen. Dafür treten im Verhältnis zur sinkenden Fluktuation häufiger einzelne größere Ausreißer auf. Dies kann wie der Werteverlust mit plötzlichen, länger andauernden Einbrüchen auf neu erlerntes Verhalten hindeuten.
+
+\begin{figure}[ht!]%[!tbp]
+	\begin{subfigure}[b]{0.32\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/ensemble-training/a_0_001/graph_policy_gradient_losses.png}
+		\caption{Verlauf des Policy-Gradient-Verlustes mit Lernrate $\alpha_0$.}
+		\label{fig:f16}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.32\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/ensemble-training/b_0_0003/graph_policy_gradient_losses.png}
+		\caption{Verlauf des Policy-Gradient-Verlustes mit Lernrate $\alpha_1$.}
+		\label{fig:f17}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.32\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/ensemble-training/e_0_00001/graph_policy_gradient_losses.png}
+		\caption{Verlauf des Policy-Gradient-Verlustes mit Lernrate $\alpha_4$.}
+		\label{fig:f18}
+	\end{subfigure}
+	\caption{Verlauf des Policy-Gradient-Verlustes während des Trainings nach Zhong et al. mit den Lernraten $\alpha_0$, $\alpha_1$ und $\alpha_4$}
+\end{figure}
 
 Leider wurden keine Korrelationen zwischen dem Verhalten des Policy-Gradient- oder Werteverlustes und der Leistung der trainierten Modell hinsichtlich Gewinnrate oder Spieldauer gefunden. Es lassen sich daher auch keine Aussagen darüber treffen, ob fluktuierende Verlust-Verläufe, die sich über die Iterationen der 0 annähern oder weniger fluktuierende Verläufe mit plötzlichen Einbrüchen oder Ausreißern erstrebenswerter sind. Um die Ursachen für das stagnierende Training weiter zu ergründen, sind die Analyse von weiteren Trainingsmetriken und Experimente mit weiteren Hyperparametern erforderlich.
-- (Hilfreiche Trainingsmetriken)
-- (Hyperparameter, die probiert werden können)
 
-% Das Random-Verfahren
+Anstatt nur den Verlauf der mittleren Verluste der einzelnen Iterationen, und die Leistung gegen den zufälligen Agenten am Ende der Iterationen zu beobachten, könnte es helfen, mehr über den Verlauf der Verluste und Belohnung innerhalb der Iterationen zu erfahren. Dies wäre möglich, indem die Verluste und die mittlere in den Episoden erhaltene Belohnung über die einzelnen Trainingsschritte aufgezeichnet werden. Eine weitere hilfreiche Trainingsmetrik könnte die Entropie der Wahrscheinlichkeitsverteilungen über die Aktionen sein, die durch das Regelwerk generiert werden. Eine hohe Entropie bedeutet, dass alle Aktionen mit ähnlich großer Wahrscheinlichkeit gewählt werden, während eine niedrige Entropie bedeutet, dass wenige verschiedene Aktionen mit hoher Wahrscheinlichkeit gewählt werden. Sie ist also ein Maß dafür, wie sicher sich das Regelwerk in seinen Entscheidungen ist und sollte über den Verlauf des Trainings sinken \cite{Lapan.2020}.
 
+Um das RL-Modell für Gomoku zu trainieren, wurden in \cite{Zhong.2020} neuronale Netzwerke mit Faltungsmatritzen in den ersten Netzwerkschichten eingesetzt, die bei der Erkennung von Mustern in Eingabedaten unterstützen. Trotz der niedrigeren Komplexität ist dies bei Vier Gewinnt möglicherweise ebenfalls notwendig, um starke Agenten zu trainieren. In \cite{Wäldchen.2022} wurde mit einem mit Faltungsmatritzen ausgestattetes PPO-Modell erfolgreich trainiert, sodass es gegen einen MCTS-Agenten standhalten konnte, der 2000 Simulationen pro Zug durchführt. In \cite{Thill.2012} wurden N-Tupel-Netzwerke eingesetzt, welche ebenfalls Mechanismen zur Mustererkennung enthalten. Dabei konnte ein RL-Modell trainiert werden, das als erster Spieler mit einer Wahrscheinlichkeit von 90 \% gegen einen perfekt spielenden Minimax-Agenten gewinnt.
 
+In \cite{Taylor.2024} wurden keine Mechanismen zur Mustererkennung eingesetzt und der darin trainierte Q-Learning-Agent erzielt in Vier Gewinnt eine Gewinnrate von lediglich 80 \%. Das muss jedoch nicht an der fehlenden Mustererkennung liegen. Wie der Author selbst erwähnt, liegt das vermutlich an der fehlenden Fähigkeit des Q-Learning-Verfahrens zu verallgemeinern. Aus der Literatur geht nicht hervor, dass Faltungsmatritzen erforderlich sind, um ein starkes PPO-Modell für Vier Gewinnt zu trainieren, aber es liegt nahe, dass deren Einsatz gewinnbringend sein könnte.
+
+\paragraph{Training gegen einen zufällig spielenden Agenten}
+
+Aufgrund begrenzter zeitlicher Ressourcen war es nicht möglich, weitere Trainingsmetriken zu analysieren oder zusätzliche Experimente mit anderen Hyperparametern wie Netzwerkarchitekturen mit Faltungsmatritzen durchzuführen. Daher wurde die Entscheidung getroffen, auf eine einfachere Trainingsstrategie umzustellen. Sie besteht darin, ein RL-Modell gegen einen zufällig spielenden Agenten zu trainieren. Auch hier wird als RL-Verfahren PPO eingesetzt. Es wurden verschiedene Trainings mit den Lernraten $\alpha_0 = 0.003$, $\alpha_1 = 0.001$, $\alpha_2 = 0.0005$ und $\alpha_3 = 0.0001$ durchgeführt. Jedes Training war 1.024.000 Trainingsschritte lang. Alle anderen Parameter, wie die Architektur der Netzwerke oder die Anzahl der Schritte, nach denen die Gewichte des Modells angepasst werden, wurden bei den durch Stable Baselines3 voreingestellten Parameter belassen.
+
+% Und hier gehts beim nächsten Mal weiter :)
+
+Beobachtet wurden dabei die durchschnittlich in den vergangenen 100 Episoden erhaltene Belohnung und die durchschnittliche Länge der Episoden. Eine Episode bezeichnet in diesem Fall ein Spiel, das im Training vom Anfang bis zum Ende durchgespielt wurde. Das trainierende Modell erhält von der PettingZoo-Umgebung eine Belohnung von 1 für Züge, die zum Gewinn geführt haben, -1 für Züge, die zum Verlust geführt haben und 0 für alle anderen Züge \cite{Farama.2025}. Die Episodenĺänge bezeichnet die Anzahl der im Training durchgeführten Schritte, bis eine Episode endet. Wie in \ref{wrapper} erwähnt, besteht ein Schritt aus einer Aktion des trainierenden Modells und einer Aktion seines Gegenspielers, dem zufällig spielendem Agenten. Da die Spieler im Training nach jedem Spiel das Anzugsrecht wechseln, beträgt hier das Minimum 3,5, da mindestens 7 Steine platziert sein müssen, damit ein Spieler seine Spielteine in einer Viererkette platziert haben kann und das Spiel endet. Das Maximum ist die Hälfte Anzahl der Spielfelder, also 42/2 = 21. Kürzere Episoden deuten darauf hin, dass das trainierende Agent im Training stärker ist.
+
+\begin{figure}[ht!]%[!tbp]
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/random-training/history_random_0_0001_graph_episode_rewards.png}
+		\caption{Durchschnittliche Belohnung.}
+		\label{fig:f19}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/random-training/history_random_0_0001_graph_episode_lengths.png}
+		\caption{Durchschnittliche Episodenlänge.}
+		\label{fig:f20}
+	\end{subfigure}
+	\caption{Verlauf der durchschnittlichen Belohnung und Episodenlänge während des Trainings gegen einen zufällig spielenden Agenten mit Lernrate $\alpha_3$}
+\end{figure}
+
+Unabhängig von der Lernrate ist bei den betrachteten Trainingsmetriken nach wenigen hunderttausend Trainingsschritten ein erstrebenswertes Konvergenzverhalten zu beobachten. Die durchschnittliche in den Episoden erhaltene Belohnung konvergiert zu 1, was bedeutet, dass das Modell im Training die meisten Spiele gewinnt. Die durchschnittliche Episodenlänge konvergiert bei etwa 4,5 bis 5 also 9 bis 10 Zügen.
+
+\begin{figure}[ht!]%[!tbp]
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/ppo_vs_random_win_rate_vs_learning_rate.png}
+		\caption{Gewinnrate.}
+		\label{fig:f21}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Bilder/ppo_vs_random_game_length_vs_learning_rate.png}
+		\caption{Durchschnittliche Spieldauer.}
+		\label{fig:f22}
+	\end{subfigure}
+	\caption{Gewinnrate und durchschnittliche Spieldauer in Abhängigkeit von der Lernrate beim Training eines PPO-Modells gegen einen zufällig spielenden Agenten}
+\end{figure}
+
+Um die Leistung der trainierten Modelle gegen den zufällig spielenden Agenten zu evaluieren, wurden mit jedem Modell 20.000 Spiele durchgeführt und die Gewinnrate und Spieldauer wurde aufgezeichnet. Mit steigender Lernrate sinkt die durch das trainierte Modell erzielte Gewinnrate stetig von 97,3 \% (95 \%-CI: 97,1 \% - 97,6 \%) auf 89,3 \% (95 \%-CI: 88,9 \% - 89,7 \%) und die durchschnittliche Spieldauer steigt von 10,62 Zügen (95 \%-CI: 10,57 - 10,67) auf 11,64 Züge (95 \%-CI: 11,57 - 11,71). Durch das Training mit kleineren Lernraten werden also bessere Ergebnisse erzielt, wobei die Verbesserungen mit kleiner werdender Lernrate immer geringfügiger werden. Das Training mit weiteren kleineren Lernraten bleibt daher im Rahmen dieser Arbeit erspart. Für die weiteren Untersuchungen kommt das Modell zum Einsatz, das aus dem Training mit der Lernrate $\alpha_3$ entstanden ist.
+
+Wie beim MCTS-Agenten wurde eine einfache qualitative Analyse im Spiel gegen einen Menschen durchgeführt, um ein Bild von der Strategie des trainierten PPO-Agenten zu bekommen. Daraus geht hervor, dass der PPO-Agent stets als erstes das unterste Feld in der mittleren Spalte besetzt, wenn er dazu die Möglichkeit hat, was wie in Kapitel \ref{qualitative-untersuchung} bereits erwähnt, der stärkste Anfangszug ist. Der PPO-Agent tendiert dazu, seine Spielsteine vertikal zu stapeln, in manchen Fällen baut er auch horizontale Ketten. Wenn er drei Spielsteine in einer Kette platziert hat, setzt er meistens auch den vierten Stein zum Gewinnen, wenn dies möglich ist. Er blockiert hingegen äußerst selten seinen Gegenspieler, wenn er droht, in seinem nächsten Zug das Spiel für sich zu entscheiden. So ist es als Mensch sehr einfach möglich, gegen den RL-Agenten zu gewinnen, beispielsweise indem man selbst seine Steine in einer Spalte stapelt und von dieser Strategie nur abweicht, um den PPO-Agenten daran zu hindern, den vierten Stein in eine seiner Ketten zu platzieren.
+
+Die in der quantitativen Analyse ermittelte Gewinnrate und Spieldauer des PPO-Agenten liegt mit 97,3 \% (95 \%-CI: 97,1 \% - 97,6 \%) bzw. 10,62 Zügen (95 \%-CI: 10,57 - 10,67) nahe bei den durch den MCTS-Agenten erzielten Werten von 100 \% (95 \%-CI: 98,1 - 100,0) bzw. 9,72 Zügen (95 \%-CI: 9,32 - 10,12). Es scheint, als wären die Agenten ähnlich stark. Aus der qualitativen Analyse geht jedoch hervor, dass der MCTS-Agent eine langfristig ausgerichtete Strategie verfolgt, die auch gegen zielgerichtete Gegenspieler standhalten kann, während der PPO-Agent auf kurzfristige Gewinne abzielt, wodurch er mit einfachen Mitteln besiegt werden kann. Die kurzfristig ausgerichtete Strategie des PPO-Agenten entsteht dadurch, dass sie ausreicht, um im Training gegen den zufällig spielenden Agenten in den meisten Fällen zu gewinnen, sodass kein Lernanreiz für Strategien besteht, die auch gegen intelligentere Gegenspieler funktionieren.
+
+Die im Konzept geforderte Bedingung, dass die zu untersuchenden Agenten gleich stark sein müssen, um aussagekräftige Aussagen über die Robustheit der Verfahren zu äußern, konnte somit weiterhin nicht erfüllt werden. Es ist davon auszugehen, dass der implementierte RL-Agent alleine aufgrund seiner unterlegenen Spielstrategie auch in den Untersuchungen zur Robustheit schlechter abschneiden wird. Die Untersuchungen bezüglich Robustheit werden dennoch weiter fortgesetzt, denn noch ist nicht ausgeschlossen, dass der implementierte PPO-Agent entgegen der Erwartungen bessere Ergebnisse erzielt als der MCTS-Agent.
 
 \subsection{Szenarien zur Untersuchung von Robustheit}
 
