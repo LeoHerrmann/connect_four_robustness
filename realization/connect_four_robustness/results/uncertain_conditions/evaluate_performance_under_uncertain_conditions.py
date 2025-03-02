@@ -131,7 +131,7 @@ for uncertainty_level in uncertainty_levels:
 
 generate_and_save_figure(
 	uncertainty_levels,
-	"Anzahl fehlerhafter Spielsteine",
+	"Anz. fehlerhafter Spielsteinplatzierungen",
 	"Gewinnrate [%]",
 	mcts_win_rates,
 	mcts_win_rates_cis,
@@ -142,7 +142,7 @@ generate_and_save_figure(
 
 generate_and_save_figure(
 	uncertainty_levels,
-	"Anzahl fehlerhafter Spielsteine [%]",
+	"Anz. fehlerhafter Spielsteinplatzierungen",
 "Gewinnratenverlust [%]",
 	mcts_win_rate_losses,
 	mcts_win_rate_losses_cis,
