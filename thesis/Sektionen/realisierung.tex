@@ -336,6 +336,8 @@ Die im Konzept geforderte Bedingung, dass die zu untersuchenden Agenten gleich s
 
 \subsection{Szenarien zur Untersuchung von Robustheit}
 
+\label{robustheit-szenarien}
+
 Um die im Konzept genannten Szenarien zu implementieren, wurde die Messumgebung um eine Klasse \texttt{DistortionGenerator} erweitert. Über dessen Konstruktor können zwei Attribute gesetzt werden, eines um die Wahrscheinlichkeit festzulegen, mit der eine Aktion verfälscht werden soll, und ein Weiteres um die Anzahl von falsch zu beobachtenden Feldern zu konfigurieren.
 
 Sie besitzt eine Methode \texttt{distort\char`_action(orinal\char`_action: int, action\char`_mask: list[int]) -> int}, die eine von einem Agenten gewählte Aktion und die im aktuellen Zustand möglichen Aktionen entgegennimmt, und mit der im Konstruktor gegebenen Wahrscheinlichkeit eine zufällige Aktion und ansonsten die ursprüngliche Aktion zurückgibt. Sie wird immer dann ausgeführt, nachdem die Messumgebung für einen Agenten einen Zug berechnet hat und es wird die Aktion ausgeführt, die durch diese Funktion zurückgegeben wird.
