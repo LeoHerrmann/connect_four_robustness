@@ -288,6 +288,8 @@ In \cite{Taylor.2024} wurden keine Mechanismen zur Mustererkennung eingesetzt un
 
 \paragraph{Training gegen einen zufällig spielenden Agenten}
 
+\label{training-random}
+
 Aufgrund begrenzter zeitlicher Ressourcen war es nicht möglich, weitere Trainingsmetriken zu analysieren oder zusätzliche Experimente mit anderen Hyperparametern wie Netzwerkarchitekturen mit Faltungsmatritzen durchzuführen. Daher wurde die Entscheidung getroffen, auf eine einfachere Trainingsstrategie umzustellen. Sie besteht darin, ein RL-Modell gegen einen zufällig spielenden Agenten zu trainieren. Auch hier wird als RL-Verfahren PPO eingesetzt. Es wurden verschiedene Trainings mit den Lernraten $\alpha_0 = 0.003$, $\alpha_1 = 0.001$, $\alpha_2 = 0.0005$ und $\alpha_3 = 0.0001$ durchgeführt. Jedes Training war 1.024.000 Trainingsschritte lang. Alle anderen Parameter, wie die Architektur der Netzwerke oder die Anzahl der Schritte, nach denen die Gewichte des Modells angepasst werden, wurden bei den durch Stable Baselines3 voreingestellten Parameter belassen.
 
 % Und hier gehts beim nächsten Mal weiter :)

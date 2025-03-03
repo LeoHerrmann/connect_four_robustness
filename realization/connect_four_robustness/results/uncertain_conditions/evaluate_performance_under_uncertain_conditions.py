@@ -86,6 +86,8 @@ def generate_and_save_figure(
 
 # Evaluate performance for uncertain observations
 
+print("Evaluating performance for uncertain observations")
+
 read_directory = "uncertain_observations/alternating_player_order/"
 uncertainty_levels = [0, 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
 
@@ -129,6 +131,14 @@ for uncertainty_level in uncertainty_levels:
 	ppo_win_rate_losses.append(ppo_win_rate_loss)
 	ppo_win_rate_losses_cis.append(ppo_win_rate_loss_ci)
 
+print("MCTS")
+print([np.round(value, 3) for value in mcts_win_rate_losses])
+print([np.round(value, 3) for value in mcts_win_rate_losses_cis])
+print()
+print("PPO")
+print([np.round(value, 3) for value in ppo_win_rate_losses])
+print([np.round(value, 3) for value in ppo_win_rate_losses_cis])
+
 generate_and_save_figure(
 	uncertainty_levels,
 	"Anz. fehlerhafter Spielsteinplatzierungen",
@@ -152,6 +162,9 @@ generate_and_save_figure(
 )
 
 # Evaluate performance for uncertain actions
+
+print()
+print("Evaluating performance for uncertain actions")
 
 read_directory = "uncertain_actions/alternating_player_order/"
 uncertainty_levels = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
@@ -195,6 +208,14 @@ for uncertainty_level in uncertainty_levels:
 	ppo_win_rates_cis.append(ppo_win_rate_ci)
 	ppo_win_rate_losses.append(ppo_win_rate_loss)
 	ppo_win_rate_losses_cis.append(ppo_win_rate_loss_ci)
+
+print("MCTS")
+print([np.round(value, 3) for value in mcts_win_rate_losses])
+print([np.round(value, 3) for value in mcts_win_rate_losses_cis])
+print()
+print("PPO")
+print([np.round(value, 3) for value in ppo_win_rate_losses])
+print([np.round(value, 3) for value in ppo_win_rate_losses_cis])
 
 generate_and_save_figure(
 	uncertainty_levels,
