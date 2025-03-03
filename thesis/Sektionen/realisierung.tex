@@ -71,11 +71,16 @@ Die zentrale Methode der Klasse \texttt{MctsAgent} ist die Methode \texttt{deter
 
 \begin{itemize}
 \item \texttt{select(root\char`_node: MctsNode) -> MctsNode}: Vom zuvor definierten Wurzelknoten werden per UCT-Formel solange Kinder ausgewählt, bis ein Knoten erreicht wurde, der ein Endzustand ist oder nicht vollständig expandiert ist, also weniger Kindknoten als Aktionen hat, die von dem dem Knoten entsprechenden Zustand möglich sind. Die UCT-Konstante kann dabei über den Konstruktor konfiguriert werden. Wenn es sich bei dem erreichten Knoten um einen Endzustand handelt, wird dieser Knoten zurückgegeben. Ansonsten, wird von diesem Knoten ein zufälliger legaler Spielzug ausgeführt und ein neuer Knoten, der den dadurch erreichten Zustand abbildet, wird als Kindknoten hinzugefügt. Dies entspricht dem Expansion-Schritt des MCTS-Algorithmus. Zurückgegeben wird dann der neu hinzugefügte Knoten.
+
+\begingroup
+\emergencystretch=5em
 \item \texttt{simulate(selected\char`_node: MctsNode) -> str | None}: Diese Methode nimmt den in der \texttt{select}-Methode ausgewählten Knoten entgegen, das Spiel wird ab dem Zustand, den der Knoten repräsentiert, zu Ende gespielt, und zurückgegeben wird der Gewinner, bzw. None, wenn das Spiel nicht entschieden werden konnte.
 \item \texttt{backpropagate(selected\char`_node: MctsNode, winner: str | None) -> None}: Von ausgewählten Knoten wird das Attribut \texttt{visitation\char`_count} erhöht und ggf. wird \texttt{player\char`_0\char`_wins} oder \texttt{player\char`_1\char`_wins} hochgezählt. Dieser Vorgang wird jeweils für alle Elternknoten durchgeführt, bis der Wurzelknoten erreicht wurde.
+
+\endgroup
 \end{itemize}
 
-Nach n Wiederholungen wird eine Zahl zurückgegeben, die die Aktion repräsentiert, die vom Wurzelknoten zum direkten Kindknoten führt, dessen \texttt{visitation\char`_count}-Attribut den höchsten Wert hat.
+Nach n Wiederholungen wird eine Zahl zurückgegeben, die die Aktion repräsentiert, die vom Wurzelknoten zum direkten Kindknoten führt, dessen \texttt{visitation\char`_count}-At\-tribut den höchsten Wert hat.
 
 % Anpassungen an der PettingZoo Umgebung
 
@@ -149,6 +154,8 @@ Bei 5.000 Simulationen pro Zug setzt der MCTS-Agenten seinen ersten Stein, wenn 
 
 \subsection{PPO-Agent}
 
+Die Implementierung des PPO-Agenten erfolgte im Rahmen dieser Arbeit mit Hilfe des Frameworks Stable Baselines3. Es wurde zunächst versucht, mit der Trainingsstrategie von Zhong et al. einen PPO-Agenten zu entwickeln, der mit dem MCTS-Agenten mithalten kann. Dies ist jedoch mangels zeitlicher Ressourcen nicht gelungen. Aus diesem Grund wurde auf eine einfachere Trainingsstrategie umgestellt, die darin besteht, das PPO-Modell gegen einen zufällig spielenden Agenten zu trainieren.
+
 \subsubsection{Einführung in Stable Baselines3}
 
 Das PPO-Verfahren wird in dieser Arbeit nicht von Grund auf implementiert. Stattdessen wird auf eine Implementierung des Verfahrens aus dem Framework Stable Baselines3 zurückgegriffen. Dieses Framework enthält Implementierungen von verschiedenen RL-Verfahren, die auf den Referenzimplementierungen von OpenAI aufbauen. Das Framework bietet eine Schnittstelle, die es ermöglicht, die implementierten RL-Verfahren auf Gymnasium-Umgebungen anzuwenden. Aufgrund der Ähnlichkeit der Schnittstellen von Gymnasium und PettingZoo lässt sich Stable Baselines3 auch auf PettingZoo-Umgebungen anwenden \cite{Raffin.2021} \cite{Farama.2025}.
@@ -167,7 +174,12 @@ Um dieses Verhalten abbilden zu können, wird für die Implementierung der Train
 
 \paragraph{Action Masking}
 
+\begingroup
+\emergencystretch=5em
+
 Neben den bereits in Kapitel \ref{a2c} genannten Vorteilen besitzt das Verfahren PPO auch den Vorteil, dass Stable Baselines3 die Implementierung \texttt{MaskablePPO} enthält, die Action Masking unterstützt. Für A2C existiert derzeit keine solche Implementierung \cite{Raffin.2021}. Action Masking sorgt dafür, dass das Modell im Training und in der Anwendung daran gehindert wird, Entscheidungen zu treffen, die die Umgebung nicht erlaubt \cite{Huang_2022}. Im Vier Gewinnt bedeutet das beispielsweise, einen Spielstein in eine Spalte zu platzieren, in der bereits alle Felder belegt sind. Die PettingZoo-Umgebung ist zwar darauf ausgelegt, bei illegalen Aktionen das Spiel zu beenden und den verantwortlichen Agenten mit einer entsprechenden negativen Belohnung zu bestrafen \cite{Farama.2025}. Es wurde jedoch gezeigt, dass der Einsatz von Action Masking effektiver ist als sich auf die Bestrafung über die Umgebung zu verlassen \cite{Huang_2022}.
+
+\endgroup
 
 Damit Action Masking in der Implementierung der Trainingsumgebung funktioniert, muss die dem Modell zugeordnete Umgebung eine Methode \texttt{action\char`_mask()} implementieren, die Auskunft darüber gibt, welche Aktionen möglich und welche nicht möglich sind. Das ist in den PettingZoo-Umgebungen standardmäßig nicht der Fall. Diese Funktionalität wurde daher dem oben genannten Wrapper hinzugefügt.
 
@@ -344,12 +356,17 @@ Die im Konzept geforderte Bedingung, dass die zu untersuchenden Agenten gleich s
 
 Um die im Konzept genannten Szenarien zu implementieren, wurde die Messumgebung um eine Klasse \texttt{DistortionGenerator} erweitert. Über dessen Konstruktor können zwei Attribute gesetzt werden, eines um die Wahrscheinlichkeit festzulegen, mit der eine Aktion verfälscht werden soll, und ein Weiteres um die Anzahl von falsch zu beobachtenden Feldern zu konfigurieren.
 
-Sie besitzt eine Methode \texttt{distort\char`_action(orinal\char`_action: int, action\char`_mask: list[int]) -> int}, die eine von einem Agenten gewählte Aktion und die im aktuellen Zustand möglichen Aktionen entgegennimmt, und mit der im Konstruktor gegebenen Wahrscheinlichkeit eine zufällige Aktion und ansonsten die ursprüngliche Aktion zurückgibt. Sie wird immer dann ausgeführt, nachdem die Messumgebung für einen Agenten einen Zug berechnet hat und es wird die Aktion ausgeführt, die durch diese Funktion zurückgegeben wird.
 
-Die Methode \texttt{distort\char`_state(state: numpy.ndarray(6, 7, 2)) -> numpy.ndarray(6, 7, 2)} nimmt den aktuellen Zustand des Spielfelds entgegen. Sie verwaltet zwei Listen, die jeweils Koordinaten von Spielfeldern enthalten. Eine Liste für Felder, bei denen Steiner platziert, und eine weitere Liste für Felder, bei denen Steine entfernt werden können, sodass jeweils illegale Zustände entstehen. In die erste Liste werden die Felder hinzugefügt, dessen unteren Nachbarn frei sind, und in die zweite Liste werden die Felder hinzugefügt, dessen obere Nachbarn besetzt sind. Wie in Kapitel \ref{konzept} erwähnt, wird dabei beachtet, dass aus vollen Spalten keine Spielsteine entfernt werden und keine Spalten mit nur einem freien Feld gefüllt werden, sodass sich die im beobachteten Zustand möglichen Aktionen nicht von den im tatsächlichen Zustand möglichen Aktionen unterscheiden. Die Methode wird nach jedem Spielzug durchgeführt, sobald der neue Zustand des Spielfelds bekannt ist. Das Ergebnis wird an die Agenten weitergegeben, die auf dessen Grundlage den nächsten Zug wählen.
+\begingroup
+
+\emergencystretch 5em%
+
+	 Sie besitzt eine Methode \texttt{distort\char`_action(orinal\char`_action: int, action\char`_mask: list[int]) -> int}, die eine von einem Agenten gewählte Aktion und die im aktuellen Zustand möglichen Aktionen entgegennimmt, und mit der im Konstruktor gegebenen Wahrscheinlichkeit eine zufällige Aktion und ansonsten die ursprüngliche Aktion zurückgibt. Sie wird immer dann ausgeführt, nachdem die Messumgebung für einen Agenten einen Zug berechnet hat und es wird die Aktion ausgeführt, die durch diese Funktion zurückgegeben wird.
+
+	Die Methode \texttt{distort\char`_state(state: numpy.ndarray(6, 7, 2)) -> numpy.ndarray(6, 7, 2)} nimmt den aktuellen Zustand des Spielfelds entgegen. Sie verwaltet zwei Listen, die jeweils Koordinaten von Spielfeldern enthalten. Eine Liste für Felder, bei denen Steiner platziert, und eine weitere Liste für Felder, bei denen Steine entfernt werden können, sodass jeweils illegale Zustände entstehen. In die erste Liste werden die Felder hinzugefügt, dessen unteren Nachbarn frei sind, und in die zweite Liste werden die Felder hinzugefügt, dessen obere Nachbarn besetzt sind. Wie in Kapitel \ref{konzept} erwähnt, wird dabei beachtet, dass aus vollen Spalten keine Spielsteine entfernt werden und keine Spalten mit nur einem freien Feld gefüllt werden, sodass sich die im beobachteten Zustand möglichen Aktionen nicht von den im tatsächlichen Zustand möglichen Aktionen unterscheiden. Die Methode wird nach jedem Spielzug durchgeführt, sobald der neue Zustand des Spielfelds bekannt ist. Das Ergebnis wird an die Agenten weitergegeben, die auf dessen Grundlage den nächsten Zug wählen.
+
+\endgroup
 
 Eine Frage, die sich bei der Implementierung des Szenarios Unsicherheit bezüglich Beobachtungen stellt, ist wie der MCTS-Agent auf Grundlage des illegalen Spielfeldzustands Simulationen durchführt. Die PettingZoo-Umgebung, die in dieser Implementierung eingesetzt wird, handhabt den Fall, dass ein Stein in eine Spalte platziert wird, in der sich ein Stein über einem freien Feld befindet, so, dass der zu platzierende Stein im untersten freien Feld landet. Eine alternative Herangehensweise wäre, den zu platzierenden Stein immer auf das freie Feld über das höchste besetzte Feld zu setzen. Es wird angenommen, dass die beiden Herangehensweisen keinen wesentlichen Unterschied in der Leistungsfähigkeit des MCTS-Agenten verursachen, daher wird das Verhalten so belassen, wie es in der PettingZoo-Umgebung umgesetzt ist.
 
 Es war jedoch eine Anpassung an das Action Masking der PettingZoo-Umgebung notwendig, also der Art und Weise, wie in berechnet wird, welche Aktionen möglich sind. Diese Berechnung ist so implementiert, dass Spalten als nicht bespielbar gekennzeichnet werden, sobald das oberste Feld der Spalte belegt ist. Das bedeutet, wenn fälschlicherweise beobachtet wird, dass das oberste Feld einer Spalte besetzt ist, wird sie als nicht bespielbar gekennzeichnet, auch wenn darunter freie Felder beobachtet werden. Das Action Masking wurde daher so angepasst, dass Spalten erst dann als nicht bespielbar gekennzeichnet werden, wenn alle Felder in der Spalte besetzt sind.
-
-\newpage
