@@ -22,14 +22,14 @@ def generate_figures(average_history):
     win_rates_figure = plt.figure(1)
     plt.plot(game_indices, player_0_win_rates, label="Spieler 0")
     plt.plot(game_indices, player_1_win_rates, label="Spieler 1")
-    plt.ylabel("Gewinnrate [%]")
+    plt.ylabel("Gewinnrate / %")
     plt.xlabel("Anzahl der Spiele")
     plt.grid(True)
     plt.legend()
 
     game_length_figure = plt.figure(2)
-    plt.plot(game_indices, average_game_lengths, color="black", label="Average Game Length")
-    plt.ylabel("Durchschnittliche Spieldauer")
+    plt.plot(game_indices, average_game_lengths, label="Average Game Length")
+    plt.ylabel("Durchschn. Spieldauer / Züge")
     plt.xlabel("Anzahl der Spiele")
     plt.grid(True)
 
@@ -57,9 +57,9 @@ def save_average_history_and_figures(win_rates_figure, game_length_figure, resul
     plt.show()
 
 
-read_file_path = "random_vs_random_1/alternating_player_order/20250223-223154_average_history.json"
-timestamp = "20250223-223154"
-results_subfolder = "random_vs_random_1/alternating_player_order"
+read_file_path = "random_vs_random_0/alternating_player_order/20250223-202221_average_history.json"
+timestamp = "20250223-202221"
+results_subfolder = "random_vs_random_0/alternating_player_order"
 
 average_history = []
 

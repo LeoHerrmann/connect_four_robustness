@@ -237,7 +237,7 @@ Während der Trainings mit den verschiedenen Lernraten wurde nach allen $N$ Iter
 		\caption{Verlauf der Spieldauer mit Lernrate $\alpha_4$.}
 		\label{fig:f12}
 	\end{subfigure}
-	\caption{Verlauf der Spieldauer während des Trainings nach Zhong et al. mit den Lernraten $\alpha_0$ und $\alpha_4$}
+	\caption{Verlauf der Spieldauer während des Trainings nach Zhong et al. mit den Lernraten $\alpha_0$ und $\alpha_4$.}
 \end{figure}
 
 Die Gewinnrate steigt bei den Trainings mit den kleineren Lernraten $\alpha_2$, $\alpha_3$ und $\alpha_4$, innerhalb der ersten 20 Iterationen und fluktuiert von dort bis zum Ende des jeweiligen Trainings auf einem konstanten Niveau. Dieses Niveau beträgt bei der Lernrate $\alpha_2$ etwa 85 \% und bei $\alpha_3$ und $\alpha_4$ etwa 80 \%. Mit den Lernraten $\alpha_0$ und $\alpha_1$ steigt die Gewinnrate nach etwa 5 Iterationen auf knapp über 90 \% und fällt danach auf etwa 80 \%.
@@ -268,7 +268,7 @@ Bei den großen Lernraten $\alpha_0$ und $\alpha_1$, fluktuiert der Werteverlust
 		\caption{Verlauf des Werteverlustes mit Lernrate $\alpha_4$.}
 		\label{fig:f15}
 	\end{subfigure}
-	\caption{Verlauf des Werteverlustes während des Trainings nach Zhong et al. mit den Lernraten $\alpha_0$ und $\alpha_4$}
+	\caption{Verlauf des Werteverlustes während des Trainings nach Zhong et al. mit den Lernraten $\alpha_0$ und $\alpha_4$.}
 \end{figure}
 
 Der Policy-Gradient-Verlust fluktuiert bei den Trainings mit den Lernraten $\alpha_0$ und $\alpha_2$ über den gesamten Verlauf um einen konstanten Wert von -0,025 bzw. 0,015. Die Fluktuation um einen konstanten Wert deutet dabei auf eine zu große Lernrate hin. Bei der zweitgrößten Lernrate $\alpha_1$ wird eine Fluktuation konstanten Ausmaßes beobachtet, wobei der Wert um den fluktuiert wird, in den ersten 60 Iterationen von etwa -0,025 auf -0,010 steigt und danach auf -0,020 sinkt. Ähnlich wie beim Werteverlust bei der mittleren Lernrate $\alpha_2$ kann der sich zunächst an Null annähernde Verlust als eine positive Entwicklung interpretiert werden. Je kleiner die Lernrate ist, desto näher bewegen sich die Werte für den Policy-Gradient-Verlust bei Null und desto kleiner werden über den größten Teil des Verlaufs die Fluktuationen. Dafür treten im Verhältnis zur sinkenden Fluktuation häufiger einzelne größere Ausreißer auf. Dies kann wie der Werteverlust mit plötzlichen, länger andauernden Einbrüchen auf neu erlerntes Verhalten hindeuten.
@@ -291,7 +291,7 @@ Der Policy-Gradient-Verlust fluktuiert bei den Trainings mit den Lernraten $\alp
 		\caption{Verlauf des Policy-Gradient-Verlustes mit Lernrate $\alpha_4$.}
 		\label{fig:f18}
 	\end{subfigure}
-	\caption{Verlauf des Policy-Gradient-Verlustes während des Trainings nach Zhong et al. mit den Lernraten $\alpha_0$, $\alpha_1$ und $\alpha_4$}
+	\caption{Verlauf des Policy-Gradient-Verlustes während des Trainings nach Zhong et al. mit den Lernraten $\alpha_0$, $\alpha_1$ und $\alpha_4$.}
 \end{figure}
 
 Leider wurden keine Korrelationen zwischen dem Verhalten des Policy-Gradient- oder Werteverlustes und der Leistung der trainierten Modell hinsichtlich Gewinnrate oder Spieldauer gefunden. Es lassen sich daher auch keine Aussagen darüber treffen, ob fluktuierende Verlust-Verläufe, die sich über die Iterationen der 0 annähern oder weniger fluktuierende Verläufe mit plötzlichen Einbrüchen oder Ausreißern erstrebenswerter sind. Um die Ursachen für das stagnierende Training weiter zu ergründen, sind die Analyse von weiteren Trainingsmetriken und Experimente mit weiteren Hyperparametern erforderlich.
@@ -324,7 +324,7 @@ Beobachtet wurden dabei die durchschnittlich in den vergangenen 100 Episoden erh
 		\caption{Durchschnittliche Episodenlänge.}
 		\label{fig:f20}
 	\end{subfigure}
-	\caption{Verlauf der durchschnittlichen Belohnung und Episodenlänge während des Trainings gegen einen zufällig spielenden Agenten mit Lernrate $\alpha_3$}
+	\caption{Verlauf der durchschnittlichen Belohnung und Episodenlänge während des Trainings gegen einen zufällig spielenden Agenten mit Lernrate $\alpha_3$.}
 \end{figure}
 
 Unabhängig von der Lernrate ist bei den betrachteten Trainingsmetriken nach wenigen hunderttausend Trainingsschritten ein erstrebenswertes Konvergenzverhalten zu beobachten. Die durchschnittliche in den Episoden erhaltene Belohnung konvergiert zu 1, was bedeutet, dass das Modell im Training die meisten Spiele gewinnt. Die durchschnittliche Episodenlänge konvergiert bei etwa 4,5 bis 5, was 9 bis 10 Zügen entspricht.
@@ -341,7 +341,7 @@ Unabhängig von der Lernrate ist bei den betrachteten Trainingsmetriken nach wen
 		\caption{Durchschnittliche Spieldauer.}
 		\label{fig:f22}
 	\end{subfigure}
-	\caption{Gewinnrate und durchschnittliche Spieldauer in Abhängigkeit von der Lernrate beim Training eines PPO-Modells gegen einen zufällig spielenden Agenten}
+	\caption{Gewinnrate und durchschnittliche Spieldauer in Abhängigkeit von der Lernrate beim Training eines PPO-Modells gegen einen zufällig spielenden Agenten.}
 \end{figure}
 
 Um die Leistung der trainierten Modelle gegen den zufällig spielenden Agenten zu evaluieren, wurden mit jedem Modell 20.000 Spiele durchgeführt und die Gewinnrate und Spieldauer wurde aufgezeichnet. Mit steigender Lernrate sinkt die durch das trainierte Modell erzielte Gewinnrate stetig von 97,3 \% (95 \%-CI: 97,1 - 97,6) auf 89,3 \% (95 \%-CI: 88,9 - 89,7) und die durchschnittliche Spieldauer steigt von 10,62 Zügen (95 \%-CI: 10,57 - 10,67) auf 11,64 Züge (95 \%-CI: 11,57 - 11,71). Durch das Training mit kleineren Lernraten werden damit bessere Ergebnisse erzielt, wobei die Verbesserungen mit kleiner werdender Lernrate immer geringfügiger werden. Das Training mit weiteren kleineren Lernraten bleibt daher im Rahmen dieser Arbeit erspart. Für die weiteren Untersuchungen kommt das Modell zum Einsatz, das aus dem Training mit der Lernrate $\alpha_3$ entstanden ist.

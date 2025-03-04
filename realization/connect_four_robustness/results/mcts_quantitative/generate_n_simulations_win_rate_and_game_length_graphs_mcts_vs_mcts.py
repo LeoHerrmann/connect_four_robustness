@@ -46,19 +46,19 @@ def generate_figures(
         plt.plot([simulation_count, simulation_count], [player_0_win_rates_lowers[i], player_0_win_rates_uppers[i]], color="tab:blue", marker="_")
         plt.plot([simulation_count, simulation_count], [player_1_win_rates_lowers[i], player_1_win_rates_uppers[i]], color="tab:orange", marker="_")
     
-    plt.ylabel("Gewinnrate [%]")
+    plt.ylabel("Gewinnrate / %")
     plt.xlabel("Anzahl der Simulationen pro Entscheidung")
     plt.grid(True)
     plt.legend()
 
     game_lengths_figure = plt.figure(2)
-    plt.plot(simulation_counts, final_game_lengths, color="black", marker="o", label="Durchschnittliche Spieldauer", markersize=3)
+    plt.plot(simulation_counts, final_game_lengths, marker="o", label="Durchschnittliche Spieldauer", markersize=3)
     
     for i in range(len(simulation_counts)):
         simulation_count = simulation_counts[i]
-        plt.plot([simulation_count, simulation_count], [final_game_lengths_cis[i][0], final_game_lengths_cis[i][1]], marker="_", color="black")
+        plt.plot([simulation_count, simulation_count], [final_game_lengths_cis[i][0], final_game_lengths_cis[i][1]], marker="_", color="tab:blue")
     
-    plt.ylabel("Durchschnittliche Spieldauer")
+    plt.ylabel("Durchschn. Spieldauer / Züge")
     plt.xlabel("Anzahl der Simulationen pro Entscheidung")
     plt.grid(True)
 
@@ -105,8 +105,8 @@ final_game_lengths_cis = []
 
 for simulation_count in simulation_counts:
     print(simulation_count)
-    path_to_average_history = "mcts_vs_mcts/results/mcts_vs_mcts_" + str(simulation_count) + "/average_history.json"
-    path_to_absolute_history = "mcts_vs_mcts/results/mcts_vs_mcts_" + str(simulation_count) + "/absolute_history.json"
+    path_to_average_history = "mcts_vs_mcts/mcts_vs_mcts_" + str(simulation_count) + "/average_history.json"
+    path_to_absolute_history = "mcts_vs_mcts/mcts_vs_mcts_" + str(simulation_count) + "/absolute_history.json"
 
     average_history = []
     absolute_history = []

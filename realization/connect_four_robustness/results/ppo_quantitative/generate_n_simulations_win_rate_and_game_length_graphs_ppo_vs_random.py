@@ -46,20 +46,20 @@ def generate_figures(
         plt.plot([learning_rate, learning_rate], [ppo_win_rates_lowers[i], ppo_win_rates_uppers[i]], color="tab:blue", marker="_")
         plt.plot([learning_rate, learning_rate], [random_win_rates_lowers[i], random_win_rates_uppers[i]], color="tab:orange", marker="_")
     
-    plt.ylabel("Gewinnrate [%]")
+    plt.ylabel("Gewinnrate / %")
     plt.xlabel("Lernrate")
     plt.grid(True)
     plt.legend()
 
     game_lengths_figure = plt.figure(2)
-    plt.plot(learning_rates, final_game_lengths, color="black", marker="o", label="Durchschn. Spieldauer [Züge]", markersize=3)
+    plt.plot(learning_rates, final_game_lengths, marker="o", label="Durchschn. Spieldauer [Züge]", markersize=3)
     plt.xticks(rotation=45, ha='right')
     
     for i in range(len(learning_rates)):
         learning_rate = learning_rates[i]
-        plt.plot([learning_rate, learning_rate], [final_game_lengths_cis[i][0], final_game_lengths_cis[i][1]], marker="_", color="black")
+        plt.plot([learning_rate, learning_rate], [final_game_lengths_cis[i][0], final_game_lengths_cis[i][1]], marker="_", color="tab:blue")
     
-    plt.ylabel("Durchschn. Spieldauer [Züge]")
+    plt.ylabel("Durchschn. Spieldauer / Züge")
     plt.xlabel("Lernrate")
     plt.grid(True)
 
@@ -72,13 +72,13 @@ def save_figures(win_rates_figure, game_lengths_figure):
     win_rates_figure.savefig(
         destination_path_for_average_win_rate_graph,
         bbox_inches='tight',
-        pad_inches=0
+        pad_inches=0.05
     )
 
     game_lengths_figure.savefig(
         destination_path_for_average_game_length_graph,
         bbox_inches='tight',
-        pad_inches=0
+        pad_inches=0.05
     )
 
     plt.show()

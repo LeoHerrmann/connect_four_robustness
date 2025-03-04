@@ -76,7 +76,7 @@ def generate_and_save_figure(
 	win_rates_figure.savefig(
 		destination_file_name,
 		bbox_inches='tight',
-		pad_inches=0
+		pad_inches=0.05
 	)
 
 	plt.show(block=False)
@@ -141,8 +141,8 @@ print([np.round(value, 3) for value in ppo_win_rate_losses_cis])
 
 generate_and_save_figure(
 	uncertainty_levels,
-	"Anz. fehlerhafter Spielsteinplatzierungen",
-	"Gewinnrate [%]",
+	"Anzahl von Spielsteinveränderungen",
+	"Gewinnrate / %",
 	mcts_win_rates,
 	mcts_win_rates_cis,
 	ppo_win_rates,
@@ -152,8 +152,8 @@ generate_and_save_figure(
 
 generate_and_save_figure(
 	uncertainty_levels,
-	"Anz. fehlerhafter Spielsteinplatzierungen",
-"Gewinnratenverlust [%]",
+	"Anzahl von Spielsteinveränderungen",
+"Gewinnratenverlust / %",
 	mcts_win_rate_losses,
 	mcts_win_rate_losses_cis,
 	ppo_win_rate_losses,
@@ -219,8 +219,8 @@ print([np.round(value, 3) for value in ppo_win_rate_losses_cis])
 
 generate_and_save_figure(
 	uncertainty_levels,
-	"Wahrsch. für zufällige Aktion [%]",
-	"Gewinnrate [%]",
+	"Wahrsch. für zufällige Aktion / %",
+	"Gewinnrate / %",
 	mcts_win_rates,
 	mcts_win_rates_cis,
 	ppo_win_rates,
@@ -230,8 +230,8 @@ generate_and_save_figure(
 
 generate_and_save_figure(
 	uncertainty_levels,
-	"Wahrsch. für zufällige Aktion [%]",
-"Gewinnratenverlust [%]",
+	"Wahrsch. für zufällige Aktion / %",
+"Gewinnratenverlust / %",
 	mcts_win_rate_losses,
 	mcts_win_rate_losses_cis,
 	ppo_win_rate_losses,
