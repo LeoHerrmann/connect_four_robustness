@@ -32,7 +32,7 @@ Im Fall von Vier Gewinnt sind beide Vorteile von strategiebasierten Verfahren ni
 
 Vier Gewinnt kann als Problem des Gebiets Multi-Agent RL (MARL) betrachtet werden. MARL ist ein Teilgebiet des RL, in denen mehrere RL-Agenten in derselben Umgebung miteinander interagieren (\cite{Albrecht.2024}, S. 2). Die Agenten können in der Umgebung ein kompetitives oder kooperatives Verhältnis oder eine Mischung beider Verhältnisse zueinander haben (\cite{Albrecht.2024}, S. 9). In Zwei-Spieler Nullsummenspielen wie Vier Gewinnt arbeiten die Agenten rein kompetitiv. Ein entscheidender Unterschied von kompetitiven MARL-Problemen zu Single-Agent-RL-Problemen (SARL) besteht darin, dass in SARL-Problemen die Umgebung eines trainierenden Agents statisch ist, was bedeutet, dass sich die Übergangsfunktion des zugrundeliegenden MDPs nicht ändert. Beim Training in einer Multi-Agent-Umgebung lernen mehrere Agenten gleichzeitig, damit ändert sich die Übergangsfunktion und die Umgebung ist nicht statisch. Die Agents müssen sich im Trainingsprozess an die sich ändernde Umgebung anpassen können (\cite{Albrecht.2024}, S. 12).
 
-Es gibt MARL-Methoden, die auf eine sich ändernde Umgebung optimiert sind. Dazu gehören Beispielsweise Methoden, die dem Konzept \glqq Centralized Training Decentralized Execution\grqq{} (CTDE) zuzuordnen sind. CTDE bedeutet, dass Agenten während des Trainings aus den Erfahrungen voneinander lernen, aber ihre Entscheidungen trotzdem selbstständig treffen können (\cite{Albrecht.2024}, S. 231). Da solche koordinierenden Ansätze zusätzliche Komplexität einführen, wird in dieser Arbeit der Fokus auf Independent Learning des Bereichs \glqq Decentralized Training Decentralized Execution\grqq{} gerichtet. Beim Independent Learning interagieren die Agenten zwar im Training miteinander, erlernen ihr Regelwerk jedoch unabhängig voneinander. Bei Nullsummenspielen geschieht Independent Learning üblicherweise im Zusammenhang mit Self-Play, was bedeutet, dass alle Agenten das selbe Lernverfahren einsetzen. Im Training lernen die Agenten, gegenseitig ihre Schwächen auszunutzen und diese Schwächen zu beheben. Es ist aber auch möglich, Mixed-Play anzuwenden, also im Training Agenten mit verschiedenen Lernverfahren gegeneinander antreten zu lassen. Über Independent Learning lassen sich auch SARL-Methoden auf MARL-Probleme anwenden. Dabei ist zu berücksichtigen, dass SARL-Modelle in nicht-stationären Umgebungen ein weniger stabiles Lernverhalten aufweisen als bei stationären Umgebungen, dennoch werden sie in der Praxis häufig erfolgreich für MARL-Probleme eingesetzt (\cite{Albrecht.2024}, S. 221 f.).
+Es gibt MARL-Methoden, die auf eine sich ändernde Umgebung optimiert sind. Dazu gehören Beispielsweise Methoden, die dem Konzept \glqq Centralized Training Decentralized Execution\grqq{} (CTDE) zuzuordnen sind. CTDE bedeutet, dass Agenten während des Trainings aus den Erfahrungen voneinander lernen, aber ihre Entscheidungen trotzdem selbstständig treffen können (\cite{Albrecht.2024}, S. 231). Da solche koordinierenden Ansätze zusätzliche Komplexität einführen, wird in dieser Arbeit der Fokus auf Independent Learning des Bereichs \glqq Decentralized Training Decentralized Execution\grqq{} gerichtet. Beim Independent Learning interagieren die Agenten zwar im Training miteinander, erlernen ihr Regelwerk jedoch unabhängig voneinander. Bei Nullsummenspielen geschieht Independent Learning üblicherweise im Zusammenhang mit Self-Play, was bedeutet, dass alle Agenten das selbe Lernverfahren einsetzen. Im Training lernen die Agenten, gegenseitig ihre Schwächen auszunutzen und diese Schwächen zu beheben. Es ist jedoch auch möglich, Mixed-Play anzuwenden, was bedeutet, im Training Agenten mit verschiedenen Lernverfahren gegeneinander antreten zu lassen. Über Independent Learning lassen sich auch SARL-Methoden auf MARL-Probleme anwenden. Dabei ist zu berücksichtigen, dass SARL-Modelle in nicht-stationären Umgebungen ein weniger stabiles Lernverhalten aufweisen als bei stationären Umgebungen, dennoch werden sie in der Praxis häufig erfolgreich für MARL-Probleme eingesetzt (\cite{Albrecht.2024}, S. 221 f.).
 
 Außerdem ist anzumerken, dass sich Off-Policy-Verfahren weniger für MARL eignen als On-Policy-Verfahren, weil Off-Policy-Verfahren Entscheidungen basierend auf Erfahrungen treffen, die mehrere Lernvorgänge in der Vergangenheit liegen, in der der Gegenspieler noch eine inzwischen veraltete Strategie hatte. Agents mit On-Policy Algorithmen hingegen lernen nur anhand des letzten Lernvorgangs und damit der aktuellsten Strategie der anderen Agenten. Das kann zu stabilerem Lernverhalten führen (\cite{Albrecht.2024}, S. 224 f.).
 
@@ -78,9 +78,11 @@ Dazu muss bestimmt werden können, wie gut das neuronale Netzwerke seine Aufgabe
 
 Der Verlust kann als Funktion $L(\theta)$ betrachtet werden, die von den Parametern des KNNs abhängt. Das KNN löst seine Aufgabe dann gut, wenn das Minimum dieser Verlustfunktion erreicht wurde. Um das Minimum zu finden, wird der Gradient (\glqq multidimensionale Ableitung \grqq{}) der Verlustfunktion $\Delta_\theta L(\theta)$ betrachtet, der die Steigung dieser Verlustfunktion beschreibt. Wird der Gradient für einen Satz von Parametern berechnet, kann daraus gefolgert werden, in welche Richtung und in welchem Verhältnis die Parameter zueinander verändert werden müssen, um den Verlust zu reduzieren (\cite{Albrecht.2024}, S. 171).
 
-Auf dieser Tatsache beruht das Gradientenverfahren. Nach dem Gradientenverfahren werden die Parameter $\theta$ wiederholt wie folgt angepasst, bis ein Minimum erreicht wurde:
+Auf dieser Tatsache beruht das Gradientenverfahren. Im Zuge des Gradientenverfahrens werden die Parameter $\theta$ wiederholt nach Formel (\ref{gradient-descent-formula}) angepasst, bis ein Minimum erreicht wurde.
 
-\[ \theta \leftarrow \theta {-} \alpha \cdot \Delta_\theta L(\theta) \]
+\begin{equation}\label{gradient-descent-formula}
+	\theta \leftarrow \theta {-} \alpha \cdot \Delta_\theta L(\theta)
+\end{equation}
 
 $\alpha$ bezeichnet hierbei die Lernrate. Wird sie zu klein gewählt, erfolgt die Annäherung an das Minimum sehr langsam. Wenn sie zu groß gewählt wird, kann es passieren, dass erst gar kein Minimum gefunden wird (\cite{Ferguson.January2019}, Kapitel 10.3; \cite{Buduma.2022}, Kapitel 4). Daher existieren Verfahren, die die Lernrate dynamisch anpassen können, um den Optimierungsprozess zu beschleunigen (\cite{Albrecht.2024}, S. 174). Bei der Lernrate handelt es sich um einen Hyperparameter. Hyperparameter beeinflussen den Lernprozess und müssen vor dem Training gezielt initialisiert werden. Ähnlich wie die Gestaltung der Architektur erfolgt die Initialisierung der Hyperparameter häufig händisch, wobei automatisierte Werkzeuge dabei unterstützen können \cite{Feurer.2019} \cite{Shawki.2021}.
 
@@ -100,17 +102,22 @@ Advantage Actor-Critic (A2C) ist ein weit verbreitetes Verfahren, das sich nach 
 
 Bei Actor-Critic-Verfahren kommen in der Actor-Komponente stets Policy-Gradient-Verfahren zum Einsatz. Policy Gradient Verfahren sind eine Unterart von strategiebasierten RL-Verfahren. Sie setzen voraus, dass das Regelwerk als parametrisierte Funktion abgebildet ist, so wie es beispielsweise bei KNNs der Fall ist. Denn dann gilt das Policy Gradient Theorem, das Aussagen über den Gradienten der Leistungsfähigkeit eines parametrisierten Regelwerks trifft (\cite{Sutton.2018}, S. 324; \cite{Albrecht.2024}, S. 195)
 
-Das Policy-Gradient-Verfahren, das die Grundlage des Actors in A2C bildet, ist das REINFORCE-Verfahren (\cite{Albrecht.2024}, S. 203). Der Agent startet dabei an einem Startzustand der Trainingsumgebung und trifft dabei solange Entscheidungen anhand des Regelwerks $\pi$, bis ein Endzustand erreicht wurde. Damit ist eine Episode abgeschlossen. Dabei speichert er die Historie der in der Episode besuchten Zustände $S$, durchgeführten Aktionen $A$ und erhaltenen Belohnungen $R$. Für jeden Schritt $t$ in der Historie werden die Parameter $\phi$ des Regelwerks $\pi$ im Rahmen des Gradientenverfahrens nach folgendem Ausdruck angepasst:
+Das Policy-Gradient-Verfahren, das die Grundlage des Actors in A2C bildet, ist das REINFORCE-Verfahren (\cite{Albrecht.2024}, S. 203). Der Agent startet dabei an einem Startzustand der Trainingsumgebung und trifft dabei solange Entscheidungen anhand des Regelwerks $\pi$, bis ein Endzustand erreicht wurde. Damit ist eine Episode abgeschlossen. Dabei speichert er die Historie der in der Episode besuchten Zustände $S$, durchgeführten Aktionen $A$ und erhaltenen Belohnungen $R$. Für jeden Schritt $t$ in der Historie werden die Parameter $\phi$ des Regelwerks $\pi$ im Rahmen des Gradientenverfahrens nach Formel (\ref{reinforce-formula}) angepasst.
 
-\[ \phi \leftarrow \phi {+} \alpha \gamma ^{t} \cdot G_t \cdot \frac{\Delta \pi (A_t|S_t, \phi)}{\pi (A_t|S_t, \phi)} \]
+\begin{equation}\label{reinforce-formula}
+	\phi \leftarrow \phi {+} \alpha \gamma ^{t} \cdot G_t \cdot \frac{\Delta \pi (A_t|S_t, \phi)}{\pi (A_t|S_t, \phi)}
+\end{equation}
+
 
 Anders als in Abschnitt \ref{kuenstliche-neuronale-netzwerke} wird hier allerdings nicht der Verlust reduziert, sondern es wird die Wahrscheinlichkeit erhöht, bei Zustand $S_t$ die Aktion $A_t$ auszuführen. Das geschieht proportional zur diskontierte Belohnung $G_t$, sodass die Wahrscheinlichkeit für Züge mit größerer Belohnung stärker erhöht wird. Der Gradient $\Delta \pi (A_t|S_t, \phi_t)$ zeigt dabei an, in welche Richtung und in welchem Verhältnis die Parameter zueinander verschoben werden müssen, um die Wahrscheinlichkeit, den Zug $A_t$ bei Zustand $S_t$ auszuführen, zu maximieren. Der Gradient wird durch die Wahrscheinlichkeit $\pi (A_t|S_t, \phi_t)$, den Zug auszuführen, dividiert, um dem Effekt entgegenzuwirken, dass Züge mit einer höheren Wahrscheinlichkeit häufiger gewählt werden, und damit die Gewichte in Richtung der Züge mit höherer Wahrscheinlichkeit überproportional verschoben werden würden.
 
 $\gamma$ ist der Diskontierungsfaktor, für den gilt $0 <= \gamma <= 1$. Je kleiner, desto mehr beeinflussen frühere Züge die Parameter als spätere Züge.
 
-Die diskontierten Belohnung $G_t$ errechnet sich dabei aus einer gewichteten Summe der in der Episode erhaltenen Belohnungen:
+Die diskontierte Belohnung $G_t$ errechnet sich dabei nach Formel (\ref{discounted-reward-formula}) aus einer gewichteten Summe der in der Episode erhaltenen Belohnungen.
 
-\[ G_t \leftarrow \sum_{k=t+1}^{T} \gamma ^{k-t-1} \cdot R_k \]
+\begin{equation}\label{discounted-reward-formula}
+	G_t \leftarrow \sum_{k=t+1}^{T} \gamma ^{k-t-1} \cdot R_k
+\end{equation}
 
 Hier kommt erneut der Diskontierungsfaktor $\gamma$ zum Einsatz. Je größer der Diskontierungsfaktor, desto stärker werden Belohnungen gewichtet, die weiter in der Zukunft liegen. Je kleiner, desto \glqq kurzsichtiger\grqq{} ist der Agent (\cite{Sutton.2018}, S. 55).
 
@@ -118,30 +125,36 @@ Die Wahrscheinlichkeit, im Zustand $S_t$ den Zug $A_t$ auszuführen, ergibt sich
 
 Die Idee, dass die Erhöhung der Wahrscheinlichkeit der Züge, auch die Leistungsfähigkeit des Regelwerks erhöhen wird, ist aus dem Policy Gradient Theorem hergeleitet (\cite{Sutton.2018}, S. 326 f.).
 
-REINFORCE weist häufig langsames und instabiles Training auf. Das liegt daran, dass die Parameter auf Grundlage von den Entscheidungen einer gesamten Episode angepasst werden, die einer Wahrscheinlichkeitsverteilung unterliegen und damit eine hohe Varianz aufweisen (MARL, S. 200). Um dieser hohen Varianz entgegenzuwirken, wird bei A2C ein wertebasierter Critic eingesetzt.
+REINFORCE weist häufig langsames und instabiles Training auf. Das liegt daran, dass die Parameter auf Grundlage von den Entscheidungen einer gesamten Episode angepasst werden, die einer Wahrscheinlichkeitsverteilung unterliegen und damit eine hohe Varianz aufweisen (\cite{Albrecht.2024}, S. 200). Um dieser hohen Varianz entgegenzuwirken, wird bei A2C ein wertebasierter Critic eingesetzt.
 
 \paragraph{Wertebasierte Critic-Komponente}
 
-Bei der Critic-Komponente handelt es sich um eine parametrisierte Funktion $V(s, \theta)$, die unter Berücksichtigung der Parameter $\theta$ Schätzungen über den Wert eines gegebenen Zustands $s$ liefert (MARL, S. 202 ff.)
+Bei der Critic-Komponente handelt es sich um eine parametrisierte Funktion $V(s, \theta)$, die unter Berücksichtigung der Parameter $\theta$ Schätzungen über den Wert eines gegebenen Zustands $s$ liefert (\cite{Albrecht.2024}, S. 202 ff.)
 
-Bei A2C wird während des Trainings nach jeder durchgeführten Aktion ein Advantage-Wert berechnet. Dabei handelt es sich um die Differenz zwischen dem geschätzten Wert des Zustands, in dem sich der Agent befunden hat, bevor er die Aktion durchgeführt hat, und einem neuen Schätzwert, der sich aus der Summe der durch die Aktion erhaltene Belohnung und dem Schätzwert des über die Aktion erreichten neuen Zustands zusammensetzt:
+Bei A2C wird während des Trainings nach jeder durchgeführten Aktion ein Advantage-Wert anhand von Formel (\ref{advantage-formula}) berechnet. Dabei handelt es sich um die Differenz zwischen dem geschätzten Wert des Zustands, in dem sich der Agent befunden hat, bevor er die Aktion durchgeführt hat, und einem neuen Schätzwert, der sich aus der Summe der durch die Aktion erhaltene Belohnung und dem Schätzwert des über die Aktion erreichten neuen Zustands zusammensetzt.
 
-\[ Adv(s_t, a_t) = r_t + \gamma V(s_{t+1}, \theta) - V(s_t, \theta) \]
+\begin{equation}\label{advantage-formula}
+	Adv(s_t, a_t) = r_t + \gamma V(s_{t+1}, \theta) - V(s_t, \theta)
+\end{equation}
 
 Ein positiver Advantage-Wert bedeutet, dass der durch die Aktion erreichte neue Zustand höherwertiger ist als durch die Wertefunktion angenommen. Ein negativer Advantage-Wert bedeutet, dass er weniger wert ist.
 
-Dementsprechend werden die Parameter der Wertefunktion unter Verwendung des Gradientenverfahrens aktualisiert. Der Verlust wird hierbei als Quadrat des Advantage-Wertes definiert (MARL, S. 205):
+Dementsprechend werden die Parameter der Wertefunktion unter Verwendung des Gradientenverfahrens gemäß Formel (\ref{advantage-loss-formula}) aktualisiert. Der Verlust wird hierbei als Quadrat des Advantage-Wertes definiert (\cite{Albrecht.2024}, S. 205).
 
-\[ L(\theta) = (r_t + \gamma V(s_{t+1}, \theta) - V(s_t, \theta))^2 \]
+\begin{equation}\label{advantage-loss-formula}
+	L(\theta) = (r_t + \gamma V(s_{t+1}, \theta) - V(s_t, \theta))^2
+\end{equation}
 
 Es ist anzumerken, dass hierbei Endzustände einer gesonderten Betrachtung bedürfen (vgl. MARL, S. 205). Aus Gründen der Übersichtlichkeit wird in dieser Arbeit darauf verzichtet.
 
 \paragraph{Actor- und Critic-Komponenten im Zusammenspiel}
 
-Das Zusammenspiel zwischen Actor- und Critic-Komponente gestaltet sich bei A2C so, dass die Parameter der auf REINFORCE basierten Actor-Komponente nicht am Ende einer Episode proportional zur in der Episode erhaltenen Belohnung aktualisiert werden, sondern stattdessen werden die Parameter bei jedem Schritt im Training proportional zum über die Critic-Komponente berechneten Advantage-Wert aktualisiert (MARL, S. 205):
+Das Zusammenspiel zwischen Actor- und Critic-Komponente gestaltet sich bei A2C so, dass die Parameter der auf REINFORCE basierten Actor-Komponente nicht am Ende einer Episode proportional zur in der Episode erhaltenen Belohnung aktualisiert werden, sondern stattdessen werden nach Formel (\ref{a2c-formula}) die Parameter bei jedem Schritt im Training proportional zum über die Critic-Komponente berechneten Advantage-Wert aktualisiert (\cite{Albrecht.2024}, S. 205).
 
-\[ \theta \leftarrow \theta + \alpha Adv(s_t, a_t) \frac{\Delta \pi (A_t|S_t, \theta_t)}{\pi (A_t|S_t, \theta_t)} \]
+\begin{equation}\label{a2c-formula}
+	\theta \leftarrow \theta + \alpha Adv(s_t, a_t) \frac{\Delta \pi (A_t|S_t, \theta_t)}{\pi (A_t|S_t, \theta_t)}
+\end{equation}
 
-Dadurch, dass die Parameter der Funktionen in Abhängigkeit von den Erfahrungen aus einem Trainingsschritt und nicht einer gesamten Episode aktualisiert werden, weisen die Parameteraktualisierungen weniger Varianz auf. Kombiniert mit der dadurch häufigeren Anzahl an Parameteraktualisierungen führt dies in vielen Fällen zu effizienterem Training (MARL, S. 202).
+Dadurch, dass die Parameter der Funktionen in Abhängigkeit von den Erfahrungen aus einem Trainingsschritt und nicht einer gesamten Episode aktualisiert werden, weisen die Parameteraktualisierungen weniger Varianz auf. Kombiniert mit der dadurch häufigeren Anzahl an Parameteraktualisierungen führt dies in vielen Fällen zu effizienterem Training (\cite{Albrecht.2024}, S. 202).
 
-Im Rahmen der Realisierung kommt eine optimierte Variante von A2C zum Einsatz, die sich Proximal Policy Optimization (PPO) nennt. Sie enthält unter anderem Mechanismen, die große Sprünge in den Veränderungen des Regelwerks verhindert, was zu einem effizienterem Trainingsverhalten und einer geringeren Sensibilität gegenüber Hyperparametervoreinstellungen führt (MARL, S. 206 ff.).
+Im Rahmen der Realisierung kommt eine optimierte Variante von A2C zum Einsatz, die sich Proximal Policy Optimization (PPO) nennt. Sie enthält unter anderem Mechanismen, die große Sprünge in den Veränderungen des Regelwerks verhindert, was zu einem effizienterem Trainingsverhalten und einer geringeren Sensibilität gegenüber Hyperparametervoreinstellungen führt (\cite{Albrecht.2024}, S. 206 ff.).

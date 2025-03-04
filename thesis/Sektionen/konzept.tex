@@ -8,9 +8,11 @@ Die Robustheit der Verfahren wird bewertet, indem Agenten, die diese Verfahren i
 
 Die Reduktion der Gewinnrate eines Agenten in einem Szenario mit Beeinträchtigung wird dabei relativ zur Gewinnrate im neutralen Szenario ohne Beeinträchtigungen betrachtet, um einen Ausgleich dafür zu schaffen, dass die Agenten im neutralen Szenario nicht dieselbe Gewinnrate gegen den zufällig spielenden Agenten erzielen und die Gewinnrate eines Agenten, der im neutralen Szenario eine niedrigere Gewinnrate erzielt, auch weniger weit fallen kann. Die Betrachtung erfolgt außerdem relativ zur Gewinnrate von 50 \%, da ein Agent ab dem Punkt, ab dem er eine Gewinnrate von nur 50 \% gegen einen zufällig spielenden Agenten erzielt, keinen strategischen Vorteil mehr besitzt.
 
-Daraus ergibt sich folgende Formel zur Bewertung des Gewinnratenverlustes als Maß für die Robustheit eines Agenten:
+Daraus ergibt sich Formel (\ref{win-rate-loss}) zur Bewertung des Gewinnratenverlustes als Maß für die Robustheit eines Agenten:
 
-\[l = (r_n - r_s) / (r_n - 0.5)\]
+\begin{equation}\label{win-rate-loss}
+	l = \frac{r_n - r_s}{r_n - 0.5}
+\end{equation}
 
 Dabei bezeichnet $r_n$ die Gewinnrate des untersuchten Agenten im Spiel gegen einen zufällig spielenden Agenten im neutralen Szenario und $r_s$ die Gewinnrate des untersuchten Agenten im betrachteten Szenario mit Beeinträchtigung. Erzielt ein untersuchter Agent im neutralen und im betrachteten Szenario dieselbe Gewinnrate, gilt $l = 0$. Erzielt ein untersuchter Agent im betrachteten Szenario eine Gewinnrate von 50 \%, so gilt $l = 1$. Dazwischen verhält sich $l$ linear zu $r_s$. Somit ist ein untersuchtes Verfahren im betrachteten Szenario robuster, je kleiner der Wert von $l$ ist. Je größer $r_n$ ist, desto präziser lässt sich $l$ berechnen.
 
