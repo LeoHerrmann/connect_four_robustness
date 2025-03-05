@@ -12,7 +12,7 @@ This directory contains the Python 3 source code implementing the practical part
 
 ## Prerequisites
 
-To work with the Python source code, I'd recommend to:
+To work with the Python source code, I would recommend to:
 - use Python 3.12
 - setup and activate a virtual environment: `python3 -m venv venv && source venv/bin/activate` (Linux/macOS) or `venv\Scripts\activate` (Windows).
 - install required dependencies via pip3 install -r requirements.txt.
