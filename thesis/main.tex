@@ -16,6 +16,7 @@
 \usepackage{listings}
 \usepackage{amsmath}
 \usepackage[export]{adjustbox}
+\usepackage{float}
 %\usepackage[%
 %    style=authoryear,
 %    giveninits=true,
@@ -86,10 +87,17 @@
     \section{Zusammenfassung und Ausblick}
     \input{Sektionen/zusammenfassung-und-ausblick}
  
+  	\newpage
 	\section{Literaturverzeichnis}
 	\nocite{*}
-    \renewcommand{\refname}{}
+	\renewcommand{\refname}{}
 	\printbibliography
+ 
+ 	\newpage
+ 	\appendix
+ 	\section{Anhang}
+ 	\renewcommand{\thesection}{\Alph{section}}
+ 	\input{Sektionen/anhang}
  
 	\newpage
 	
