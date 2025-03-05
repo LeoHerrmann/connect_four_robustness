@@ -4,9 +4,12 @@ This directory contains the Python3 source code for the environment for evaluati
 
 ## Contents
 
-`measurement_environment/results/`
+`ppoWeights/`
+- Contains the weights of trained PPO models.
+
+`results/`
 - Contains measurement results obtained from the evaluation environment.
 - Includes Python scripts for processing results and generating graphs.
 
-`measurement_environment/main.py`
+`main.py`
 - Main script for controlling and configuring the measurement environment.
