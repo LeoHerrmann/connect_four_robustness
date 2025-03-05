@@ -4,9 +4,9 @@ This repository contains the source code and materials for a Bachelor's thesis i
 
 ## Repository Structure
 
+`realization/`
+- Python 3 source code implementing the practical part of the thesis.
+
 `thesis/`
 -  LaTeX source files for the Bachelor's thesis.
 -  The latest compiled version of the thesis can be found at `/thesis/main.pdf`.
-
-`realization/`
-- Python 3 source code implementing the practical part of the thesis.
