@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 simulation_count = str(5000)
 
-path_to_absolute_history_mcts_vs_random = "mcts_vs_random/results/mcts_vs_random_" + simulation_count + "/absolute_history.json"
-path_to_absolute_history_random_vs_mcts = "random_vs_mcts/results/random_vs_mcts_" + simulation_count + "/absolute_history.json"
+path_to_absolute_history_mcts_vs_random = "mcts_vs_random_constant_player_order/mcts_vs_random_" + simulation_count + "/absolute_history.json"
+path_to_absolute_history_random_vs_mcts = "random_vs_mcts_constant_player_order/random_vs_mcts_" + simulation_count + "/absolute_history.json"
 destination_path_for_average_history = "mcts_vs_random_alternating_player_order/" + simulation_count + "/average_history.json"
 destination_path_for_absolute_history = "mcts_vs_random_alternating_player_order/" + simulation_count + "/absolute_history.json"
 destination_path_for_average_win_rate_graph = "mcts_vs_random_alternating_player_order/" + simulation_count + "/win_rate.png"

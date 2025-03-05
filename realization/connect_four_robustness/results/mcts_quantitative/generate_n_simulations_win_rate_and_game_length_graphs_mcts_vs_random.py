@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as st
 
-destination_path_for_average_win_rate_graph = "mcts_vs_random_alternating/win_rate_vs_n_simulations.png"
-destination_path_for_average_game_length_graph = "mcts_vs_random_alternating/game_length_vs_n_simulations.png"
+destination_path_for_average_win_rate_graph = "mcts_vs_random_alternating_player_order/win_rate_vs_n_simulations.png"
+destination_path_for_average_game_length_graph = "mcts_vs_random_alternating_player_order/game_length_vs_n_simulations.png"
 
 def generate_figures(
     simulation_counts,
@@ -104,8 +104,8 @@ final_game_lengths_cis = []
 
 for simulation_count in simulation_counts:
     print(simulation_count)
-    path_to_average_history = "mcts_vs_random_alternating/" + str(simulation_count) + "/average_history.json"
-    path_to_absolute_history = "mcts_vs_random_alternating/" + str(simulation_count) + "/absolute_history.json"
+    path_to_average_history = "mcts_vs_random_alternating_player_order/" + str(simulation_count) + "/average_history.json"
+    path_to_absolute_history = "mcts_vs_random_alternating_player_order/" + str(simulation_count) + "/absolute_history.json"
     average_history = []
     absolute_history = []
 
