@@ -8,7 +8,14 @@ In diesem Kapitel werden drei symbolische Algorithmen vorgestellt, die verwendet
 
 Minimax ist ein Algorithmus, der aus Sicht eines Spielers ausgehend von einem beliebigen Ursprungsknoten im Spielbaum die darauf folgenden Knoten bewertet und den Kindknoten des Ursprungsknotens mit der besten Bewertung zurückgibt. Bei der Bewertung wird davon ausgegangen, dass der Gegner ebenfalls den Zug wählt, der für ihn am günstigsten ist. Der zu untersuchende Spieler versucht, die Bewertung zu maximieren, während der Gegenspieler versucht, sie zu minimieren.
 
-Zunächst werden die Blattknoten des Spielbaums bewertet. Je günstiger ein Spielfeldzustand für den zu untersuchenden Spieler ist, desto größer ist die Zahl, die diesem Zustand zugeordnet wird. In Abhängigkeit der zuvor bewerteten Knoten, werden nun deren Elternknoten bewertet. Ist im betrachteten Zustand der zu untersuchende Spieler am Zug, übernimmt der Elternknoten die Bewertung des Kindknotens mit der höchsten Bewertung. Umgekehrt ist es, wenn der Gegenspieler Spieler am Zug ist. Dann bekommt der zu untersuchte Knoten die Bewertung des Kindknotens mit der niedrigsten Bewertung. Dieser Vorgang wird wiederholt, bis der Ursprungsknoten erreicht ist. Zurückgegeben wird der Kindknoten des Ursprungsknotens, dem die größte Bewertung zugeordnet wurde.
+
+\begin{figure}[ht!]%[!tbp]
+	\includegraphics[width=0.5\textwidth, center]{Bilder/minimax.png}
+	\caption[Ergebnis der Bewertung eines beispielhaften Spielbaums mit Minimax.]{Ergebnis der Bewertung eines beispielhaften Spielbaums mit Minimax \cite{Morelli_Minimax}.}
+	\label{fig:f28}
+\end{figure}
+
+Zunächst werden die Blattknoten des Spielbaums bewertet. Je günstiger ein Spielfeldzustand für den zu untersuchenden Spieler ist, desto größer ist die Zahl, die diesem Zustand zugeordnet wird. In Abhängigkeit der zuvor bewerteten Knoten, werden nun deren Elternknoten bewertet. Ist im betrachteten Zustand der zu untersuchende Spieler am Zug, übernimmt der Elternknoten die Bewertung des Kindknotens mit der höchsten Bewertung. Umgekehrt ist es, wenn der Gegenspieler Spieler am Zug ist. Dann bekommt der zu untersuchte Knoten die Bewertung des Kindknotens mit der niedrigsten Bewertung. Dieser Vorgang wird wiederholt, bis der Ursprungsknoten erreicht ist. Zurückgegeben wird der Kindknoten des Ursprungsknotens, dem die größte Bewertung zugeordnet wurde. Abbildung \ref{fig:f28} zeigt das Ergebnis der Bewertung eines beispielhaften Spielbaums. Die Entscheidung fällt auf die Aktion, die zum linken Teilbaum führt, da dem entsprechenden Kindknoten des Ursprungsknotens im Vergleich zu den anderen Kindknoten mit einem Wert von 3 die höchste Bewertung zugeordnet wurde.
 
 Erfolgt die Bewertung anhand der Gewinnchancen, führt das dazu, dass die Wahl des Knotens mit der besten Bewertung auch die Gewinnchancen maximiert. Um die Gewinnchancen zu ermitteln, müssen jedoch alle Knoten des Spielbaums untersucht werden. Die Laufzeit des Algorithmus steigt linear zur Anzahl der zu untersuchenden Knoten und damit bei konstanter Anzahl von Möglichkeiten pro Zug exponentiell zur Suchtiefe. Den gesamten Spielbaum zu durchsuchen, ist daher nur für wenig komplexe Spiele praktikabel. Damit die Bewertung in akzeptabler Zeit erfolgen kann, muss für komplexere Spiele die Suchtiefe oder -breite begrenzt werden und die Bewertung der Knoten muss auf Grundlage von Heuristiken erfolgen (\cite{Ferguson.January2019}, Kapitel 4; \cite{Heineman.October2008}, Kapitel 7.6).
 
@@ -26,6 +33,14 @@ Sobald bei einem Knoten Alpha größer oder gleich Beta ist, kann die Untersuchu
 	\item Ist bei diesem Knoten der zu untersuchende Spieler am Zug, hatte der Gegenspieler in einem zuvor untersuchten Teilbaum bessere Chancen, und wird den aktuellen untersuchten Teilbaum nicht auswählen.
 	\item Ist bei diesem Knoten der zu Gegenspieler am Zug, hatte der zu untersuchende Spieler in eine zuvor untersuchten Teilbaum bessere Chancen, und wird den aktuell untersuchten Teilbaum nicht auswählen (\cite{Heineman.October2008}, Kapitel 7.8; \cite{Ferguson.January2019}, Kapitel 4.5).
 \end{itemize}
+
+\begin{figure}[ht!]%[!tbp]
+	\includegraphics[width=0.5\textwidth, center]{Bilder/alphabeta.png}
+	\caption[Ergebnis der Bewertung eines beispielhaften Spielbaums mit Alpha-Beta-Pruning.]{Ergebnis der Bewertung eines beispielhaften Spielbaums mit Alpha-Beta-Pruning \cite{Morelli_Minimax}.}
+	\label{fig:f29}
+\end{figure}
+
+Abbildung \ref{fig:f29} stellt dar, wie mit Alpha-Beta-Pruning auf denselben Spielbaum wie in Abbildung \ref{fig:f28} angewandt wurde und dabei die Überprüfung einiger Teilbäume übersprungen werden konnte.
 
 So kann im Vergleich zum Minimax-Algorithmus die Untersuchung von 80\% bis 95\% der Knoten übersprungen werden. Der Anteil der Knoten, die bei der Untersuchung übersprungen werden können, ist abhängig davon, wie schnell das Fenster zwischen Alpha und Beta verkleinert wird. Wenn die Reihenfolge, in der die Züge untersucht werden, geschickt gewählt wird, kann dies sogar zu einer Reduktion von über 99\% führen (\cite{Heineman.October2008}, Kapitel 7.8). In Schach ist dies beispielsweise möglich, indem Züge früher bewertet werden, je höherwertiger eine im Zug geworfene Figur ist.
 
