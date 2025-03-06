@@ -20,12 +20,12 @@ Vier Gewinnt lässt sich für beide Spieler jeweils als Markov Decision Process 
 	
 \item Zustände $S$, die den legalen Spielfeldkonfigurationen entsprechen.
 \item Aktionen $A(s)$, die für bestimmte Zustände erlaubt sind. In Vier Gewinnt existieren sieben verschiedene Aktionen, eine Aktion für jede Spalte, in der ein Spielstein platziert werden kann. Im Laufe des Spiels ändert sich, welche Aktionen möglich sind. In bereits vollständig gefüllten Spalten können keine weiteren Spielsteine platziert werden.
-\item Übergangsmodell $P(s, a, s')$, das die Wahrscheinlichkeit beschreibt, von einem Zustand $s$ durch die Aktion $a$ zu einem weiteren Zustand $s'$ zu gelangen. Das Übergangsmodell hängt im Fall von kombinatorischen Spielen von der Strategie der anderen Spieler ab. Bei der Modellierung als MDP besteht die Annahme, dass sich die Strategie des Gegenspielers im Laufe des Spiels nicht ändert. Das Übergangsmodell ist dem Spieler nicht bekannt.
+\item Übergangsmodell $P(s, a, s')$, das die Wahrscheinlichkeit beschreibt, von einem Zustand $s$ durch die Aktion $a$ zu einem weiteren Zustand $s'$ zu gelangen. Das Übergangsmodell hängt im Fall von Zwei-Spieler-Nullsummenspielen von der Strategie des Gegenspielers ab. Bei der Modellierung als MDP besteht die Annahme, dass sich die Strategie des Gegenspielers im Laufe des Spiels nicht ändert. Das Übergangsmodell ist dem Spieler nicht bekannt.
 \item Belohnungsfunktion $R(s, a, s')$, wodurch jedem Zustandsübergang eine Belohnung zugeordnet wird. Bei einem Zwei-Spieler-Nullsummenspiel wie Vier Gewinnt beträgt dessen Wert 0, solange kein Endzustand erreicht ist. Wenn ein Endzustand erreicht ist, könnte diese Funktion beispielsweise einen positiven Wert zurückliefern, wenn der untersuchte Spieler gewinnt, und einen negativen Wert, wenn der Gegenspieler gewinnt.
 
 \end{itemize}
 
-Das Ziel bei der Lösung eines MDPs besteht darin, ein Regelwerk zu finden, das jedem Zustand jeweils eine Aktion zuordnet. Durch die Anwendung des Regelwerks soll die höchste erwartbaren Belohnung erzielt werden (\cite{Russell.2020}, S. 562 f.).
+Das Ziel bei der Lösung eines MDPs besteht darin, ein Regelwerk zu finden, das jedem Zustand jeweils eine Aktion zuordnet, wobei durch die Anwendung des Regelwerks die höchste erwartbare Belohnung erzielt werden soll (\cite{Russell.2020}, S. 562 f.).
 
 \subsubsection{Komplexität}
 
@@ -39,10 +39,10 @@ Für Vier Gewinnt wurde eine durchschnittliche Spiellänge von 36 Zügen und ein
 
 \subsubsection{Lösungsverfahren}
 
-Für Vier Gewinnt wurden bereits verschiedene Lösungsverfahren ausgiebig untersucht. Das Spiel wurde 1988 von James Dow Allen und Victor Allis unabhängig voneinander mit wissensbasierten Methoden schwach gelöst, was bedeutet, dass für die Anfangsposition eine optimale Strategie ermittelt wurde. Im Fall von Vier Gewinnt kann der Spieler mit Anzugsrecht bei optimaler Spielweise immer gewinnen \cite{Allen.2010} \cite{Allis.1988}. Der Begriff Anzugsrecht bezeichnet das Recht eines Spielers, den ersten Zug durchführen zu dürfen, und in dieser Arbeit in Anlehnung an (\cite{Bewersdorff.2018}) verwendet.
+Für Vier Gewinnt wurden bereits verschiedene Lösungsverfahren ausgiebig untersucht. Das Spiel wurde 1988 von James Dow Allen und Victor Allis unabhängig voneinander mit wissensbasierten Methoden schwach gelöst, was bedeutet, dass für die Anfangsposition eine optimale Strategie ermittelt wurde. Im Fall von Vier Gewinnt kann der Spieler mit Anzugsrecht bei optimaler Spielweise immer gewinnen \cite{Allen.2010} \cite{Allis.1988}. Der Begriff Anzugsrecht bezeichnet das Recht eines Spielers, den ersten Zug durchführen zu dürfen, und wird in dieser Arbeit in Anlehnung an (\cite{Bewersdorff.2018}) verwendet.
 
-1993 wurde das Spiel von John Tromp auch durch einen Brute-Force Ansatz stark gelöst. Bei dieser Lösung kam Alpha-Beta-Pruning zum Einsatz, um bei einer Zustandsraumkomplexität von 4.531.985.219.092 die optimalen Zugfolgen für beide Spieler zu berechnen. Das hat damals etwa 40.000 CPU-Stunden gedauert \cite{Tromp}.
+1993 wurde das Spiel von John Tromp auch durch einen Brute-Force-Ansatz stark gelöst. Bei dieser Lösung kam Alpha-Beta-Pruning (siehe Kapitel \ref{alpha-beta-pruning}) zum Einsatz, um bei einer Zustandsraumkomplexität von 4.531.985.219.092 Zuständen die optimalen Zugfolgen für beide Spieler zu berechnen. Das hat damals etwa 40.000 CPU-Stunden gedauert \cite{Tromp}.
 
-Lösungen, die alle Möglichkeiten durchrechnen, um die optimale Entscheidung zu treffen, sind für den Einsatz in der Praxis aufgrund des hohen Rechenaufwands bei komplexeren Anwendungen auch heute noch selten praktikabel. Aus diesem Grund wird bevorzugt auf gute Heuristiken zurückgegriffen, die den Rechenaufwand minimieren, aber dennoch gute Ergebnisse liefern (\cite{Heineman.October2008}, Kapitel 7.6).
+Lösungen, die alle Möglichkeiten durchrechnen, um die optimale Entscheidung zu treffen, sind für den Einsatz in der Praxis aufgrund des hohen Rechenaufwands bei komplexeren Anwendungen auch heute noch selten praktikabel. Aus diesem Grund wird bevorzugt auf Heuristiken zurückgegriffen, die den Rechenaufwand minimieren, aber dennoch gute Ergebnisse liefern (\cite{Heineman.October2008}, Kapitel 7.6).
 
 Untersuchungen haben gezeigt, dass sich sowohl regelbasierte Algorithmen als auch verschiedene RL-Ansätze eignen, um sogenannte Agents zu entwickeln, die das Spiel selbstständig spielen \cite{Thill.2012} \cite{Wäldchen.2022} \cite{Taylor.2024} \cite{Sheoran.2022} \cite{Qiu.2022}. Wissensbasierte Methoden werden in dieser Arbeit nicht näher betrachtet, da sie stark an die jeweiligen Spielregeln gebunden und ihre Eigenschaften schwer zu verallgemeinern sind.

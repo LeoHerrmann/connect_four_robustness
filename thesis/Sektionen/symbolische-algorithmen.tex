@@ -1,8 +1,6 @@
 \label{symbolische-algorithmen}
 
-Bei symbolischen Algorithmen handelt es sich um Methoden zur Lösung von Problemen, indem Daten durch von Menschen interpretierbare Symbole repräsentiert werden und sie durch von Menschen explizit programmierte Regeln verarbeitet werden (\cite{Fergus.2022}, S. 4; \cite{Früh.2022}, S. 5 f.; \cite{Garnelo.2019}).
-
-In diesem Kapitel werden drei symbolische Algorithmen vorgestellt, die verwendet werden können, um in Spielbäumen erfolgversprechende Entscheidungen zu treffen. Zunächst werden die Algorithmen zur Lösung von Spielbäumen Minimax und dessen Optimierung Alpha-Beta-Pruning vorgestellt (\cite{Ferguson.January2019}, Kapitel 4; \cite{Heineman.October2008}, Kapitel 7.6 u. 7.8). Darauf folgt die Erklärung der Monte Carlo Tree Search, welche einen allgemeineren Ansatz darstellt (\cite{Russell.2020}, S. 580; \cite{Swiechowski.2021}).
+Bei symbolischen Algorithmen handelt es sich um Methoden zur Lösung von Problemen, indem Daten durch von Menschen interpretierbare Symbole repräsentiert werden und sie durch von Menschen explizit programmierte Regeln verarbeitet werden (\cite{Fergus.2022}, S. 4; \cite{Früh.2022}, S. 5 f.; \cite{Garnelo.2019}). In diesem Kapitel werden drei symbolische Algorithmen vorgestellt, die verwendet werden können, um in Spielbäumen erfolgversprechende Entscheidungen zu treffen. Zunächst werden die Algorithmen zur Lösung von Spielbäumen Minimax und dessen Optimierung Alpha-Beta-Pruning vorgestellt (\cite{Ferguson.January2019}, Kapitel 4; \cite{Heineman.October2008}, Kapitel 7.6 u. 7.8). Darauf folgt die Erklärung der Monte Carlo Tree Search, welche einen allgemeineren Ansatz darstellt (\cite{Russell.2020}, S. 580; \cite{Swiechowski.2021}).
 
 \subsubsection{Minimax}
 
@@ -21,13 +19,15 @@ Erfolgt die Bewertung anhand der Gewinnchancen, führt das dazu, dass die Wahl d
 
 \subsubsection{Alpha-Beta-Pruning}
 
+\label{alpha-beta-pruning}
+
 Beim Alpha-Beta-Pruning handelt es sich um eine Optimierung des Minimax-Algorithmus. Dabei werden die Teilbäume übersprungen, die bei optimaler Spielweise beider Spieler nicht erreicht werden, und damit das Ergebnis nicht beeinflussen können. Alpha-Beta-Pruning liefert dieselben Ergebnisse wie der Minimax-Algorithmus, aber untersucht dabei wesentlich weniger Knoten im Spielbaum.
 
 Dazu werden während der Suche die Werte Alpha und Beta aufgezeichnet. Alpha entspricht der Mindestbewertung, die der zu untersuchende Spieler garantieren kann, wenn beide Spieler optimal spielen. Beta entspricht der Bewertung, die der Gegenspieler bei optimaler Spielweise maximal zulassen wird. Zu Beginn der Suche wird Alpha auf minus unendlich und Beta auf plus unendlich initialisiert.
 
 Alpha wird aktualisiert, wenn für einen Knoten, bei dem der zu untersuchende Spieler am Zug ist, ein Kindknoten gefunden wurde, dessen Bewertung größer ist als das bisherige Alpha. Beta hingegen wird aktualisiert, wenn für einen Knoten, bei dem der Gegenspieler am Zug ist, ein Kindknoten gefunden wurde, dessen Bewertung kleiner ist als Beta.
 
-Sobald bei einem Knoten Alpha größer oder gleich Beta ist, kann die Untersuchung dessen Kindknoten aus folgenden Gründen abgebrochen werden:
+Sobald bei einem Knoten Alpha größer oder gleich Beta ist, kann die Untersuchung seiner Kindknoten aus folgenden Gründen abgebrochen werden:
 
 \begin{itemize}
 	\item Ist bei diesem Knoten der zu untersuchende Spieler am Zug, hatte der Gegenspieler in einem zuvor untersuchten Teilbaum bessere Chancen, und wird den aktuellen untersuchten Teilbaum nicht auswählen.
@@ -40,7 +40,7 @@ Sobald bei einem Knoten Alpha größer oder gleich Beta ist, kann die Untersuchu
 	\label{fig:f29}
 \end{figure}
 
-Abbildung \ref{fig:f29} stellt dar, wie mit Alpha-Beta-Pruning auf denselben Spielbaum wie in Abbildung \ref{fig:f28} angewandt wurde und dabei die Überprüfung einiger Teilbäume übersprungen werden konnte.
+Abbildung \ref{fig:f29} stellt dar, wie Alpha-Beta-Pruning auf denselben Spielbaum wie in Abbildung \ref{fig:f28} angewandt wurde und dabei die Überprüfung einiger Teilbäume übersprungen werden konnte.
 
 So kann im Vergleich zum Minimax-Algorithmus die Untersuchung von 80\% bis 95\% der Knoten übersprungen werden. Der Anteil der Knoten, die bei der Untersuchung übersprungen werden können, ist abhängig davon, wie schnell das Fenster zwischen Alpha und Beta verkleinert wird. Wenn die Reihenfolge, in der die Züge untersucht werden, geschickt gewählt wird, kann dies sogar zu einer Reduktion von über 99\% führen (\cite{Heineman.October2008}, Kapitel 7.8). In Schach ist dies beispielsweise möglich, indem Züge früher bewertet werden, je höherwertiger eine im Zug geworfene Figur ist.
 
@@ -50,7 +50,9 @@ Heuristische Bewertungsfunktionen sind im Rahmen dieser Arbeit in der Hinsicht p
 
 \subsubsection{Monte Carlo Tree Search}
 
-Bei Monte Carlo Tree Search (MCTS) handelt es sich um einen heuristischen Algorithmus, der dazu dient, um in Bäumen, die aus sequentiellen Entscheidungen bestehen, einen möglichst vielversprechenden Pfad auszuwählen. MCTS kann als Lösung für MDPs betrachtet werden (\cite{Russell.2020}, S. 580). Dazu werden wiederholt zufällig verschiedene Entscheidungen simuliert und deren potentieller Erfolg statistisch ausgewertet.
+\label{mcts}
+
+Bei Monte Carlo Tree Search (MCTS) handelt es sich um einen heuristischen Algorithmus, der dazu dient, um in Bäumen, die aus sequentiellen Entscheidungen bestehen, einen möglichst vielversprechenden Pfad auszuwählen. Dazu werden wiederholt zufällig verschiedene Entscheidungen simuliert und deren potentieller Erfolg statistisch ausgewertet. MCTS kann als Lösung für MDPs betrachtet werden (\cite{Russell.2020}, S. 580).
 
 Der Vorteil gegenüber des Alpha-Beta-Prunings besteht darin, dass es bei MCTS nicht notwendig ist, innere Knoten, also Nicht-Blattknoten, zu bewerten (\cite{Russell.2020}; \cite{Ferguson.January2019}; \cite{Browne.2012}). Lediglich die Endzustände müssen bewertet werden können. Dies lässt sich im Gegensatz zur Bewertung von inneren Knoten relativ einfach umsetzen. Bei Spielen bedeutet das die Auswertung des Endergebnisses, wie zum Beispiel den Gewinner oder eine Punktzahl (\cite{Russell.2020}, S. 161; \cite{Ferguson.January2019}, Kapitel 4.5; \cite{Browne.2012}).
 
@@ -58,7 +60,7 @@ MCTS ist eine weit verbreitete Lösung für kombinatorische Spiele und hat sich 
 
 % Funktionsweise
 
-Mit MCTS werden Entscheidungsmöglichkeiten statistisch ausgewertet, indem die in Abbildung \ref{fig:f27} dargestellten vier Phasen Selection, Expansion, Simulation (auch Play-Out) und Backpropagation wiederholt durchlaufen werden. Dabei wird ein Baum verwaltet, der eine ähnliche Struktur wie der Spielbaum aufweist. Die Knoten beschreiben die Zustände der Umgebung und die Kanten Übergänge zwischen den Zuständen. Zu jedem Knoten im MCTS-Baum wird eine Statistik abgespeichert, die Informationen darüber enthält, wie oft der Knoten selbst oder dessen Kindknoten die Simulation-Phase durchlaufen haben, und was die Ergebnisse der Simulationen waren (\cite{Russell.2020}, S. 161 ff.; \cite{Ferguson.January2019}, Kapitel 4.5).
+Mit MCTS werden Entscheidungsmöglichkeiten statistisch ausgewertet, indem die in Abbildung \ref{fig:f27} dargestellten vier Phasen Selection, Expansion, Simulation (auch Play-Out) und Backpropagation wiederholt durchlaufen werden. Dabei wird ein Baum verwaltet, der eine ähnliche Struktur wie der Spielbaum aufweist. Die Knoten beschreiben die Zustände der Umgebung und die Kanten Übergänge zwischen den Zuständen. Zu jedem Knoten im MCTS-Baum wird eine Statistik abgespeichert, die Informationen darüber enthält, wie oft der Knoten selbst oder seine Kindknoten die Simulation-Phase durchlaufen haben, und was die Ergebnisse der Simulationen waren (\cite{Russell.2020}, S. 161 ff.; \cite{Ferguson.January2019}, Kapitel 4.5).
 
 \begin{figure}[ht!]%[!tbp]
 	\includegraphics[width=0.8\textwidth, center]{Bilder/mcts-phases.png}
@@ -82,10 +84,10 @@ In der \textbf{Simulation}-Phase werden ab den zuvor hinzugefügten Knoten so of
 
 Als letztes erfolgt die Phase \textbf{Backpropagation}. Das Ergebnis der Simulation wird für den untersuchten Knoten im MCTS-Baum abgespeichert und die Statistik der Knoten, die vom Ursprungsknoten zum untersuchten Knoten geführt haben, wird aktualisiert. Zurückgegeben wird der Folgeknoten des Ursprungsknoten, der am häufigsten besucht wurde (\cite{Russell.2020}, S. 162).
 
-Mit jeder Wiederholung der vier Phasen wird die Statistik über die Erfolgschancen der Entscheidungsmöglichkeiten akkurater. Nach einer bestimmten Anzahl von Wiederholungen wird basierend auf den gesammelten Statistiken eine Entscheidung getroffen.
+Mit jeder Wiederholung der vier Phasen wird die Statistik über die Erfolgschancen der Entscheidungsmöglichkeiten akkurater. Nach einer konfigurierbaren Anzahl von Wiederholungen fällt die Entscheidung auf die Aktion, die zu dem am häufigsten simulierten Knoten führt.
 
-Da die Phasen Expansion und Simulation basierend auf Zufall erfolgen, ist MCTS nicht deterministisch und liefert keine perfekten Vorhersagen. Außerdem besteht vor allem bei wenigen Iterationen die Gefahr, dass wenige kritische Züge unentdeckt bleiben, und die Statistik inakkurat wird (\cite{Russell.2020}, S. 164).
+Da die Phasen Expansion und Simulation basierend auf Zufall erfolgen, ist MCTS nicht deterministisch und bei einer begrenzten Anzahl von Iterationen können keine perfekten Vorhersagen garantiert werden. Bei einer niedrigen Anzahl von Iterationen besteht die Gefahr, dass wenige kritische Züge unentdeckt bleiben, und die Statistik inakkurat wird (\cite{Russell.2020}, S. 164).
 
-Die Laufzeit von MCTS ist schwer mit den zuvor genannten Methoden vergleichbar, da die Iterationen beliebig oft durchgeführt werden können, um die Vorhersagen zu verbessern. Durch Untersuchungen wurde gezeigt, dass bei kleinen Problemen und der Verfügbarkeit von präzisen Heuristiken Alpha Beta mit begrenzter Suchtiefe schneller und besser arbeitet. MCTS schneidet im Vergleich besser ab, je tiefer und stärker verzweigt die zu lösenden Entscheidungsbäume sind (\cite{Russell.2020}, S. 163 f.). Es wurde außerdem gezeigt, dass die Ergebnisse von MCTS unter Verwendung der UCT als Selection-Strategie bei unbegrenzten Ressourcen zu Minimax konvergiert \cite{Browne.2012}.
+Die Laufzeit von MCTS ist schwer mit den zuvor genannten Methoden vergleichbar, da die Iterationen beliebig oft durchgeführt werden können, um die Vorhersagen zu verbessern. Durch Untersuchungen wurde gezeigt, dass bei kleinen Problemen und der Verfügbarkeit von präzisen Heuristiken Alpha Beta mit begrenzter Suchtiefe schneller und besser arbeitet. MCTS schneidet im Vergleich besser ab, je tiefer und stärker verzweigt die zu lösenden Entscheidungsbäume sind (\cite{Russell.2020}, S. 163 f.). Es wurde außerdem gezeigt, dass die Ergebnisse von MCTS unter Verwendung der UCT als Selection-Strategie bei unbegrenzten Ressourcen zu den Ergebnissen des Minimax-Algorithmus konvergieren \cite{Browne.2012}.
 
 Es existieren verschiedene Variationen und Verbesserungen für die Strategien in den Phasen Selection und Expansion, die unter bestimmten Umständen für bessere Vorhersagen sorgen. Dazu gehören auch welche, die Machine Learning einsetzen, um in der Selection-Phase fundiertere Entscheidungen zu treffen \cite{Browne.2012}. Diese werden im Rahmen dieser Arbeit nicht betrachtet. MCTS soll hier klar von Machine-Learning-Verfahren abgegrenzt sein. Es wird davon ausgegangen, dass die Verbesserungen für die Untersuchung der Robustheit nicht relevant sind und dass sich die Beobachtungen auch auf Varianten von MCTS übertragen lassen.
