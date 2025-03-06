@@ -237,11 +237,6 @@ class raw_env(AECEnv, EzPickle):
 
         self._agent_selector = agent_selector(self.agents)
 
-        # CUSTOM CHANGE: OPTION TO REVERSE ORDER OF PLAYERS
-        if "reverse_order" in options:
-            if options["reverse_order"] == True:
-                self._agent_selector.reinit(list(reversed(self._agent_selector.agent_order)))
-
         self.agent_selection = self._agent_selector.reset()
 
         # CUSTOM CHANGE: OPTION TO INITIALIZE ENVIRONMENT WITH A CERTAIN STATE

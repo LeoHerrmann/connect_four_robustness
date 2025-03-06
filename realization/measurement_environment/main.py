@@ -5,7 +5,7 @@ import matplotlib
 matplotlib.use('gtk3agg')
 import matplotlib.pyplot as plt
 
-import custom_connect_four_v3
+from pettingzoo.classic import connect_four_v3
 from distortionGenerator import DistortionGenerator
 
 from agent import Agent
@@ -61,7 +61,7 @@ def play_game(env, agents: list[Agent]):
             env.step(distorted_action)
 
 
-def play_games(number_of_games, agents: list[Agent], alternate_player_order=True):
+def play_games(number_of_games, agents: list[Agent]):
     absolute_history = []
     average_history = []
     player_0_win_count = 0
@@ -70,17 +70,9 @@ def play_games(number_of_games, agents: list[Agent], alternate_player_order=True
     average_game_length = 0
 
     for i in range(number_of_games):
-        game_options = {
-            "reverse_order": False
-        }
-
-        if i % 2 == 0 and alternate_player_order:
-            game_options["reverse_order"] = True
-
-        # env = custom_connect_four_v3.env(render_mode="human")
-        env = custom_connect_four_v3.env()
-        # env = tictactoe_v3.env(render_mode="human")
-        env.reset(options=game_options)
+        # env = connect_four_v3.env(render_mode="human")
+        env = connect_four_v3.env()
+        env.reset()
 
         game_statistics = play_game(env, agents)
 
@@ -183,9 +175,25 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
 
 
 
-
-alternate_player_order = False
 distortion_generator = DistortionGenerator(0, 0.0)
+
+# Evaluate MCTS vs. MCTS
+
+number_of_games = 200
+
+numbers_of_mcts_simulations = [50]    # [50, 100, 250, 500, 750, 1000, 2500]
+
+for number_of_mcts_simulations in numbers_of_mcts_simulations:
+    agents = [MctsAgent("MA1", True, number_of_mcts_simulations), HumanAgent("HA1")]
+    results_subfolder = "mcts_vs_mcts_" + str(number_of_mcts_simulations)
+
+    absolute_history, average_history = play_games(number_of_games, agents)
+    win_rates_figure, game_length_figure = generate_figures(average_history)
+    save_absolute_history(absolute_history, results_subfolder)
+    save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
+    print(average_history[len(average_history) - 1])
+
+exit()
 
 # Evaluate PPO vs. Random
 
@@ -198,7 +206,7 @@ for learning_rate in learning_rates:
     agents = [PpoAgent("PA1", f"ppoWeights/ppo_model_random_1000000_{learning_rate}"), RandomAgent("RA1")]
     results_subfolder = f"ppo_quantitative_ppo_vs_random_constant_player_order/ppo_vs_random_{learning_rate}"
 
-    absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+    absolute_history, average_history = play_games(number_of_games, agents)
     win_rates_figure, game_length_figure = generate_figures(average_history)
     save_absolute_history(absolute_history, results_subfolder)
     save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
@@ -208,28 +216,10 @@ for learning_rate in learning_rates:
     agents = [RandomAgent("RA1"), PpoAgent("PA1", f"ppoWeights/ppo_model_random_1000000_{learning_rate}")]
     results_subfolder = f"ppo_quantitative_random_vs_ppo_constant_player_order/random_vs_ppo_{learning_rate}"
 
-    absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+    absolute_history, average_history = play_games(number_of_games, agents)
     win_rates_figure, game_length_figure = generate_figures(average_history)
     save_absolute_history(absolute_history, results_subfolder)
     save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
-
-exit()
-
-# Evaluate MCTS vs. MCTS
-
-number_of_games = 200
-
-numbers_of_mcts_simulations = [5000]    # [50, 100, 250, 500, 750, 1000, 2500]
-
-for number_of_mcts_simulations in numbers_of_mcts_simulations:
-    agents = [MctsAgent("MA1", True, 5000), MctsAgent("MA2", False, 5000)]
-    results_subfolder = "mcts_vs_mcts_" + str(number_of_mcts_simulations)
-
-    absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
-    win_rates_figure, game_length_figure = generate_figures(average_history)
-    save_absolute_history(absolute_history, results_subfolder)
-    save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
-    print(average_history[len(average_history) - 1])
 
 exit()
 
@@ -238,7 +228,7 @@ exit()
 number_of_games = 100
 
 agents = [HumanAgent("HA1"), MctsAgent("MA1", False, 5000)]
-absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+absolute_history, average_history = play_games(number_of_games, agents)
 
 
 # Evaluate PPO vs Random with distortions
@@ -256,7 +246,7 @@ for number_of_fields_to_distort in numbers_of_fields_to_distort:
     results_subfolder = "random_vs_ppo_" + str(number_of_fields_to_distort) + "_0"
     agents = [RandomAgent("RA1"), PpoAgent("PA1", "ppoWeights/ppo_model_random_1000000_0_00001.zip")]
 
-    absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+    absolute_history, average_history = play_games(number_of_games, agents)
     win_rates_figure, game_length_figure = generate_figures(average_history)
     save_absolute_history(absolute_history, results_subfolder)
     save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
@@ -266,7 +256,7 @@ for number_of_fields_to_distort in numbers_of_fields_to_distort:
     results_subfolder = "ppo_vs_random_" + str(number_of_fields_to_distort) + "_0"
     agents = [PpoAgent("PA1", "ppoWeights/ppo_model_random_1000000_0_00001.zip"), RandomAgent("RA1")]
 
-    absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+    absolute_history, average_history = play_games(number_of_games, agents)
     win_rates_figure, game_length_figure = generate_figures(average_history)
     save_absolute_history(absolute_history, results_subfolder)
     save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
@@ -283,7 +273,7 @@ for probability_of_distorting_actions in probabilities_of_distorting_actions:
     results_subfolder = "random_vs_ppo_" + "0_" + str(probability_of_distorting_actions)
     agents = [RandomAgent("RA1"), PpoAgent("PA1", "ppoWeights/ppo_model_random_1000000_0_00001.zip")]
 
-    absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+    absolute_history, average_history = play_games(number_of_games, agents)
     win_rates_figure, game_length_figure = generate_figures(average_history)
     save_absolute_history(absolute_history, results_subfolder)
     save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
@@ -293,7 +283,7 @@ for probability_of_distorting_actions in probabilities_of_distorting_actions:
     results_subfolder = "ppo_vs_random_" + "0_" + str(probability_of_distorting_actions)
     agents = [PpoAgent("PA1", "ppoWeights/ppo_model_random_1000000_0_00001.zip"), RandomAgent("RA1")]
 
-    absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+    absolute_history, average_history = play_games(number_of_games, agents)
     win_rates_figure, game_length_figure = generate_figures(average_history)
     save_absolute_history(absolute_history, results_subfolder)
     save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
@@ -309,7 +299,7 @@ for probability_of_distorting_actions in probabilities_of_distorting_actions:
 # results_subfolder = "random_vs_mcts_" + str(number_of_mcts_simulations)
 # agents = [RandomAgent("RA1"), MctsAgent("MC1", False, n_simulations=number_of_mcts_simulations)]
 
-# absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+# absolute_history, average_history = play_games(number_of_games, agents)
 # win_rates_figure, game_length_figure = generate_figures(average_history)
 # save_absolute_history(absolute_history, results_subfolder)
 # save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
@@ -319,7 +309,7 @@ for probability_of_distorting_actions in probabilities_of_distorting_actions:
 # results_subfolder = "mcts_vs_random_" + str(number_of_mcts_simulations)
 # agents = [MctsAgent("MC1", True, n_simulations=number_of_mcts_simulations), RandomAgent("RA1")]
 
-# absolute_history, average_history = play_games(number_of_games, agents, alternate_player_order)
+# absolute_history, average_history = play_games(number_of_games, agents)
 # win_rates_figure, game_length_figure = generate_figures(average_history)
 # save_absolute_history(absolute_history, results_subfolder)
 # save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)

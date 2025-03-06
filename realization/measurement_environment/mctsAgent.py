@@ -121,7 +121,6 @@ class MctsAgent(Agent):
         # environment = tictactoe.env()
 
         environment.reset(options={
-            # "reverse_order": not self.is_first_player,
             "state": node.state.copy(),
             "nextPlayerIsFirstPlayer": node.selfIsNextPlayer == self.is_first_player
         })
@@ -134,7 +133,6 @@ class MctsAgent(Agent):
             node = self.get_child_with_best_uct_score(node)
 
             environment.reset(options={
-                # "reverse_order": not self.is_first_player,
                 "state": node.state.copy(),
                 "nextPlayerIsFirstPlayer": node.selfIsNextPlayer == self.is_first_player
             })
@@ -175,12 +173,12 @@ class MctsAgent(Agent):
 
     def simulate(self, leaf_node: MctsNode) -> str | None:
         environment = custom_connect_four_v3.env()
-        # environment = tictactoe.env()
+
         environment.reset(options={
-            # "reverse_order": not self.is_first_player,
             "state": leaf_node.state.copy(),
             "nextPlayerIsFirstPlayer": leaf_node.selfIsNextPlayer == self.is_first_player
         })
+
         observation, _, termination, _, _ = environment.last()
 
         while not termination:
