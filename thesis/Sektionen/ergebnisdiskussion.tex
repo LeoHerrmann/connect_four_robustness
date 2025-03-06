@@ -27,22 +27,22 @@ Es wurde nicht erwartet, im Szenario mit Unsicherheiten bezüglich Aktionen eine
 
 \subsection{Unsicherheit bezüglich Beobachtungen}
 
-Beim Vergleich der Verfahren hinsichtlich der Robustheit gegenüber Unsicherheiten bezüglich Beobachtungen wurde die Anzahl von fehlerhaften Spielsteinplatzierungen, in 2er-Schritten von 0 bis 20 variiert. Aufgrund der größer werdenden Konfidenzintervalle wurden ab 10 fehlerhaften Spielsteinplatzierungen nicht mit 200 sondern 500 Spiele zwischen dem MCTS-Agenten und dem zufällig spielenden Agenten ausgetragen.
+Beim Vergleich der Verfahren hinsichtlich der Robustheit gegenüber Unsicherheiten bezüglich Beobachtungen wurde die Anzahl von veränderten Spielsteinen, in 2er-Schritten von 0 bis 20 variiert. Aufgrund der größer werdenden Konfidenzintervalle wurden ab 10 veränderten Spielsteinen nicht mit 200 sondern 500 Spiele zwischen dem MCTS-Agenten und dem zufällig spielenden Agenten ausgetragen.
 
 \begin{figure}[ht!]%[!tbp]
 	\includegraphics[width=0.7\textwidth, center]{Bilder/robustness-results/uncertain_observations_win_rate_losses.png}
-	\caption{Gewinnratenverlust in Abhängigkeit von der Anzahl fehlerhafter Spielfeldplatzierungen.}
+	\caption{Gewinnratenverlust in Abhängigkeit von der Anzahl der veränderten Spielsteine.}
 \end{figure}
 
-Ähnlich wie im vorherigen Abschnitt \ref{uncertain-actions-result} startet der Gewinnratenverlust beider Agenten bei 0 fehlerhaften Spielsteinplatzierungen mit 0 \%.
+Ähnlich wie im vorherigen Abschnitt \ref{uncertain-actions-result} startet der Gewinnratenverlust beider Agenten bei 0 veränderten Spielsteinen mit 0 \%.
 
-Ab 4 fehlerhaften Spielsteinplatzierungen lässt sich beim MCTS-Agenten mit 3,0 \% (95 \%-CI: 1,0 - 8,6) ein signifikant niedrigerer Gewinnratenverlust gegenüber des PPO-Agenten mit 11,7 \% (95 \%-CI: 9,4 - 14,5) verzeichnen. Diese Diskrepanz hält sich bis zu einer Anzahl von 10 fehlerhaften Platzierungen, wobei der MCTS-Agent einen Gewinnratenverlust von 14,0 \% (95 \%-CI: 10,2 - 19,2) und der PPO-Agent einen Verlust von 24,9 \% (95 \%-CI: 21,9 - 28,4) erzielt. Das zeigt, dass sich der MCTS-Agent in diesem Bereich signifikant robuster verhält als der PPO-Agent.
+Ab 4 veränderten Spielsteinen lässt sich beim MCTS-Agenten mit 3,0 \% (95 \%-CI: 1,0 - 8,6) ein signifikant niedrigerer Gewinnratenverlust gegenüber des PPO-Agenten mit 11,7 \% (95 \%-CI: 9,4 - 14,5) verzeichnen. Diese Diskrepanz hält sich bis zu einer Anzahl von 10 veränderten Spielsteinen, wobei der MCTS-Agent einen Gewinnratenverlust von 14,0 \% (95 \%-CI: 10,2 - 19,2) und der PPO-Agent einen Verlust von 24,9 \% (95 \%-CI: 21,9 - 28,4) erzielt. Das zeigt, dass sich der MCTS-Agent in diesem Bereich signifikant robuster verhält als der PPO-Agent.
 
-Ab 12 fehlerhaften Platzierungen sind die Differenzen zwischen den Messpunkten zu gering und die Konfidenzintervalle zu groß, dass nicht mit ausreichender Sicherheit bestimmt werden kann, bei welchem Agenten die tatsächlichen Werte höher oder niedriger liegen.
+Ab 12 veränderten Spielsteinen sind die Differenzen zwischen den Messpunkten zu gering und die Konfidenzintervalle zu groß, dass nicht mit ausreichender Sicherheit bestimmt werden kann, bei welchem Agenten die tatsächlichen Werte höher oder niedriger liegen.
 
-Bei 18 und 20 fehlerhaft platzierten Steine liegt der gemessene Verlust von MCTS mit 42,4 \% (95 \%-CI: 35,6 - 50,0) und 44,8 \% (95 \%-CI: 38,0 - 52,6) sogar über dem von PPO mit 37,0 \% (95 \%-CI: 33,5 - 40,9) in beiden Fällen. Aufgrund der großen Konfidenzintervalle kann jedoch nicht gesagt werden, ob sich die tatsächlichen Werte genauso verhalten. Um Aussagen darüber treffen zu können, sind Messungen mit mehr Wiederholungen nötig.
+Bei 18 und 20 veränderten Spielsteinen liegt der gemessene Verlust von MCTS mit 42,4 \% (95 \%-CI: 35,6 - 50,0) und 44,8 \% (95 \%-CI: 38,0 - 52,6) sogar über dem von PPO mit 37,0 \% (95 \%-CI: 33,5 - 40,9) in beiden Fällen. Aufgrund der großen Konfidenzintervalle kann jedoch nicht gesagt werden, ob sich die tatsächlichen Werte genauso verhalten. Um Aussagen darüber treffen zu können, sind Messungen mit mehr Wiederholungen nötig.
 
-Bei 4 bis 10 fehlerhaften Spielsteinplatzierungen geht der MCTS-Agent als der robustere Agent hervor. Aufgrund des Verlaufs des Gewinnratenverlustes in Abhängigkeit der Anzahl der fehlerhaften Spielsteinplatzierungen liegt nahe, dass dies auch für eine Anzahl von unter 4 gilt. Liegt die Anzahl der fehlerhaften Spielsteinplatzierungen über 10, können aufgrund der zu großen Messungenauigkeiten keine signifikanten Unterschiede festgestellt werden. Die beobachtete höhere Robustheit des MCTS-Agenten könnte durch die Anfälligkeit von neuronalen Netzwerken gegenüber unerwarteten Beobachtungen verursacht worden sein. Ebenso wie in Abschnitt \ref{uncertain-actions-result} könnte die Ursache für dieses Verhalten jedoch auch in der kurzfristigen Strategie des in dieser Arbeit unzureichend trainierten PPO-Modells liegen.
+Bei 4 bis 10 veränderten Spielsteinen geht der MCTS-Agent als der robustere Agent hervor. Aufgrund des Verlaufs des Gewinnratenverlustes in Abhängigkeit der Anzahl der veränderten Spielsteinen liegt nahe, dass dies auch für eine Anzahl von unter 4 gilt. Liegt die Anzahl der veränderten Spielsteinen über 10, können aufgrund der zu großen Messungenauigkeiten keine signifikanten Unterschiede festgestellt werden. Die beobachtete höhere Robustheit des MCTS-Agenten könnte durch die Anfälligkeit von neuronalen Netzwerken gegenüber unerwarteten Beobachtungen verursacht worden sein. Ebenso wie in Abschnitt \ref{uncertain-actions-result} könnte die Ursache für dieses Verhalten jedoch auch in der kurzfristigen Strategie des in dieser Arbeit unzureichend trainierten PPO-Modells liegen.
 
 \subsection{Verallgemeinerungen}
 
