@@ -14,51 +14,47 @@ from ppoAgent import PpoAgent
 from randomAgent import RandomAgent
 from humanAgent import HumanAgent
 
-observation_history = []
-
 
 def play_game(env, agents: list[Agent]):
-        game_length = 0
+    game_length = 0
 
-        for agent in env.agent_iter():
-            observation, reward, termination, truncation, info = env.last()
+    for agent in env.agent_iter():
+        observation, reward, termination, truncation, info = env.last()
 
-            observation_history.append(observation)
+        game_length += 1
 
-            game_length += 1
+        if termination or truncation:
+            statistics = {
+                "result": "",
+                "game_length": game_length
+            }
 
-            if termination or truncation:
-                statistics = {
-                    "result": "",
-                    "game_length": game_length
-                }
+            if env.rewards[env.possible_agents[0]] != env.rewards[env.possible_agents[1]]:
+                winner = max(env.rewards, key=env.rewards.get)
 
-                if env.rewards[env.possible_agents[0]] != env.rewards[env.possible_agents[1]]:
-                    winner = max(env.rewards, key=env.rewards.get)
-
-                    if winner == env.agents[0]:
-                        statistics["result"] = "player_0"
-                    elif winner == env.agents[1]:
-                        statistics["result"] = "player_1"
-
-                else:
-                    statistics["result"] = "draw"
-                print(statistics)
-                return statistics
+                if winner == env.agents[0]:
+                    statistics["result"] = "player_0"
+                elif winner == env.agents[1]:
+                    statistics["result"] = "player_1"
 
             else:
-                distorted_state = distortion_generator.distort_state(observation["observation"])
-                distorted_observation = observation
-                distorted_observation["observation"] = distorted_state
+                statistics["result"] = "draw"
+            print(statistics)
+            return statistics
 
-                if agent == env.possible_agents[0]:
-                    action = agents[0].determine_action(observation)
-                else:
-                    action = agents[1].determine_action(observation)
+        else:
+            distorted_state = distortion_generator.distort_state(observation["observation"])
+            distorted_observation = observation
+            distorted_observation["observation"] = distorted_state
 
-                distorted_action = distortion_generator.distort_action(action, observation["action_mask"])
+            if agent == env.possible_agents[0]:
+                action = agents[0].determine_action(observation)
+            else:
+                action = agents[1].determine_action(observation)
 
-            env.step(distorted_action)
+            distorted_action = distortion_generator.distort_action(action, observation["action_mask"])
+
+        env.step(distorted_action)
 
 
 def play_games(number_of_games, agents: list[Agent]):
@@ -173,8 +169,6 @@ def save_average_history_and_figures(average_history, win_rates_figure, game_len
     plt.show(block=False)
 
 
-
-
 distortion_generator = DistortionGenerator(0, 0.0)
 
 # Evaluate MCTS vs. MCTS
@@ -184,7 +178,7 @@ number_of_games = 200
 numbers_of_mcts_simulations = [50]    # [50, 100, 250, 500, 750, 1000, 2500]
 
 for number_of_mcts_simulations in numbers_of_mcts_simulations:
-    agents = [MctsAgent("MA1", True, number_of_mcts_simulations), HumanAgent("HA1")]
+    agents = [MctsAgent("MA1", True, number_of_mcts_simulations), MctsAgent("MA1", False, number_of_mcts_simulations)]
     results_subfolder = "mcts_vs_mcts_" + str(number_of_mcts_simulations)
 
     absolute_history, average_history = play_games(number_of_games, agents)
@@ -201,7 +195,7 @@ number_of_games = 10000
 learning_rates = ["0_003", "0_001", "0_0005", "0_0001"]
 
 for learning_rate in learning_rates:
-    print(f"Starting PPO vs. Random with leraning rate {learning_rate}")
+    print(f"Starting PPO vs. Random with learning rate {learning_rate}")
 	
     agents = [PpoAgent("PA1", f"ppoWeights/ppo_model_random_1000000_{learning_rate}"), RandomAgent("RA1")]
     results_subfolder = f"ppo_quantitative_ppo_vs_random_constant_player_order/ppo_vs_random_{learning_rate}"
@@ -211,7 +205,7 @@ for learning_rate in learning_rates:
     save_absolute_history(absolute_history, results_subfolder)
     save_average_history_and_figures(average_history, win_rates_figure, game_length_figure, results_subfolder)
 
-    print(f"Starting Random vs. PPO with leraning rate {learning_rate}")
+    print(f"Starting Random vs. PPO with learning rate {learning_rate}")
 
     agents = [RandomAgent("RA1"), PpoAgent("PA1", f"ppoWeights/ppo_model_random_1000000_{learning_rate}")]
     results_subfolder = f"ppo_quantitative_random_vs_ppo_constant_player_order/random_vs_ppo_{learning_rate}"
